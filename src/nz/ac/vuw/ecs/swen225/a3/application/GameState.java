@@ -2,8 +2,12 @@ package nz.ac.vuw.ecs.swen225.a3.application;
 
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
@@ -37,6 +41,12 @@ public class GameState implements Persistable {
 	 */
 	public GameState(Tile[][] maze, List<Interactable> interactables, List<Actor> actors, Inventory inv, int timeRemaining, int chipsRemaining)
 	{
+		Contracts.notNull(maze, "GameState must have no null fields");
+		Contracts.notNull(maze[0], "GameState must have no null fields");
+		Contracts.notNull(interactables, "GameState must have no null fields");
+		Contracts.notNull(actors, "GameState must have no null fields");
+		Contracts.notNull(inv, "GameState must have no null fields");
+		
 		this.maze = maze;
 		this.interactables = interactables;
 		this.actors = actors;
@@ -93,9 +103,35 @@ public class GameState implements Persistable {
 		return this.actors;
 	}
 	
-	public JsonObject persist() {
-		//TODO: Implement this
-		throw new UnsupportedOperationException("This feature hasn't been implemented yet.");
+	public JsonObject persist() {		
+		JsonArrayBuilder xwise = Json.createArrayBuilder();
+		for(int x = 0; x < maze.length; x++) {
+			JsonArrayBuilder ywise = Json.createArrayBuilder();
+			for(int y = 0; y < maze[0].length; y++)
+				ywise.add(maze[x][y].persist());
+			xwise.add(ywise.build());
+		}
+		
+//		JsonArrayBuilder interactables = Json.createArrayBuilder();
+//		for(Interactable interactable : this.interactables)
+//			interactables.add(interactable.);
+		
+		JsonArrayBuilder actors = Json.createArrayBuilder();
+		for(Actor actor : this.actors)
+			actors = actors.add(actor.persist());
+		
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		
+		builder = builder.add("timeRemaining", timeRemaining)
+						 .add("chipsRemaining", chipsRemaining)
+						 .add("width", maze.length)
+						 .add("height", maze[0].length)
+						 .add("tiles", xwise)
+						 .add(inv.getName(), inv.persist())
+//						 .add("interactables", interactables)
+						 .add("actors", actors);
+		
+		return builder.build();
 	}
 
 	public String getName() 
