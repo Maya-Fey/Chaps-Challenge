@@ -16,6 +16,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * @author Jakob 300444995
  *
  */
+@SuppressWarnings("serial")
 public class ChapsViewImpl extends JPanel implements ChapsView {
 	
 	/**
@@ -31,11 +32,11 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 		super();
 		this.setSize(new Dimension(600,600));
 		this.setLayout(new GridLayout());
-		this.setVisible(true);
 		JLabel timeLabel = new JLabel("Time: 0");
 		JLabel chipsLabel = new JLabel("Chips: 0");
 		this.add(timeLabel);
 		this.add(chipsLabel);
+		this.setVisible(true);
 		
 		
 	}
