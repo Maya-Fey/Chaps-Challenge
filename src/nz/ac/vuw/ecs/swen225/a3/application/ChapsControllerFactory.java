@@ -20,8 +20,7 @@ public class ChapsControllerFactory {
 	 */
 	public ChapsController produce(ChapsModelFactory modelFactory, ChapsViewFactory viewFactory)
 	{
-		//FIXME: Implement this
-		throw new UnsupportedOperationException("This feature hasn't been implemented yet.");
+		return new ChapsControllerImpl(modelFactory, viewFactory);
 	}
 	
 }
