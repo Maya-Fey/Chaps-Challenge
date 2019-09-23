@@ -14,8 +14,10 @@ class IntegrationTests {
 	 * Basic test template with assert true
 	 */
 	@Test
-	void Test_1() {
+	void Test_template() {
 		assertTrue(true);
 	}
+	
+
 
 }
