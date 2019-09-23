@@ -1,5 +1,11 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
+import java.util.Collection;
+import java.util.EnumSet;
+
+import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
+
 /**
  * A factory that produces a class that implements ChapsModel
  * 
@@ -14,8 +20,8 @@ public class ChapsModelFactory {
 	 */
 	public ChapsModel produce()
 	{
-		//FIXME: Implement this
-		throw new UnsupportedOperationException("This feature hasn't been implemented yet.");
+		return new ChapsModelImpl();
+//		throw new UnsupportedOperationException("This feature hasn't been implemented yet.");
 	}
 	
 }
