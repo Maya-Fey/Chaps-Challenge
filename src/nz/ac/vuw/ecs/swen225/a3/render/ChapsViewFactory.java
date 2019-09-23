@@ -14,8 +14,7 @@ public class ChapsViewFactory {
 	 */
 	public ChapsView produce()
 	{
-		//FIXME: Implement this
-		throw new UnsupportedOperationException("This feature hasn't been implemented yet.");
+		return new ChapsViewImpl();
 	}
 	
 }
