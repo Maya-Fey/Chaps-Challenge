@@ -22,6 +22,9 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 	/**
 	 * Fields
 	 */
+	private JLabel timeLabel = new JLabel();
+	private JLabel chipsLabel = new JLabel();
+	private JLabel tutorialMessage = new JLabel();
 	
 	
 	/**
@@ -32,42 +35,45 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 		super();
 		this.setSize(new Dimension(600,600));
 		this.setLayout(new GridLayout());
-		JLabel timeLabel = new JLabel("Time: 0");
-		JLabel chipsLabel = new JLabel("Chips: 0");
-		this.add(timeLabel);
 		this.add(chipsLabel);
+		this.add(timeLabel);
+		this.add(tutorialMessage);
 		this.setVisible(true);
 		
 		
 	}
 
+	
+
 	@Override
 	public void updateBoard(Visible[][] board) {
-		// TODO Auto-generated method stub
+		this.revalidate();
+		this.repaint();
 		
 	}
 
 	@Override
 	public void updateRemainingChips(int rem) {
-		// TODO Auto-generated method stub
+		chipsLabel.setText("Chips remaining: " + rem);
 		
 	}
 
 	@Override
 	public void updateRemainingTime(int rem) {
-		// TODO Auto-generated method stub
+		timeLabel.setText("Time remaining: " + rem);
+		
 		
 	}
 
 	@Override
 	public void setDisplayTutorialMessage(String message) {
-		// TODO Auto-generated method stub
+		tutorialMessage.setText(message);
 		
 	}
 
 	@Override
 	public void clearDisplayTutorialMessage() {
-		// TODO Auto-generated method stub
+		tutorialMessage.setText(null);
 		
 	}
 
