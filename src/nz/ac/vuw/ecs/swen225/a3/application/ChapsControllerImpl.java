@@ -40,8 +40,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		
 		this.addKeyListener(this);
 		this.addWindowListener(this);
-		
-		
 	}
 	
 	/**
@@ -60,6 +58,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Sets window size.
 	 */
 	private void setUpWindow() {
+		this.add(view.getRootPanel());
 		
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
