@@ -1,9 +1,12 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
+import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
+
 /**
  * An interactable object on top of a tile.
  */
-public interface Interactable {
+public interface Interactable extends MazeObject, Persistable, Visible{
 	
 	/**
 	 * @return Whether this object can be pushed, or whether it can be stood on like
