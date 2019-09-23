@@ -1,8 +1,10 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -28,7 +30,13 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 		
 		super();
 		this.setSize(new Dimension(600,600));
+		this.setLayout(new GridLayout());
 		this.setVisible(true);
+		JLabel timeLabel = new JLabel("Time: 0");
+		JLabel chipsLabel = new JLabel("Chips: 0");
+		this.add(timeLabel);
+		this.add(chipsLabel);
+		
 		
 	}
 
@@ -64,8 +72,10 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 
 	@Override
 	public JPanel getRootPanel() {
-		return this.getRootPanel();
+		return this;
 	}
+	
+
 
 	
 	
