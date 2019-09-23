@@ -6,7 +6,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 /**
  * An item existing in the player's inventory or on the ground 
  * 
- * @author None yet
+ * @author James
  */
 public interface Item extends Persistable, Visible {
 	
