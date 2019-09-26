@@ -1,13 +1,20 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.EnumSet;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
+import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
@@ -25,6 +32,15 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	
 	private final ChapsModel model;
 	private final ChapsView view;
+	
+	//menuBar
+	private JMenuBar menuBar;
+	private JMenu gameOptions, help;
+	
+	//Game state variables
+	private boolean gamePaused=false;
+	private EnumSet<ChapsEvent> chapsEvents;
+
 	
 	/**
 	 * Constructor for ChapsControllerImpl.
@@ -47,9 +63,9 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
 		setUpWindow();
 	}
+
 	
 	
 	/**
@@ -59,7 +75,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	private void setUpWindow() {
 		this.add(view.getRootPanel());
-		
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
 		addWindowListener(new WindowAdapter() { 
@@ -73,11 +88,93 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				}
 			}
 		});
+		
+		setupMenuBars();
+		
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Sets up the menubars for the window and add their respective actionlistners.
+	 */
+	private void setupMenuBars() {
+		menuBar = new JMenuBar();
+		// Build the game options menubar
+		gameOptions = new JMenu("Game Options");
+		// save
+		JMenuItem save = new JMenuItem("Save game");
+		save.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				saveGame();
+			}
+		});
+		// resume
+		JMenuItem resume = new JMenuItem("Resume");
+		resume.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				resumeGame();
+			}
+		});
+		// pause
+		JMenuItem pause = new JMenuItem("Pause");
+		pause.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				pauseGame();
+			}
+		});
+		// exit
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				exitGame();
+			}
+		});
+
+		
+
+		// Building help menu
+		help = new JMenu("Help");
+		// controls
+		JMenuItem controls = new JMenuItem("Controls");
+		controls.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controlsHelp();
+			}
+		});
+		
+		
+		// Instructions
+		JMenuItem instructions = new JMenuItem("Instructions");
+		instructions.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				instructionsHelp();
+			}
+		});
+		
+		gameOptions.add(save);
+		gameOptions.add(resume);
+		gameOptions.add(pause);
+		gameOptions.add(exit);
+		
+		help.add(controls);
+		help.add(instructions);
+
+		menuBar.add(gameOptions);
+		menuBar.add(help);
+		this.setJMenuBar(menuBar);
+	}
 	
 	/**
 	 * CTRL-X  - exit the game, the current game state will be lost, the next time the game is started, it will resume from the last unfinished level
@@ -116,53 +213,102 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
-			model.onAction(ChapsAction.UP);
+			updateChapMove(ChapsAction.UP);
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-			model.onAction(ChapsAction.DOWN);
+			updateChapMove(ChapsAction.DOWN);
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-			model.onAction(ChapsAction.LEFT);
+			updateChapMove(ChapsAction.LEFT);
 		} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			model.onAction(ChapsAction.RIGHT);
+			updateChapMove(ChapsAction.RIGHT);
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	private void exitGame() {}
 	
-	/**
-	 * 
-	 */
-	private void exitGameWithSave() {}
 	
 	
 	/**
+	 * Updates the game whenever a tick goes through or when a move has been made
+	 */
+	private void updateChapMove(ChapsAction action) {
+
+		if (!gamePaused) {
+			chapsEvents = model.onAction(action);
+
+		}
+	}
+
+	/**
+	 * Updates the application graphics.
+	 */
+	private void updateGraphics() {
+		model.getInventoryIcons();// needs updating
+
+		view.updateBoard(model.getVisibleArea());
+		// view.getRootPanel();
+		this.add(view.getRootPanel());
+		this.pack();
+	}
+
+	/**
 	 * 
 	 */
-	private void resumeGame() {}
+	private void exitGame() {
+	}
+
+	/**
+	 * 
+	 */
+	private void exitGameWithSave() {
+	}
+	
+	/**
+	 * Saves the game.
+	 */
+	private void saveGame() {
+		
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void resumeGame() {
+	}
+
+	/**
+	 * 
+	 */
+	private void restartGame() {
+	}
+
+	/**
+	 * 
+	 */
+	private void restartLevel() {
+	}
+
+	/**
+	 * 
+	 */
+	private void pauseGame() {
+	}
 	
 	/**
 	 * 
 	 */
-	private void restartGame() {} 
+	private void instructionsHelp() {}
 	
 	/**
 	 * 
 	 */
-	private void restartLevel() {}
-	
-	/**
-	 * 
-	 */
-	private void pauseGame() {}
-	
-	
+	private void controlsHelp() {}
+
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
