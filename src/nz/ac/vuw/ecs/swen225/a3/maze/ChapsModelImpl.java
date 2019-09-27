@@ -34,10 +34,36 @@ public class ChapsModelImpl implements ChapsModel{
 		}
 		
 		
+		if(action.equals(ChapsAction.UP)||action.equals(ChapsAction.DOWN)||action.equals(ChapsAction.LEFT)||action.equals(ChapsAction.RIGHT)) {
+			//find player actor throwing error if none found
+
+			Player player = findPlayer();
+					
+			
+			Position newPos = player.getPosition().translate(action);
+			
+			if(maze[newPos.x][newPos.y].isSafe(player)) {
+				//call on entry
+				//update players pos
+				//update tile
+				//add chap events
+			}
+		}
+		
 		
 		
 		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
 		return enumEvents;
+	}
+	
+	private Player findPlayer(){
+		for(Actor a : actors) {
+			if (a instanceof Player) {
+				return (Player)a;
+			}
+		}
+		
+		return null;
 	}
 
 	@Override

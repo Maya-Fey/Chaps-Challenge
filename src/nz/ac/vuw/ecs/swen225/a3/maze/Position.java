@@ -67,6 +67,30 @@ public class Position implements Persistable {
 	}
 	
 	/**
+	 * Translates a position one space from its current position.
+	 * Using a direction from chaps action rather than NSEW
+	 * 
+	 * @param direction
+	 * @return A new position that's one space away in the specified direction
+	 */
+	public Position translate(ChapsAction direction)
+	{
+		switch(direction)
+		{
+			case RIGHT:
+				return new Position(x + 1, y    );
+			case UP:
+				return new Position(x    , y + 1);
+			case DOWN:
+				return new Position(x    , y - 1);
+			case LEFT:
+				return new Position(x - 1, y    );
+			default:
+				throw new AssertionError("Invalid Position enum or unimplemented case statement.");
+		}
+	}
+	
+	/**
 	 * A cardinal direction on a 2D plane
 	 * 
 	 * @author Claire 300436297
