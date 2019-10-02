@@ -10,8 +10,18 @@ import javax.swing.Icon;
  */
 public class FreeTile implements Tile{
 	private Position position;
-	private String name;
 	private Icon icon;
+
+	/**
+	 * Constructor to make a new free tile
+	 * @param position
+	 * @param icon
+	 */
+	public FreeTile(Position position, Icon icon) {
+		super();
+		this.position = position;
+		this.icon = icon;
+	}
 
 	@Override
 	public Position getPosition() {
@@ -20,7 +30,7 @@ public class FreeTile implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -31,7 +41,7 @@ public class FreeTile implements Tile{
 
 	@Override
 	public String getName() {
-		return name;
+		return "FreeTile";
 	}
 
 	@Override
@@ -52,12 +62,28 @@ public class FreeTile implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+		//TODO
+
 	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return null;
+	}
+
+//	/**
+//	 * Method is run when a player is on this tile to convert this tile to a free tile
+//	 * @return new free tile
+//	 */
+//	public FreeTile convertToFreeTile() {
+//		return new FreeTile(this.position, icon);
+//	}
+
+
 }

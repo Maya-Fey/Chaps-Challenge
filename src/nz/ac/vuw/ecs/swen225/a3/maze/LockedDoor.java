@@ -25,7 +25,7 @@ public class LockedDoor implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -64,12 +64,16 @@ public class LockedDoor implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return new FreeTile(this.position, icon);
 	}
 }

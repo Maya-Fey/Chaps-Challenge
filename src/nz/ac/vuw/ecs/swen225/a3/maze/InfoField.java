@@ -14,8 +14,8 @@ public class InfoField implements Tile{
 	private String name;
 	private Icon icon;
 	private String infoText;
-	
-	
+
+
 
 	/**
 	 * Default constructor for Info Field tiles
@@ -39,7 +39,7 @@ public class InfoField implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -71,12 +71,17 @@ public class InfoField implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return null;
 	}
 }

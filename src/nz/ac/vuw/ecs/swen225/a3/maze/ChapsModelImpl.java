@@ -1,6 +1,7 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
 
+import java.awt.Event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -19,9 +20,9 @@ public class ChapsModelImpl implements ChapsModel{
 	private List<Actor> actors;
 	private List<Interactable> interactables;
 	private Inventory inv;
-	
+
 	private int timeRemaining, chipsRemaining;
-	
+
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
@@ -32,37 +33,63 @@ public class ChapsModelImpl implements ChapsModel{
 			if(timeRemaining<=0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
 		}
-		
-		
+
+
 		if(action.equals(ChapsAction.UP)||action.equals(ChapsAction.DOWN)||action.equals(ChapsAction.LEFT)||action.equals(ChapsAction.RIGHT)) {
 			//find player actor throwing error if none found
 
 			Player player = findPlayer();
-					
-			
+
+
 			Position newPos = player.getPosition().translate(action);
-			
+
 			if(maze[newPos.x][newPos.y].isSafe(player)) {
 				//call on entry
-				//update players pos
-				//update tile
+				maze[newPos.x][newPos.y].onEnter(player, null);
+
+				//update players position
+				player.setPosition(newPos);
+
+				//if needed convert to a free tile
+				events.addAll(convertToFreeTile(events, newPos));
 				//add chap events
+				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
+
+
 			}
 		}
-		
-		
-		
+
+
+
 		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
 		return enumEvents;
 	}
-	
+
+	private List<ChapsEvent> convertToFreeTile(List<ChapsEvent> events, Position newPos){
+		FreeTile newTile = maze[newPos.x][newPos.y].convertToFreeTile();
+		Tile mazeTile = maze[newPos.x][newPos.y];
+		if(newTile!=null) {
+			if(mazeTile instanceof Key || mazeTile instanceof Treasure)
+				events.add(ChapsEvent.INV_UPDATE_REQUIRED);
+
+			if(mazeTile instanceof InfoField)
+				events.add(ChapsEvent.SHOW_TUTORIAL_MESSAGE);
+			else
+				events.add(ChapsEvent.HIDE_TUTORIAL_MESSAGE);
+
+			maze[newPos.x][newPos.y] = newTile;
+		}
+
+		return events;
+	}
+
 	private Player findPlayer(){
 		for(Actor a : actors) {
 			if (a instanceof Player) {
 				return (Player)a;
 			}
 		}
-		
+
 		return null;
 	}
 
