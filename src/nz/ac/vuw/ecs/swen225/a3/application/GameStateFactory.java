@@ -21,7 +21,7 @@ public class GameStateFactory extends ChapsFactory<GameState>
 {
 	private final ChapsFactory<Inventory> invFactory = null;
 	private final ChapsFactory<Tile> tileFactory = null;
-//	private final ChapsFactory<Interactable> interactableFactory = null;
+	private final ChapsFactory<Interactable> interactableFactory = null;
 	private final ChapsFactory<Actor> actorFactory = null;
 	
 	public GameState resurrect(JsonObject obj) 
@@ -40,9 +40,9 @@ public class GameStateFactory extends ChapsFactory<GameState>
 		}
 		
 		List<Interactable> interactables = new ArrayList<Interactable>();
-//		JsonArray iArray = obj.getJsonArray("interactables");
-//		for(int i = 0; i < iArray.size(); i++)
-//			interactables.add(interactableFactory.resurrect(iArray.getJsonObject(i)));
+		JsonArray iArray = obj.getJsonArray("interactables");
+		for(int i = 0; i < iArray.size(); i++)
+			interactables.add(interactableFactory.resurrect(iArray.getJsonObject(i)));
 		
 		List<Actor> actors = new ArrayList<Actor>();
 		JsonArray aArray = obj.getJsonArray("interactables");
