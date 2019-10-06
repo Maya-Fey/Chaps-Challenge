@@ -9,7 +9,7 @@ import javax.json.JsonObject;
  * @author Claire
  * @param <Type> The type of object this factory can resurrect.
  */
-public abstract class ChapsFactory<Type extends Persistable> {
+public interface ChapsFactory<Type extends Persistable> {
 
 	/**
 	 * Resurrects an object from JSON
@@ -17,6 +17,6 @@ public abstract class ChapsFactory<Type extends Persistable> {
 	 * @param obj JSON representing an object of this factory's type.
 	 * @return The object represented by the passed JSON
 	 */
-	public abstract Type resurrect(JsonObject obj);
+	Type resurrect(JsonObject obj);
 	
 }

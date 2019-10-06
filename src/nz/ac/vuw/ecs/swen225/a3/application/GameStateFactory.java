@@ -17,7 +17,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
  * 
  * @author Claire 300436297
  */
-public class GameStateFactory extends ChapsFactory<GameState> 
+public class GameStateFactory implements ChapsFactory<GameState> 
 {
 	private final ChapsFactory<Inventory> invFactory = null;
 	private final ChapsFactory<Tile> tileFactory = null;
