@@ -15,6 +15,8 @@ public interface Persistable {
 	JsonObject persist();
 	
 	/**
+	 * @deprecated Use reflection instead.
+	 * 
 	 * @return A name for this type of object. This name is not used to denote this 
 	 * <em>specific instance</em> of this object, or this object's bottom-level type,
 	 * but rather the class of object that this object belongs to. Used to identify 
