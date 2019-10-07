@@ -1,10 +1,15 @@
 package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 
@@ -13,16 +18,50 @@ import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
  * 
  * @author Claire
  */
-public class LevelBuilderDisplay extends JPanel implements ChapsView, MouseListener {
+public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseListener {
 	
 	private static final long serialVersionUID = -1231560855846207109L;
+	
+	private final JPanel left, right;
+	
+	private final JLabel[][] grid;
 
 	/**
 	 * Constructor
 	 */
 	public LevelBuilderDisplay()
 	{
+		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
+		this.left = (JPanel) this.leftComponent;
+		this.right = (JPanel) this.rightComponent;
+		left.setLayout(new GridBagLayout());
+		right.setLayout(new GridBagLayout());
 		
+		grid = new JLabel[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+		{
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+			{
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.gridx = i;
+				gbc.gridy = j;
+				gbc.weightx = 1;
+				gbc.weighty = 1;
+				left.add(grid[i][j] = new JLabel(i + ", " + j), gbc);
+			}
+		}
+		
+		
+	}
+	
+	/**
+	 * Stop stupid auto-resizing of the divider.
+	 */
+	@SuppressWarnings("deprecation")
+	public void reshape(int x, int y, int w, int h)
+	{
+		super.reshape(x, y, w, h);
+		this.setDividerLocation(5.0 / 7.0);
 	}
 
 	@Override
@@ -61,7 +100,7 @@ public class LevelBuilderDisplay extends JPanel implements ChapsView, MouseListe
 	@Override
 	public JPanel getRootPanel() 
 	{
-		return this;
+		return null;
 	}
 
 	@Override
