@@ -29,6 +29,8 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	private final JLabel time = new JLabel("Time: 0");
 	
 	private final JLabel chips = new JLabel("Chips: 0");
+	
+	private final JLabel position = new JLabel("Looking at: (0, 0)");
 
 	/**
 	 * Constructor
@@ -63,6 +65,8 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 		right.add(time, gbc);
 		gbc.gridy++;
 		right.add(chips, gbc);
+		gbc.gridy++;
+		right.add(position, gbc);
 	}
 	
 	/**
@@ -93,6 +97,17 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	public void updateRemainingTime(int rem) 
 	{
 		time.setText("Time: " + rem);
+	}
+	
+	/**
+	 * Updates the position on the display
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void updatePosition(int x, int y)
+	{
+		position.setText(String.format("(Looking at: %d, %d)", x, y));
 	}
 
 	@Override
