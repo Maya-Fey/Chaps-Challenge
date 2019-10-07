@@ -25,6 +25,10 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	private final JPanel left, right;
 	
 	private final JLabel[][] grid;
+	
+	private final JLabel time = new JLabel("Time: 0");
+	
+	private final JLabel chips = new JLabel("Chips: 0");
 
 	/**
 	 * Constructor
@@ -51,7 +55,12 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 			}
 		}
 		
-		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = gbc.gridy = 0;
+		gbc.weightx = gbc.weighty = 1;
+		right.add(time, gbc);
+		gbc.gridy++;
+		right.add(chips, gbc);
 	}
 	
 	/**
@@ -75,15 +84,13 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	@Override
 	public void updateRemainingChips(int rem) 
 	{
-		// TODO Auto-generated method stub
-		
+		time.setText("Chips: " + rem);
 	}
 
 	@Override
 	public void updateRemainingTime(int rem) 
 	{
-		// TODO Auto-generated method stub
-		
+		time.setText("Time: " + rem);
 	}
 
 	@Override
