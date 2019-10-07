@@ -19,4 +19,11 @@ public interface ChapsFactory<Type extends Persistable> {
 	 */
 	Type resurrect(JsonObject obj);
 	
+	/**
+	 * Creates a new object with some default parameters.
+	 * 
+	 * @return A default variant of this object
+	 */
+	Type newInstance();
+	
 }

@@ -63,4 +63,10 @@ public class GameStateFactory implements ChapsFactory<GameState>
 		return new GameState(tiles, interactables, actors, inv, timeRem, chipRem);
 	}
 
+	@Override
+	public GameState newInstance() 
+	{
+		throw new UnsupportedOperationException();
+	}
+
 }

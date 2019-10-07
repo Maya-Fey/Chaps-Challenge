@@ -32,6 +32,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 		this.setSize(700, 500);
 		this.setVisible(true);
 		this.addKeyListener(this);
+		
+		this.redisplay();
 	}
 
 	@Override

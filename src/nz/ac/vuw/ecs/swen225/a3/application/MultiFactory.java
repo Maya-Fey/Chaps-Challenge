@@ -38,6 +38,20 @@ class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 	}
 	
 	/**
+	 * @param type The type to create
+	 * 
+	 * @return A new instance of the specified type
+	 */
+	public Type newInstance(String type) {
+			ChapsFactory<? extends Type> factory = factories.get(type);
+		
+		if(factory == null)
+			throw new FactoryNotFoundException("Factory of type " + type + " not found");
+		
+		return factory.newInstance();
+	}
+	
+	/**
 	 * Adds a factory to this multi-factory, so it can be used to resurrect objects of this type.
 	 * 
 	 * @param name 
@@ -47,5 +61,13 @@ class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 	{
 		factories.put(name, factory);
 	}
+
+	@Override
+	public Type newInstance() 
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	
 	
 }
