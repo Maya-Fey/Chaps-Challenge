@@ -10,11 +10,11 @@ import javax.swing.JFrame;
  *
  * A GUI class to build a level
  */
-public class LevelBuilderFrame extends JFrame implements KeyListener {
+public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuilderClickListener {
 
 	private static final long serialVersionUID = -6560472484901364076L;
 	
-	private final LevelBuilderDisplay disp = new LevelBuilderDisplay();
+	private final LevelBuilderDisplay disp = new LevelBuilderDisplay(this);
 	
 	/**
 	 * Constructor
@@ -44,6 +44,12 @@ public class LevelBuilderFrame extends JFrame implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) 
 	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTileClick(int x, int y) {
 		// TODO Auto-generated method stub
 		
 	}

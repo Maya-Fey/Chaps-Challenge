@@ -32,8 +32,10 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 
 	/**
 	 * Constructor
+	 * 
+	 * @param listener 
 	 */
-	public LevelBuilderDisplay()
+	public LevelBuilderDisplay(LevelBuilderClickListener listener)
 	{
 		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
 		this.left = (JPanel) this.leftComponent;
@@ -51,7 +53,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 				gbc.gridy = j;
 				gbc.weightx = 1;
 				gbc.weighty = 1;
-				left.add(grid[i][j] = new JLabel(), gbc);
+				left.add(grid[i][j] = new LevelBuilderLabel(listener, i, j), gbc);
 			}
 		}
 		
