@@ -18,6 +18,6 @@ public class GameConstants {
 	/**
 	 * The default directory for icon loading
 	 */
-	public static final String DEFAULT_ICON_DIRECTORY = "icons/";
+	public static final String DEFAULT_ICON_DIRECTORY = "textures/";
 
 }
