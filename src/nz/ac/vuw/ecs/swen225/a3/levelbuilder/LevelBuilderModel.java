@@ -8,6 +8,7 @@ import javax.swing.Icon;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
+import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.TileEmptySpace;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
@@ -37,6 +38,7 @@ public class LevelBuilderModel {
 		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
 				buffer[i][j] = new ArrayList<>();
+		actors.add(new ActorPlayer());
 	}
 	
 	/**
