@@ -50,18 +50,20 @@ public class IconFactory {
 	 * Should only be used by the plugin loader.
 	 * 
 	 * @param name the name of the file that will be referenced later
-	 * @param file The file where the image is stored
+	 * @param file The file where the image is stored. The image should be EXACTLY GameConstants.ICON_SIZE in both directions
 	 */
 	public void loadIcon(String name, File file)
 	{
 		try {
 			Image img = ImageIO.read(file);
+			
+			Contracts.arbitrary((img.getHeight(null) == img.getWidth(null)) && (img.getWidth(null) == GameConstants.ICON_SIZE), "Icons should be exactly " + GameConstants.ICON_SIZE + "x" + GameConstants.ICON_SIZE);
+			
 			ImageIcon icon = new ImageIcon(img);
 			icons.put(name, icon);
 		} catch (IOException e) {
 			throw new UncheckedIOException("IO Exception occured while loading icon from file " + file.getAbsolutePath(), e);
 		}
-		
 	}
 	
 }
