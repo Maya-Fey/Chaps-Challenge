@@ -17,11 +17,15 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	private final LevelBuilderDisplay disp = new LevelBuilderDisplay(this);
 	private final LevelBuilderModel model = new LevelBuilderModel();
 	
+	private int x, y;
+	
 	/**
 	 * Constructor
 	 */
 	public LevelBuilderFrame()
 	{
+		x = y = 0;
+		
 		this.add(disp);
 		
 		this.setTitle("Chap's Challenge Level Builder");
@@ -33,7 +37,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	@Override
 	public void keyPressed(KeyEvent arg0) 
 	{
-		disp.updateBoard(model.render(0, 0));
+		
 	}
 
 	@Override
@@ -45,7 +49,23 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	@Override
 	public void keyTyped(KeyEvent arg0) 
 	{
-		// TODO Auto-generated method stub
+		char lc = Character.toLowerCase(arg0.getKeyChar());
+		switch(lc)
+		{
+			case 'w':
+				y++;
+				break;
+			case 'a':
+				x--;
+				break;
+			case 's':
+				y--;
+				break;
+			case 'd':
+				x++;
+				break;
+		}
+		this.redisplay();
 		
 	}
 
@@ -53,6 +73,12 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	public void onTileClick(int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void redisplay()
+	{
+		disp.updatePosition(x, y);
+		disp.updateBoard(model.render(x, y));
 	}
 
 }

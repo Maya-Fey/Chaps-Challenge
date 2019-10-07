@@ -86,7 +86,8 @@ public class LevelBuilderModel {
 		
 		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
-				arr[i][j] = new RenderVisible(IconFactory.INSTANCE.composite(buffer[i][j]));
+				arr[i][GameConstants.VISIBILE_SIZE - j - 1] = new RenderVisible(IconFactory.INSTANCE.composite(buffer[i][j]));
+		//             ^ Invert the y-axis
 		
 		return arr;
 	}
