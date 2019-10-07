@@ -15,6 +15,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	private static final long serialVersionUID = -6560472484901364076L;
 	
 	private final LevelBuilderDisplay disp = new LevelBuilderDisplay(this);
+	private final LevelBuilderModel model = new LevelBuilderModel();
 	
 	/**
 	 * Constructor
@@ -26,13 +27,13 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 		this.setTitle("Chap's Challenge Level Builder");
 		this.setSize(700, 500);
 		this.setVisible(true);
+		this.addKeyListener(this);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) 
 	{
-		// TODO Auto-generated method stub
-		
+		disp.updateBoard(model.render(0, 0));
 	}
 
 	@Override
