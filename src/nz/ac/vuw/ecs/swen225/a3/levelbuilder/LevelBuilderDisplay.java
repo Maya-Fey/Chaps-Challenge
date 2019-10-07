@@ -47,7 +47,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 				gbc.gridy = j;
 				gbc.weightx = 1;
 				gbc.weighty = 1;
-				left.add(grid[i][j] = new JLabel(i + ", " + j), gbc);
+				left.add(grid[i][j] = new JLabel(), gbc);
 			}
 		}
 		
@@ -67,8 +67,9 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	@Override
 	public void updateBoard(Visible[][] board) 
 	{
-		// TODO Auto-generated method stub
-		
+		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++)
+			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++)
+				grid[x][y].setIcon(board[x][y].getIcon());
 	}
 
 	@Override
