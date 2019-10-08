@@ -1,33 +1,25 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.net.InterfaceAddress;
-import java.time.Year;
 import java.util.List;
 
-import javax.imageio.IIOException;
-import javax.imageio.ImageIO;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
-import nz.ac.vuw.ecs.swen225.a3.commons.*;
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
+import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
  * An implementation for the ChapsView interface which represents the view for
@@ -37,56 +29,76 @@ import nz.ac.vuw.ecs.swen225.a3.commons.*;
  *
  */
 @SuppressWarnings("serial")
-public class ChapsViewImpl extends JPanel implements ChapsView {
+public class ChapsViewImpl extends JSplitPane implements ChapsView {
 
 	/**
 	 * Fields
 	 */
-	private JPanel mazePanel = new JPanel();
-	private JPanel invPanel = new JPanel();
-	private JLabel levelLabel = new JLabel();
-	private JLabel timeLabel = new JLabel();
-	private JLabel chipsLabel = new JLabel();
-	private JLabel tutorialMessage = new JLabel();
+	private final JPanel invPanel = new JPanel();
+	private final JLabel levelLabel = new JLabel();
+	private final JPanel levelPanel = new JPanel();
+	private final JLabel timeLabel = new JLabel();
+	private final JPanel timePanel = new JPanel();
+	private final JLabel chipsLabel = new JLabel();
+	private final JPanel chipsPanel = new JPanel();
+	private final JLabel tutorialMessage = new JLabel();
 
-	private Visible[][] visible;
 	private final JLabel[][] grid;
+
+
+	private final JPanel left, right;
 
 	private Image border;
 	private String filename = "resources/digital-7.ttf";
-	private static int WIDTH = 9;
-	private static int HEIGHT = 9;
+	private Font customFont;;
+
 
 	/**
 	 * Constructor to initialize GUI
 	 *
 	 */
 	public ChapsViewImpl() {
-		super();
+		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
+		setupFont();
+		updateRemainingChips(5);
+		updateCurrentLevel(2);
+
+		this.left = (JPanel) this.leftComponent;
+		this.right = (JPanel) this.rightComponent;
+		left.setLayout(new GridBagLayout());
+		right.setLayout(new GridBagLayout());
 
 		grid = new JLabel[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
-		mazePanel.setPreferredSize(new Dimension(700,700));
-		mazePanel.setLayout(new GridLayout(GameConstants.VISIBILE_SIZE, GameConstants.VISIBILE_SIZE));
 
 		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) {
 			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) {
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.gridx = x;
+				gbc.gridy = y;
+				gbc.weightx = 1;
+				gbc.weighty = 1;
 				grid[x][y] = new JLabel();
-				grid[x][y].setIcon(null);
-				mazePanel.add(grid[x][y]);
+				left.add(grid[x][y], gbc);
 			}
 		}
-		this.setPreferredSize(new Dimension(600,600));
-		this.setLayout(new BorderLayout());
-		this.add(mazePanel);
-		this.add(createInfoPanel(), BorderLayout.EAST);
-		this.setVisible(true);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = gbc.gridy = 0;
+		gbc.weightx = gbc.weighty = 1;
+		right.add(createLevelPanel(), gbc);
+		gbc.gridy++;
+		right.add(createTimePanel(), gbc);
+		gbc.gridy++;
+		right.add(createChipsPanel(), gbc);
+
 	}
+
+
 
 	/**
 	 * Sets up the digital font used for the info panel
-	 * @return font
+	 *
 	 */
-	public Font setupFont() {
+	public void setupFont() {
 
 		Font font = null;
 		try {
@@ -98,12 +110,12 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		font = font.deriveFont(Font.BOLD,28);
+		font = font.deriveFont(Font.BOLD, 28);
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		ge.registerFont(font);
 
-		return font;
+		this.customFont = font;
 
 	}
 
@@ -117,76 +129,96 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 			}
 		}
 
-		this.revalidate();
-		this.repaint();
-
 	}
 
 
+	/**
+	 * Makes a simple panel of the Time display to
+	 * go on the info panel
+	 * @return timePanel
+	 */
+	public JPanel createTimePanel() {
+		timePanel.setLayout(new GridLayout(2, 1));
+		timePanel.setPreferredSize(new Dimension(100, 50));
+		JLabel text = new JLabel();
+		text.setForeground(Color.RED);
+		text.setText("TIME:");
+		timePanel.add(text);
+		timePanel.add(timeLabel);
+		timePanel.setBackground(Color.BLACK);
+
+		return timePanel;
+	}
 
 	/**
-	 * Create the panel containing the remaining time,
-	 * remaining chips and current inventory.
-	 * @return infoPanel
+	 * Makes a simple panel of the Chips display to
+	 * go on the info panel
+	 * @return chipsPanel
 	 */
-	public JPanel createInfoPanel() {
-		JPanel infoPanel = new JPanel();
-		infoPanel.setMinimumSize(new Dimension(300, 600));
-		infoPanel.setBackground(Color.GRAY);
-		infoPanel.setLayout(new GridLayout(10, 50));
-		JLabel text1 = new JLabel("LEVEL");
-		text1.setForeground(Color.RED);
-		text1.setFont(setupFont());
-		infoPanel.add(text1);
+	public JPanel createChipsPanel() {
+		chipsPanel.setLayout(new GridLayout(2,1));
+		chipsPanel.setPreferredSize(new Dimension(50, 50));
+		JLabel text = new JLabel();
+		text.setForeground(Color.RED);
+		text.setText("CHIPS:");
+		chipsPanel.add(text);
+		chipsPanel.add(chipsLabel);
+		chipsPanel.setBackground(Color.BLACK);
 
-		JLabel text2 = new JLabel("TIME:");
-		text2.setForeground(Color.RED);
-		text2.setFont(setupFont());
-		infoPanel.add(text2);
+		return chipsPanel;
+	}
 
-		infoPanel.add(timeLabel);
+	/**
+	 * Makes a simple panel of the current level
+	 * to go on the info panel
+	 * @return levelPanel
+	 *
+	 */
+	public JPanel createLevelPanel() {
+		levelPanel.setLayout(new GridLayout(2,1));
+		levelPanel.setPreferredSize(new Dimension(100, 50));
+		JLabel text = new JLabel("LEVEL:");
+		text.setForeground(Color.RED);
+		text.setBackground(Color.GRAY);
+		levelPanel.add(text);
+		levelPanel.add(levelLabel);
+		levelPanel.setBackground(Color.BLACK);
 
-		JLabel text3 = new JLabel("CHIPS:");
-		text3.setForeground(Color.RED);
-		text3.setFont(setupFont());
-		infoPanel.add(text3);
-
-		infoPanel.add(chipsLabel);
-
-		infoPanel.add(invPanel);
-		infoPanel.setVisible(true);
-		return infoPanel;
-
+		return levelPanel;
 	}
 
 	@Override
 	public void updateCurrentLevel(int lvl) {
-		levelLabel.setText(""+lvl);
-		levelLabel.setFont(setupFont());
+		levelLabel.setText("2"+lvl);
+		levelLabel.setForeground(Color.GREEN);
+		levelLabel.setFont(customFont);
 	}
 
 	@Override
 	public void updateRemainingChips(int rem) {
-		chipsLabel.setText(""+rem);
-		chipsLabel.setFont(setupFont());
+		chipsLabel.setText("7"+rem);
+		chipsLabel.setBackground(Color.GREEN);
+		chipsLabel.setFont(customFont);
 	}
 
 	@Override
 	public void updateRemainingTime(int rem) {
-
 		timeLabel.setText("" + rem);
-		timeLabel.setFont(setupFont());
+		timeLabel.setBackground(Color.gray);
 		timeLabel.setForeground(Color.GREEN);
+		timeLabel.setFont(customFont);
 
 	}
 
 	@Override
 	public void updateInventory(List<Visible> v) {
 		invPanel.setLayout(new GridLayout(4, 2));
+		for(int x = 0; x < 2; x++) {
+			for(int y = 0; y < 4; y++) {
+
+			}
+		}
 		invPanel.setBackground(Color.BLACK);
-
-
-		invPanel.setVisible(true);
 
 	}
 
@@ -205,7 +237,7 @@ public class ChapsViewImpl extends JPanel implements ChapsView {
 	}
 
 	@Override
-	public JPanel getRootPanel() {
+	public JSplitPane getRootPanel() {
 		return this;
 	}
 

@@ -4,6 +4,7 @@ package nz.ac.vuw.ecs.swen225.a3.render;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
@@ -77,7 +78,7 @@ public interface ChapsView {
 	 *
 	 * @return This view's root JPanel
 	 */
-	JPanel getRootPanel();
+	JSplitPane getRootPanel();
 
 
 }
