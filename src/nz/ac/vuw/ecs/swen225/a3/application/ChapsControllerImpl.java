@@ -1,11 +1,13 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
 import java.util.EnumSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,6 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
@@ -24,50 +27,56 @@ import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
  * @author Max 300465155
  */
 public class ChapsControllerImpl extends JFrame implements ChapsController {
-	
+
 	private static final long serialVersionUID = -6798111243001006598L;
-	
+
 	private final int windowHeight = 800;
 	private final int windowLength = 800;
-	
+
 	private final ChapsModel model;
 	private final ChapsView view;
-	
+
 	//menuBar
 	private JMenuBar menuBar;
 	private JMenu gameOptions, help;
-	
+
 	//Game state variables
 	private boolean gamePaused=false;
 	private EnumSet<ChapsEvent> chapsEvents;
 
-	
+	//Game timer- controls tick events
+	private Timer timer;
+
+
 	/**
 	 * Constructor for ChapsControllerImpl.
 	 * Set ups
-	 * 
-	 * @param factorymodel 
-	 * @param factoryview 
+	 *
+	 * @param factorymodel
+	 * @param factoryview
 	 */
 	ChapsControllerImpl(ChapsModelFactory factorymodel, ChapsViewFactory factoryview)
 	{
 		model = factorymodel.produce();
 		view = factoryview.produce();
-		
+
 		this.addKeyListener(this);
 		this.addWindowListener(this);
 	}
-	
+
 	/**
 	 * Starts the game, initializing setup
 	 */
 	@Override
 	public void start() {
 		setUpWindow();
+
+		//Starts timer
+		setupTimer();
 	}
 
-	
-	
+
+
 	/**
 	 * Sets up all window settings on initalisation.
 	 * Adds window closing confirmation.
@@ -77,7 +86,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		this.add(view.getRootPanel());
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
-		addWindowListener(new WindowAdapter() { 
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent we) {
 				String ObjButtons[] = { "Yes", "No" };
@@ -88,12 +97,29 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				}
 			}
 		});
-		
+
 		setupMenuBars();
-		
+
 		this.setVisible(true);
 	}
-	
+
+	/**
+	 * Sets up timer that schedules tick events
+	 */
+	private void setupTimer() {
+		timer=new Timer("Game Timer");
+		TimerTask tickTask= new TimerTask() { //Task that get called repeatedly after fixed duration - for game tick
+			@Override
+			public void run() {
+					updateChapMove(ChapsAction.TICK);
+			};
+		};
+		long tickCallTime=1000/GameConstants.TICKS_TO_SECONDS_RATIO;//In milliseconds
+	//	timer.schedule(TimerTask task, Date firstTime, long period)
+		timer.schedule(tickTask, new Date(), tickCallTime);
+
+	}
+
 	/**
 	 * Sets up the menubars for the window and add their respective actionlistners.
 	 */
@@ -138,7 +164,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			}
 		});
 
-		
+
 
 		// Building help menu
 		help = new JMenu("Help");
@@ -151,8 +177,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				controlsHelp();
 			}
 		});
-		
-		
+
+
 		// Instructions
 		JMenuItem instructions = new JMenuItem("Instructions");
 		instructions.addActionListener(new ActionListener() {
@@ -162,12 +188,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				instructionsHelp();
 			}
 		});
-		
+
 		gameOptions.add(save);
 		gameOptions.add(resume);
 		gameOptions.add(pause);
 		gameOptions.add(exit);
-		
+
 		help.add(controls);
 		help.add(instructions);
 
@@ -175,23 +201,20 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		menuBar.add(help);
 		this.setJMenuBar(menuBar);
 	}
-	
+
 	/**
 	 * CTRL-X  - exit the game, the current game state will be lost, the next time the game is started, it will resume from the last unfinished level
 	 * CTRL-S  - exit the game, saves the game state, game will resume next time the application will be started
 	 * CTRL-R  - resume a saved game
 	 * CTRL-P  - start a new game at the last unfinished level
 	 * CTRL-1 - start a new game at level 1
-	 * SPACE - pause the game and display a ìgame is pausedî dialog
-	 * ESC - close the ìgame is pausedî dialog and resume the game
+	 * SPACE - pause the game and display a ÔøΩgame is pausedÔøΩ dialog
+	 * ESC - close the ÔøΩgame is pausedÔøΩ dialog and resume the game
      * UP, DOWN, LEFT, RIGHT ARROWS -- move Chap within the maze
 	 * @param e - KeyEvent
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		// CTRL-X
-		
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
 			exitGame();
 		}
@@ -207,9 +230,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_1) {
 			restartGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			//pauseGame();
+			pauseGame();
 			model.onAction(ChapsAction.TICK);
-			view.updateRemainingTime(model.getTimeRemaining());
 		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
@@ -222,132 +244,171 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			updateChapMove(ChapsAction.RIGHT);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Updates the game whenever a tick goes through or when a move has been made
+	 * Updates in game timer also
 	 */
 	private void updateChapMove(ChapsAction action) {
-
 		if (!gamePaused) {
 			chapsEvents = model.onAction(action);
-
 		}
 	}
 
 	/**
-	 * Updates the application graphics.
+	 * Updates the application graphics. Updates timer, inventory and view of the
+	 * board. Does this by getting information from the maze package and sending all
+	 * the information to the Renderer package.
 	 */
 	private void updateGraphics() {
 		model.getInventoryIcons();// needs updating
-
 		view.updateBoard(model.getVisibleArea());
 		// view.getRootPanel();
-		this.add(view.getRootPanel());
+		//view.updateInventory(model.getInventoryIcons()); //not yet implemented
+		view.updateRemainingChips(model.getChipsRemaining());
+		view.updateRemainingTime(model.getTimeRemaining());
+		this.add(view.getRootPanel()); //-----------------------Needs CHANGE
 		this.pack();
 	}
 
 	/**
-	 * 
+	 * Exit the game, the current game state will be lost, the next time the game is
+	 * started, it will resume from the last unfinished level.
 	 */
 	private void exitGame() {
+		System.exit(0);
 	}
 
 	/**
-	 * 
+	 * exit the game, saves the game state, game will resume next time the
+	 * application will be started.
 	 */
 	private void exitGameWithSave() {
+		saveGame();
+		exitGame();
 	}
-	
+
 	/**
 	 * Saves the game.
 	 */
 	private void saveGame() {
-		
-		
+
+
 	}
 
 	/**
-	 * 
+	 *  resume a saved game.
 	 */
 	private void resumeGame() {
 	}
 
 	/**
-	 * 
+	 * start a new game at level 1.
 	 */
 	private void restartGame() {
+
 	}
 
 	/**
-	 * 
+	 * start a new game at the last unfinished level.
 	 */
 	private void restartLevel() {
+
 	}
 
 	/**
-	 * 
+	 *  pause the game and display a ‚Äúgame is paused‚Äù dialog.
 	 */
 	private void pauseGame() {
+		//pause game
+		gamePaused=true;
+		JOptionPane.showMessageDialog(this, "Game is paused - Click Ok to unpause");
+		gamePaused=false;
+
 	}
-	
+
 	/**
-	 * 
+	 *Help message that displays the information on how to play the game.
+	 *
 	 */
-	private void instructionsHelp() {}
-	
+	private void instructionsHelp() {
+		JOptionPane.showMessageDialog(this,
+			    "To pass a level all the computer chip's must be collected.\n" +
+			    "\n" +
+			    "There are keys spread across the levels in which must be collected to unlock\n" +
+			    "rooms that contains chips. \n" +
+			    "\n" +
+			    "The goal is to find all the chips before the timer \n" +
+			    "runs out and walk to the finished level tile.", "Chips Challenge - Game Information",
+			    JOptionPane.INFORMATION_MESSAGE);
+	}
+
 	/**
-	 * 
+	 * Information the explains the in game controls.
+	 *
 	 */
-	private void controlsHelp() {}
+	private void controlsHelp() {
+		JOptionPane.showMessageDialog(this, "CTRL-X  - Exit's the game without saving\n" + // resumes at start of last
+																							// unfinished level
+				"CTRL-S  - Exit and saves the game\n" + "CTRL-R  - Resume's a saved game\n"
+				+ "CTRL-P  - Start's a new game at the last unfinished level\n"
+				+ "CTRL-1 - Start's a new game at level 1\n" + "SPACE - Pause's the game\n"
+				+ "ESC - Resume's the game\n" + "UP, DOWN, LEFT, RIGHT ARROWS -- Move's Chap within the maze\n" + "",
+				"Chip's Challenge Game Controls", JOptionPane.INFORMATION_MESSAGE);
+	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
 	}
-
 }
