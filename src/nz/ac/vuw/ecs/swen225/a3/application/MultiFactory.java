@@ -2,6 +2,7 @@ package nz.ac.vuw.ecs.swen225.a3.application;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.json.JsonObject;
 
@@ -62,12 +63,18 @@ class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 		factories.put(name, factory);
 	}
 
+	/**
+	 * @return A list of all the types this multi-factory can create and resurrect.
+	 */
+	public Set<String> getAvailableTypes()
+	{
+		return factories.keySet();
+	}
+	
 	@Override
 	public Type newInstance() 
 	{
 		throw new UnsupportedOperationException();
 	}
-
-	
 	
 }
