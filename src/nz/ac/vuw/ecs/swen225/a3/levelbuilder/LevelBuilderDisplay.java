@@ -2,8 +2,6 @@ package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,7 +16,7 @@ import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
  * 
  * @author Claire
  */
-public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseListener {
+public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	
 	private static final long serialVersionUID = -1231560855846207109L;
 	
@@ -127,29 +125,5 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView, MouseL
 	{
 		return null;
 	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseClicked(MouseEvent arg0) {}
 
 }
