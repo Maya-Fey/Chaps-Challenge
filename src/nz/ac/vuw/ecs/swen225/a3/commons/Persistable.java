@@ -1,6 +1,8 @@
 package nz.ac.vuw.ecs.swen225.a3.commons;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  * An interface representing any object that can be written to JSON.
@@ -23,5 +25,13 @@ public interface Persistable {
 	 * what kind of root factory to use for resurrection.
 	 */
 	String getName();
+	
+	/**
+	 * @return A basic JsonObjectBuilder that includes this object's type information.
+	 */
+	default JsonObjectBuilder getBuilder()
+	{
+		return Json.createObjectBuilder().add("name", this.getClass().getSimpleName());
+	}
 	
 }
