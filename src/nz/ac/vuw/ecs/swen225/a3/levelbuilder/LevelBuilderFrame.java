@@ -249,6 +249,25 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	    {
 	    	try {
 				ExternalCodeLoader loader = new ExternalCodeLoader(selected);
+				
+				StringBuilder all = new StringBuilder("Added:\n");
+				
+				for(ExternalChapsClass<Tile> ext : loader.tileClasses) {
+					RootFactory.getInstance().tileFactory.addFactory(ext.getTypename(), ext.getFactory());
+					all.append(ext.getTypename()); all.append('\n');
+				}
+				for(ExternalChapsClass<Actor> ext : loader.actorClasses) {
+					RootFactory.getInstance().actorFactory.addFactory(ext.getTypename(), ext.getFactory());
+					all.append(ext.getTypename()); all.append('\n');
+				}
+				for(ExternalChapsClass<Interactable> ext : loader.interactableClasses) {
+					RootFactory.getInstance().interactableFactory.addFactory(ext.getTypename(), ext.getFactory());
+					all.append(ext.getTypename()); all.append('\n');
+				}
+				
+				all.deleteCharAt(all.length() - 1);
+				
+				JOptionPane.showMessageDialog(this, all.toString());
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "There was an error parsing the given jar-file", "Error", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
