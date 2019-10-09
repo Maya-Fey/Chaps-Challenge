@@ -18,6 +18,27 @@ public class LockedDoor implements Tile{
 	private Icon icon;
 	private Color keyColour;
 
+
+
+	/**
+	 * Constructor for new LockedDoor object
+	 * @param position
+	 * @param name
+	 * @param icon
+	 * @param keyColour
+	 */
+	public LockedDoor(Position position, String name, Icon icon, Color keyColour) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+		this.keyColour = keyColour;
+	}
+
+	public LockedDoor clone() {
+		return new LockedDoor(position.clone(), name, icon, keyColour);
+	}
+
 	@Override
 	public Position getPosition() {
 		return position;
@@ -25,7 +46,7 @@ public class LockedDoor implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -64,12 +85,16 @@ public class LockedDoor implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return new FreeTile(this.position, icon);
 	}
 }

@@ -10,10 +10,36 @@ import javax.swing.Icon;
  * @author James
  *
  */
-public class Treasure implements Tile{
+public class Treasure implements Tile, Cloneable{
 	private Position position;
 	private String name;
 	private Icon icon;
+	private Item item;
+
+	public Treasure clone() {
+		Treasure tClone = new Treasure(position.clone(), name, icon, item.clone());
+		return null;
+
+	}
+
+
+
+	/**
+	 * Default constructor for making a new treasure
+	 * @param position
+	 * @param name
+	 * @param icon
+	 * @param item
+	 */
+	public Treasure(Position position, String name, Icon icon, Item item) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+		this.item = item;
+	}
+
+
 
 	@Override
 	public Position getPosition() {
@@ -22,7 +48,7 @@ public class Treasure implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -51,15 +77,29 @@ public class Treasure implements Tile{
 		return true;
 	}
 
+
+	/**
+	 * Returns the item stored inside of tile
+	 * @return item
+	 */
+	public Item getItem() {
+		return item;
+	}
+
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return new FreeTile(this.position, icon);
 	}
 }

@@ -10,10 +10,32 @@ import javax.swing.Icon;
  * @author James
  *
  */
-public class Key implements Tile{
+public class Key implements Tile {
 	private Position position;
 	private String name;
 	private Icon icon;
+	private Item item;
+
+
+
+	/**
+	 * Constructor for a new key object
+	 * @param position
+	 * @param name
+	 * @param icon
+	 * @param item
+	 */
+	public Key(Position position, String name, Icon icon, Item item) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+		this.item = item;
+	}
+
+	public Key clone() {
+		return new Key(position.clone(), name, icon, item.clone());
+	}
 
 	@Override
 	public Position getPosition() {
@@ -22,7 +44,7 @@ public class Key implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -46,6 +68,14 @@ public class Key implements Tile{
 		return true;
 	}
 
+	/**
+	 * Returns the item stored inside of tile
+	 * @return item
+	 */
+	public Item getItem() {
+		return item;
+	}
+
 	@Override
 	public boolean isSafe(Actor actor) {
 		return true;
@@ -54,12 +84,17 @@ public class Key implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO when stepped on add key to players inventory and convert to free tile
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return new FreeTile(this.position, icon);
 	}
 }

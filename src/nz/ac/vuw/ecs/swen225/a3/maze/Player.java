@@ -34,6 +34,35 @@ public class Player implements Actor{
 		this.inventory = new Inventory();
 	}
 	
+	
+	/**
+	 * Constructor with all fields used for cloning
+	 * @param currentPosition
+	 * @param name
+	 * @param icon
+	 * @param isDead
+	 * @param inventory
+	 * @param treasureNeeded
+	 */
+	public Player(Position currentPosition, String name, Icon icon, boolean isDead, Inventory inventory,
+			int treasureNeeded) {
+		super();
+		this.currentPosition = currentPosition;
+		this.name = name;
+		this.icon = icon;
+		this.isDead = isDead;
+		this.inventory = inventory;
+		this.treasureNeeded = treasureNeeded;
+	}
+
+
+	/**
+	 * Method to Clone player class
+	 */
+	public Player clone() {
+		return new Player(currentPosition.clone(), name, icon, isDead, inventory.clone(), treasureNeeded);
+	}
+	
 	/**
 	 * Returns if the player has collected all treasure items on map
 	 * @return total treasure == players treasure

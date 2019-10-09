@@ -13,6 +13,28 @@ public class Exit implements Tile{
 	private Position position;
 	private String name;
 	private Icon icon;
+	
+	
+
+	/**
+	 * Constructor for new Exit
+	 * @param position
+	 * @param name
+	 * @param icon
+	 */
+	public Exit(Position position, String name, Icon icon) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+	}
+	
+	/**
+	 * Clone Exit tile
+	 */
+	public Exit clone() {
+		return new Exit(position.clone(), name, icon);
+	}
 
 	@Override
 	public Position getPosition() {
@@ -21,7 +43,7 @@ public class Exit implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -54,13 +76,18 @@ public class Exit implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return null;
 	}
 
 }
