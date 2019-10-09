@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -27,6 +28,8 @@ public class AddObjectDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -4836989681986061316L;
 	
 	private final JComboBox<String> locations = new JComboBox<>();
+	
+	private final JCheckBox edit = new JCheckBox("Edit?");
 	
 	private final JButton ok = new JButton("OK");
 	private final JButton cancel = new JButton("Cancel");
@@ -76,6 +79,8 @@ public class AddObjectDialog extends JDialog implements ActionListener {
 		bottom.add(new JPanel(), constraints);
 		constraints.weightx = 0.1D;
 		constraints.gridx++;
+		bottom.add(edit, constraints);
+		constraints.gridx++;
 		bottom.add(ok, constraints);
 		constraints.gridx++;
 		bottom.add(cancel, constraints);
@@ -92,6 +97,14 @@ public class AddObjectDialog extends JDialog implements ActionListener {
 	public String getChoice()
 	{
 		return (String) locations.getSelectedItem();
+	}
+	
+	/**
+	 * @return Whether or not the user wants to edit
+	 */
+	public boolean wantsToEdit()
+	{
+		return edit.isSelected();
 	}
 	
 	/**
