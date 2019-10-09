@@ -13,10 +13,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -35,22 +40,44 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	 * Fields
 	 */
 	private final JPanel invPanel = new JPanel();
-	private final JLabel levelLabel = new JLabel();
-	private final JPanel levelPanel = new JPanel();
-	private final JLabel timeLabel = new JLabel();
-	private final JPanel timePanel = new JPanel();
-	private final JLabel chipsLabel = new JLabel();
-	private final JPanel chipsPanel = new JPanel();
+	private final JLabel levelLabel = new JLabel("0000");
+	private final JLabel timeLabel = new JLabel("0000");
+	private final JLabel chipsLabel = new JLabel("0000");
 	private final JLabel tutorialMessage = new JLabel();
+	private final JLabel text_1 = new JLabel("LEVEL:");
+	private final JLabel text_2 = new JLabel("TIME:");
+	private final JLabel text_3 = new JLabel("CHIPS:");
+	private final Border border = BorderFactory.createEmptyBorder(10, 10, 20, 10);
+
 
 	private final JLabel[][] grid;
 
 
 	private final JPanel left, right;
 
-	private Image border;
+
 	private String filename = "resources/digital-7.ttf";
 	private Font customFont;;
+
+//	/**
+//	 * Anonymous method to give a value for v
+//	 */
+//	Visible v = new Visible() {
+//
+//		@Override
+//		public Icon getIcon() {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		@Override
+//		public int zIndex() {
+//			// TODO Auto-generated method stub
+//			return 0;
+//		}
+//
+//	};
+
 
 
 	/**
@@ -58,10 +85,14 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	 *
 	 */
 	public ChapsViewImpl() {
+
 		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
 		setupFont();
-		updateRemainingChips(5);
-		updateCurrentLevel(2);
+		//used for testing rendering
+//		updateRemainingChips(5);
+//		updateCurrentLevel(2);
+//		updateRemainingTime(8);
+//		updateInventory();
 
 		this.left = (JPanel) this.leftComponent;
 		this.right = (JPanel) this.rightComponent;
@@ -84,18 +115,35 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gbc.gridy = 0;
 		gbc.weightx = gbc.weighty = 1;
-		right.add(createLevelPanel(), gbc);
+		text_1.setForeground(Color.RED);
+		text_1.setFont(text_1.getFont().deriveFont(Font.BOLD, 32));
+		text_2.setForeground(Color.RED);
+		text_2.setFont(text_2.getFont().deriveFont(Font.BOLD, 32));
+		text_3.setForeground(Color.RED);
+		text_3.setFont(text_3.getFont().deriveFont(Font.BOLD, 32));
+		right.add(text_1, gbc);
 		gbc.gridy++;
-		right.add(createTimePanel(), gbc);
+		right.add(levelLabel, gbc);
 		gbc.gridy++;
-		right.add(createChipsPanel(), gbc);
-
+		right.add(text_2, gbc);
+		gbc.gridy++;
+		right.add(timeLabel, gbc);
+		gbc.gridy++;
+		right.add(text_3, gbc);
+		gbc.gridy++;
+		right.add(chipsLabel, gbc);
+		gbc.gridy++;
+		right.add(invPanel, gbc);
 	}
+
+
+
 
 
 
 	/**
 	 * Sets up the digital font used for the info panel
+	 //TODO currently not used as it messes wirth the formtting
 	 *
 	 */
 	public void setupFont() {
@@ -110,13 +158,24 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		font = font.deriveFont(Font.BOLD, 28);
+		font = font.deriveFont(Font.BOLD, 42);
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		ge.registerFont(font);
 
 		this.customFont = font;
 
+	}
+
+	/**
+	 * Function to convert a number string into
+	 * 4 digits i.e. 0004
+	 * @param n
+	 * @return str a four digit string
+	 */
+	public String fourDigitFormat(int n) {
+		String str = String.format("%04d", n);
+		return str;
 	}
 
 
@@ -132,93 +191,65 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	}
 
 
-	/**
-	 * Makes a simple panel of the Time display to
-	 * go on the info panel
-	 * @return timePanel
-	 */
-	public JPanel createTimePanel() {
-		timePanel.setLayout(new GridLayout(2, 1));
-		timePanel.setPreferredSize(new Dimension(100, 50));
-		JLabel text = new JLabel();
-		text.setForeground(Color.RED);
-		text.setText("TIME:");
-		timePanel.add(text);
-		timePanel.add(timeLabel);
-		timePanel.setBackground(Color.BLACK);
 
-		return timePanel;
-	}
-
-	/**
-	 * Makes a simple panel of the Chips display to
-	 * go on the info panel
-	 * @return chipsPanel
-	 */
-	public JPanel createChipsPanel() {
-		chipsPanel.setLayout(new GridLayout(2,1));
-		chipsPanel.setPreferredSize(new Dimension(50, 50));
-		JLabel text = new JLabel();
-		text.setForeground(Color.RED);
-		text.setText("CHIPS:");
-		chipsPanel.add(text);
-		chipsPanel.add(chipsLabel);
-		chipsPanel.setBackground(Color.BLACK);
-
-		return chipsPanel;
-	}
-
-	/**
-	 * Makes a simple panel of the current level
-	 * to go on the info panel
-	 * @return levelPanel
-	 *
-	 */
-	public JPanel createLevelPanel() {
-		levelPanel.setLayout(new GridLayout(2,1));
-		levelPanel.setPreferredSize(new Dimension(100, 50));
-		JLabel text = new JLabel("LEVEL:");
-		text.setForeground(Color.RED);
-		text.setBackground(Color.GRAY);
-		levelPanel.add(text);
-		levelPanel.add(levelLabel);
-		levelPanel.setBackground(Color.BLACK);
-
-		return levelPanel;
-	}
 
 	@Override
 	public void updateCurrentLevel(int lvl) {
-		levelLabel.setText("2"+lvl);
+		levelLabel.setOpaque(true);
+		String val = fourDigitFormat(lvl);
+		levelLabel.setText(val);
+		levelLabel.setBackground(Color.BLACK);
 		levelLabel.setForeground(Color.GREEN);
-		levelLabel.setFont(customFont);
+		levelLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
+		//levelLabel.setBorder(border);
+		levelLabel.setFont(chipsLabel.getFont().deriveFont(Font.BOLD, 32));
+
 	}
 
 	@Override
 	public void updateRemainingChips(int rem) {
-		chipsLabel.setText("7"+rem);
-		chipsLabel.setBackground(Color.GREEN);
-		chipsLabel.setFont(customFont);
+		chipsLabel.setOpaque(true);
+		String val = fourDigitFormat(rem);
+		chipsLabel.setText(val);
+		chipsLabel.setBackground(Color.BLACK);
+		chipsLabel.setForeground(Color.GREEN);
+		chipsLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
+		chipsLabel.setFont(chipsLabel.getFont().deriveFont(Font.BOLD, 32));
 	}
 
 	@Override
 	public void updateRemainingTime(int rem) {
-		timeLabel.setText("" + rem);
-		timeLabel.setBackground(Color.gray);
+		timeLabel.setOpaque(true);
+		String val = fourDigitFormat(rem);
+		timeLabel.setText(val);
+		timeLabel.setBackground(Color.BLACK);
 		timeLabel.setForeground(Color.GREEN);
-		timeLabel.setFont(customFont);
+		timeLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
+		timeLabel.setFont(chipsLabel.getFont().deriveFont(Font.BOLD, 32));
 
 	}
 
 	@Override
 	public void updateInventory(List<Visible> v) {
-		invPanel.setLayout(new GridLayout(4, 2));
-		for(int x = 0; x < 2; x++) {
-			for(int y = 0; y < 4; y++) {
+		invPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 
+		for(int x = 0; x < 4; x++) {
+			for(int y = 0; y < 2; y++) {
+				gbc.gridx = x;
+				gbc.gridy = y;
+				gbc.weightx = 1;
+				gbc.weighty = 1;
+				JLabel label = new JLabel();
+				label.setOpaque(true);
+				Icon i = new ImageIcon("resources/wallTile.png");
+				label.setIcon(i);
+				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+
+				invPanel.add(label, gbc);
 			}
 		}
-		invPanel.setBackground(Color.BLACK);
+
 
 	}
 

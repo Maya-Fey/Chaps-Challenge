@@ -52,8 +52,10 @@ public interface ChapsView {
 	/**
 	 * Updates the display with what's
 	 * currently in the inventory
+	 * @param v list of icons
 	 *
-	 * @param v a list of visible icons
+	 *
+	 *
 	 *
 	 */
 	void updateInventory(List<Visible> v);
