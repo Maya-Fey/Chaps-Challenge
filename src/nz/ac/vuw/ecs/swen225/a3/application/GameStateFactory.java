@@ -7,6 +7,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.ChapsFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
@@ -17,12 +18,22 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
  * 
  * @author Claire 300436297
  */
-public class GameStateFactory extends ChapsFactory<GameState> 
-{
+public class GameStateFactory implements ChapsFactory<GameState> 
+{	
 	private final ChapsFactory<Inventory> invFactory = null;
-	private final ChapsFactory<Tile> tileFactory = null;
-//	private final ChapsFactory<Interactable> interactableFactory = null;
-	private final ChapsFactory<Actor> actorFactory = null;
+	private final ChapsFactory<Tile> tileFactory = RootFactory.getInstance().tileFactory;
+	private final ChapsFactory<Interactable> interactableFactory = RootFactory.getInstance().interactableFactory;
+	private final ChapsFactory<Actor> actorFactory = RootFactory.getInstance().actorFactory;
+	
+	/**
+	 * Creates a GameStateFactory, ensuring that all the necessary sub-factories exist
+	 */
+	public GameStateFactory()
+	{
+		Contracts.notNull(RootFactory.getInstance().tileFactory, "Race Condition/Initialization problem: Tile factory not initialized by the time GameStateFactory was constructed.");
+		Contracts.notNull(RootFactory.getInstance().interactableFactory, "Race Condition/Initialization problem: Interactable factory not initialized by the time GameStateFactory was constructed.");
+		Contracts.notNull(RootFactory.getInstance().actorFactory, "Race Condition/Initialization problem: Actor factory not initialized by the time GameStateFactory was constructed.");
+	}
 	
 	public GameState resurrect(JsonObject obj) 
 	{
@@ -40,9 +51,9 @@ public class GameStateFactory extends ChapsFactory<GameState>
 		}
 		
 		List<Interactable> interactables = new ArrayList<Interactable>();
-//		JsonArray iArray = obj.getJsonArray("interactables");
-//		for(int i = 0; i < iArray.size(); i++)
-//			interactables.add(interactableFactory.resurrect(iArray.getJsonObject(i)));
+		JsonArray iArray = obj.getJsonArray("interactables");
+		for(int i = 0; i < iArray.size(); i++)
+			interactables.add(interactableFactory.resurrect(iArray.getJsonObject(i)));
 		
 		List<Actor> actors = new ArrayList<Actor>();
 		JsonArray aArray = obj.getJsonArray("interactables");
@@ -50,6 +61,12 @@ public class GameStateFactory extends ChapsFactory<GameState>
 			actors.add(actorFactory.resurrect(aArray.getJsonObject(i)));
 		
 		return new GameState(tiles, interactables, actors, inv, timeRem, chipRem);
+	}
+
+	@Override
+	public GameState newInstance() 
+	{
+		throw new UnsupportedOperationException();
 	}
 
 }

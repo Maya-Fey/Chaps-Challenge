@@ -112,9 +112,9 @@ public class GameState implements Persistable {
 			xwise.add(ywise.build());
 		}
 		
-//		JsonArrayBuilder interactables = Json.createArrayBuilder();
-//		for(Interactable interactable : this.interactables)
-//			interactables.add(interactable.);
+		JsonArrayBuilder interactables = Json.createArrayBuilder();
+		for(Interactable interactable : this.interactables)
+			interactables.add(interactable.persist());
 		
 		JsonArrayBuilder actors = Json.createArrayBuilder();
 		for(Actor actor : this.actors)
@@ -128,7 +128,7 @@ public class GameState implements Persistable {
 						 .add("height", maze[0].length)
 						 .add("tiles", xwise)
 						 .add(inv.getName(), inv.persist())
-//						 .add("interactables", interactables)
+						 .add("interactables", interactables)
 						 .add("actors", actors);
 		
 		return builder.build();

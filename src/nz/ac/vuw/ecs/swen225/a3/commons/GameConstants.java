@@ -18,6 +18,11 @@ public class GameConstants {
 	/**
 	 * The default directory for icon loading
 	 */
-	public static final String DEFAULT_ICON_DIRECTORY = "icons/";
+	public static final String DEFAULT_ICON_DIRECTORY = "src/nz/ac/vuw/ecs/swen225/a3/textures/";
+	
+	/**
+	 * The absolute size of the game icons
+	 */
+	public static final int ICON_SIZE = 64;
 
 }

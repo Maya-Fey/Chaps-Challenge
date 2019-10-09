@@ -1,6 +1,5 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
-import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -8,7 +7,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  * @author Claire 300436297
  */
-public interface Tile extends MazeObject, Persistable, Visible, Cloneable {
+public interface Tile extends MazeObject, Visible, Cloneable {
 
 	/**
 	 * @return Whether interactables and actors can be on top of this tile or not.

@@ -95,6 +95,16 @@ public class Position implements Persistable, Cloneable {
 	}
 
 	/**
+	 * @param obj The Json object for use in resurrection.
+	 * 
+	 * @return The position represented by that Json object.
+	 */
+	public static Position resurrect(JsonObject obj)
+	{
+		return new Position(obj.getInt("x"), obj.getInt("y"));
+	}
+	
+	/**
 	 * A cardinal direction on a 2D plane
 	 *
 	 * @author Claire 300436297

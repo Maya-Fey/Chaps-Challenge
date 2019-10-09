@@ -1,12 +1,11 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
-import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
  * An actor in maze. Capable of its own locomotion
  */
-public interface Actor extends MazeObject, Persistable, Visible, Cloneable {
+public interface Actor extends MazeObject, Visible, Cloneable {
 
 	/**
 	 * Move this actor forward by one tick. During the tick this actor
