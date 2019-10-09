@@ -62,9 +62,4 @@ public interface ChapsModel extends Cloneable {
 	 */
 	int getChipsRemaining();
 
-	/**
-	 * @return clone of object
-	 */
-	ChapsModel clone();
-
 }

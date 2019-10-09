@@ -95,6 +95,6 @@ public class LockedDoor implements Tile{
 
 	@Override
 	public FreeTile convertToFreeTile() {
-		return new FreeTile(this.position, icon);
+		return new FreeTile(this.position);
 	}
 }

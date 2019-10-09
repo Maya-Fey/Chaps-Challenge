@@ -5,6 +5,7 @@ import javax.swing.Icon;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.ModelAccessObject;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
@@ -61,5 +62,17 @@ public class TileEmptySpace implements Tile {
 	
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {}
 	public void onEnter(Actor actor, ModelAccessObject obj) {}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Tile clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

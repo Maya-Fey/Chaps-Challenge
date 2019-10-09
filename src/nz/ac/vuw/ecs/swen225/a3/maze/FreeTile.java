@@ -1,46 +1,48 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
-import javax.json.JsonObject;
 import javax.swing.Icon;
+
+import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 
 /**
  * Class to represent an empty or free tile
  * @author James
  *
  */
-public class FreeTile implements Tile{
+public class FreeTile implements Tile {
+	
 	private Position position;
-	private Icon icon;
-
+	
 	/**
-	 * Constructor to make a new free tile
-	 * @param position
-	 * @param icon
+	 * Blank constructor for newInstance
 	 */
-	public FreeTile(Position position, Icon icon) {
-		super();
-		this.position = position;
-		this.icon = icon;
+	public FreeTile() {}
+	
+	/**
+	 * @param pos
+	 */
+	public FreeTile(Position pos)
+	{
+		this.position = pos;
 	}
 	
-	public FreeTile clone() {
-		return new FreeTile(position.clone(), icon);
+	public FreeTile clone() 
+	{
+		FreeTile tile = new FreeTile();
+		tile.setPosition(this.position.clone());
+		return tile;
 	}
 
 	@Override
-	public Position getPosition() {
+	public Position getPosition() 
+	{
 		return position;
 	}
 
 	@Override
-	public void setPosition(Position position) {
+	public void setPosition(Position position) 
+	{
 		this.position = position;
-	}
-
-	@Override
-	public JsonObject persist() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -50,16 +52,18 @@ public class FreeTile implements Tile{
 
 	@Override
 	public Icon getIcon() {
-		return icon;
+		return IconFactory.INSTANCE.loadIcon("freeTile.png");
 	}
 
 	@Override
-	public boolean isFloor() {
+	public boolean isFloor() 
+	{
 		return true;
 	}
 
 	@Override
-	public boolean isSafe(Actor actor) {
+	public boolean isSafe(Actor actor) 
+	{
 		return true;
 	}
 
