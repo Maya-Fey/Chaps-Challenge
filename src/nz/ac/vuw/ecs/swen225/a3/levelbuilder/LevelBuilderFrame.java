@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import javax.swing.Icon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
@@ -24,6 +25,9 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	private final LevelBuilderModel model = new LevelBuilderModel();
 	
 	private final JMenuBar menu = new JMenuBar();
+	private final JMenu save = new JMenu("Save");
+	private final JMenu load = new JMenu("Load");
+	private final JMenu edit = new JMenu("Edit");
 	
 	private int x, y;
 	
@@ -40,6 +44,9 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 		this.add(disp);
 		
 		this.setJMenuBar(menu);
+		menu.add(save);
+		menu.add(load);
+		menu.add(edit);
 		
 		this.setTitle("Chap's Challenge Level Builder");
 		this.setSize(7 * 125, 5 * 125);
