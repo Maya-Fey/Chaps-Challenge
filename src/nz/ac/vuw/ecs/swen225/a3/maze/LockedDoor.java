@@ -18,6 +18,27 @@ public class LockedDoor implements Tile{
 	private Icon icon;
 	private Color keyColour;
 
+
+
+	/**
+	 * Constructor for new LockedDoor object
+	 * @param position
+	 * @param name
+	 * @param icon
+	 * @param keyColour
+	 */
+	public LockedDoor(Position position, String name, Icon icon, Color keyColour) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+		this.keyColour = keyColour;
+	}
+
+	public LockedDoor clone() {
+		return new LockedDoor(position.clone(), name, icon, keyColour);
+	}
+
 	@Override
 	public Position getPosition() {
 		return position;

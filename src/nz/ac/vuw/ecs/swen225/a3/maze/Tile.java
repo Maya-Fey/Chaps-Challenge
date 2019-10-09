@@ -8,7 +8,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  * @author Claire 300436297
  */
-public interface Tile extends MazeObject, Persistable, Visible {
+public interface Tile extends MazeObject, Persistable, Visible, Cloneable {
 
 	/**
 	 * @return Whether interactables and actors can be on top of this tile or not.
@@ -48,14 +48,10 @@ public interface Tile extends MazeObject, Persistable, Visible {
 	 */
 	FreeTile convertToFreeTile();
 
-	//TODO maybe remove this
-//	/**
-//	 * Method to be called to return the model access object
-//	 * this is then processed inside of ChapsModelImpl to determine
-//	 * what needs to be updated
-//	 * @return modelAccessObject
-//	 */
-//	ModelAccessObject getModelAccessObject();
+	/**
+	 * @return clone of tile
+	 */
+	Tile clone();
 
 	default int zIndex()
 	{
