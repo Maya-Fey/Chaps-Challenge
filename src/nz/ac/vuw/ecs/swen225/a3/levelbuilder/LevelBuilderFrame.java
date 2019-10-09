@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
+import javax.json.JsonObject;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -24,6 +24,7 @@ import nz.ac.vuw.ecs.swen225.a3.application.MultiFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
@@ -186,6 +187,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			loadJar();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setMazeObject(String typ)
 	{
 		if(sX == -1 || sY == -1)
@@ -219,10 +221,18 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			switch(typ)
 			{
 				case "actor":
-					model.addActor((Actor) factory.newInstance(dialog.getChoice()), x, y);
+					MultiFactory<Actor> af = (MultiFactory<Actor>) factory;
+					Actor actor = af.newInstance(dialog.getChoice());
+					if(dialog.wantsToEdit())
+						actor = doEdit(actor, af);
+					model.addActor(actor, x, y);
 					break;
 				case "interactable":
-					model.addInteractable((Interactable) factory.newInstance(dialog.getChoice()), x, y);
+					MultiFactory<Interactable> inf = (MultiFactory<Interactable>) factory;
+					Interactable interactable = inf.newInstance(dialog.getChoice());
+					if(dialog.wantsToEdit())
+						interactable = doEdit(interactable, inf);
+					model.addInteractable(interactable, x, y);
 					break;
 				case "tile":
 					model.addTile((Tile) factory.newInstance(dialog.getChoice()), x, y);
@@ -232,6 +242,31 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			}
 			
 			this.redisplay();
+		}
+	}
+	
+	/**
+	 * Performs an edit on an object using the edit dialog
+	 * 
+	 * @param <T> The interface type we're editing
+	 * @param obj The object
+	 * @param factory The factory for the interface
+	 * @return
+	 */
+	private <T extends Persistable> T doEdit(T obj, MultiFactory<T> factory)
+	{
+		JsonObject jObj = obj.persist();
+		
+		if(EditJsonDialog.canEdit(jObj))
+			return obj;
+		
+		EditJsonDialog dialog = new EditJsonDialog(this, jObj, true);
+		dialog.setVisible(true);
+		
+		if(dialog.hasEdit()) {
+			return factory.resurrect(dialog.edited());
+		} else {
+			return obj;
 		}
 	}
 	
