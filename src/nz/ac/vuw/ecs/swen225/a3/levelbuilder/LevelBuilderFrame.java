@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import nz.ac.vuw.ecs.swen225.a3.application.MultiFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
@@ -110,6 +111,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			if(add)
 				setMazeObject(use);
 			else;
+			
+			return;
 		}
 		
 		char lc = Character.toLowerCase(arg0.getKeyChar());
@@ -201,7 +204,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				return;	
 		}
 		
-		
+		AddObjectDialog dialog = new AddObjectDialog(this, factory, typ);
+		dialog.setVisible(true);
 		
 	}
 	
@@ -224,6 +228,22 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				e.printStackTrace();
 			}
 	    }
+	}
+	
+	/**
+	 * @return The true x coordinate of the selected position
+	 */
+	private int translateX()
+	{
+		return sX + x - GameConstants.VISIBILE_SIZE / 2;
+	}
+	
+	/**
+	 * @return The true y coordinate of the selected position
+	 */
+	private int translateY()
+	{
+		return sY + y - GameConstants.VISIBILE_SIZE / 2;
 	}
 	
 	/**
