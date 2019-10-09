@@ -2,6 +2,7 @@ package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -103,8 +104,14 @@ public class ExternalCodeLoader {
 						
 						//If it's concrete
 						if(arg.getClass().equals(Class.class)) {
-							System.out.println(((Class<?>) arg) + " -> " + newClass);
-							factories.put((Class<?>) arg, newClass); 
+							//Check for default constructor
+							boolean hasDef = false;
+							for(Constructor<?> constructor : newClass.getConstructors())
+								if(constructor.isAccessible() && constructor.getParameterCount() == 0)
+									hasDef = true;
+							
+							if(hasDef)
+								factories.put((Class<?>) arg, newClass); 
 						}
 					}
 				}
@@ -115,7 +122,7 @@ public class ExternalCodeLoader {
 		}
 		
 		/*
-		 * 
+		 * Add all the concrete classes that have factories
 		 */
 		
 		for(Class<?> theClass : concretes.keySet())
