@@ -52,8 +52,6 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.gridx = i;
 				gbc.gridy = j;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
 				left.add(grid[i][j] = new LevelBuilderLabel(listener, i, j), gbc);
 			}
 		}
