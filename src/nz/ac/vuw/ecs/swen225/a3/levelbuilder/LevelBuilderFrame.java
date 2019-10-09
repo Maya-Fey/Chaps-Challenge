@@ -17,6 +17,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import nz.ac.vuw.ecs.swen225.a3.application.MultiFactory;
+import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
@@ -37,6 +39,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu load = new JMenu("Load");
 	private final JMenu edit = new JMenu("Edit");
+	
+	private boolean add = true;
 	
 	private int x, y;
 	
@@ -81,6 +85,30 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	@Override
 	public void keyTyped(KeyEvent arg0) 
 	{
+		if(arg0.isShiftDown())
+		{
+			char lc = Character.toLowerCase(arg0.getKeyChar());
+			String use;
+			switch(lc)
+			{
+				case 't':
+					use = "tile";
+					break;
+				case 'a':
+					use = "actor";
+					break;
+				case 'i':
+					use = "interactable";
+					break;
+				default:
+					return;
+			}
+			
+			if(add)
+				setMazeObject(use);
+			else;
+		}
+		
 		char lc = Character.toLowerCase(arg0.getKeyChar());
 		switch(lc)
 		{
@@ -147,6 +175,31 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	{
 		if(arg0.getSource() == loadJar)
 			loadJar();
+	}
+	
+	private void setMazeObject(String typ)
+	{
+		if(sX == -1 || sY == -1)
+			return;
+		
+		MultiFactory<?> factory;
+		switch(typ)
+		{
+			case "actor":
+				factory = RootFactory.getInstance().actorFactory;
+				break;
+			case "interactable":
+				factory = RootFactory.getInstance().interactableFactory;
+				break;
+			case "tile":
+				factory = RootFactory.getInstance().tileFactory;
+				break;
+			default:
+				return;	
+		}
+		
+		
+		
 	}
 	
 	private void loadJar()
