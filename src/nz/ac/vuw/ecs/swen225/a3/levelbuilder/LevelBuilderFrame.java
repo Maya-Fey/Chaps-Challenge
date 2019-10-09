@@ -1,13 +1,21 @@
 package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -17,7 +25,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  * A GUI class to build a level
  */
-public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuilderClickListener {
+public class LevelBuilderFrame extends JFrame implements KeyListener, ActionListener, LevelBuilderClickListener {
 
 	private static final long serialVersionUID = -6560472484901364076L;
 	
@@ -26,6 +34,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 	
 	private final JMenuBar menu = new JMenuBar();
 	private final JMenu save = new JMenu("Save");
+	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu load = new JMenu("Load");
 	private final JMenu edit = new JMenu("Edit");
 	
@@ -46,6 +55,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 		this.setJMenuBar(menu);
 		menu.add(save);
 		menu.add(load);
+		load.add(loadJar); loadJar.addActionListener(this);
 		menu.add(edit);
 		
 		this.setTitle("Chap's Challenge Level Builder");
@@ -130,6 +140,34 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, LevelBuild
 			};
 		}
 		disp.updateBoard(vis);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0)
+	{
+		if(arg0.getSource() == loadJar)
+			loadJar();
+	}
+	
+	private void loadJar()
+	{
+		JFileChooser chooser = new JFileChooser();
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Java Jar Files", "jar");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Open");
+	    chooser.setDialogTitle("Open External Code");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	try {
+				ExternalCodeLoader loader = new ExternalCodeLoader(selected);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "There was an error parsing the given jar-file", "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+	    }
 	}
 
 }
