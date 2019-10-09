@@ -107,7 +107,7 @@ public class ExternalCodeLoader {
 							//Check for default constructor
 							boolean hasDef = false;
 							for(Constructor<?> constructor : newClass.getConstructors())
-								if(constructor.isAccessible() && constructor.getParameterCount() == 0)
+								if(constructor.getParameterCount() == 0)
 									hasDef = true;
 							
 							if(hasDef)
@@ -130,7 +130,6 @@ public class ExternalCodeLoader {
 			Class<?> factory = factories.get(theClass);
 			if(factory != null)
 			{
-				System.out.println("(" + theClass + "), (" + factory + ")");
 				switch(concretes.get(theClass))
 				{
 					case "Item":
