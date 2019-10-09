@@ -1,5 +1,8 @@
 package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -222,5 +225,18 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			}
 	    }
 	}
+	
+	/**
+	 * Centers a window on the screen
+	 * 
+	 * @param window The window to center
+	 */
+	public static void center(final Window window)
+	{
+		final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		final int X = (int) ((screen.getWidth() - window.getWidth()) / 2);
+		final int Y = (int) ((screen.getHeight() - window.getHeight()) / 2);
+		window.setLocation(X, Y);
+	}	
 
 }
