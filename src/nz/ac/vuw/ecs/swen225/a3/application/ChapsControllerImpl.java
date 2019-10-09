@@ -39,6 +39,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private final int windowHeight = 800;
 	private final int windowLength = 800;
 
+	//game components - model and view
 	private final ChapsModel model;
 	private final ChapsView view;
 
@@ -48,8 +49,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	//Menu panel
 	private JPanel mainMenu;
-	private JButton resumeButton, saveGame;
+	private JButton resumeButton, saveGame, startNewGame, loadGame, gameControls, gameHelp, exitGame;
 	private boolean currentGameBeingPlayed=false;
+	private GridBagLayout grid = new GridBagLayout();
+    private GridBagConstraints gbc = new GridBagConstraints();
 
 	//Game board panel
 	private JPanel gamePanel;
@@ -58,7 +61,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private boolean gamePaused=true;
 	private EnumSet<ChapsEvent> chapsEvents;
 
-	//Game timer- controls tick events
+	//Game timer- controls  events
 	private Timer timer;
 
 
@@ -88,21 +91,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		setUpWindow();
 		//Starts timer
 		setupTimer();
+		pauseGame();
 	}
 
 
-
 	/**
-	 * Sets up all window settings on initalisation.
-	 * Adds window closing confirmation.
-	 * Sets window size.
+	 * Sets up all window settings on initalisation. Adds window closing
+	 * confirmation. Sets window size.
 	 */
 	private void setUpWindow() {
-		gamePanel=view.getRootPanel();
-		gamePanel.setVisible(false);
+		gamePanel = view.getRootPanel();
+		gamePanel.setVisible(true);
 		this.setTitle("Chaps's Challenge");
-		this.add(gamePanel);
-		this.add(mainMenu);
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
 		addWindowListener(new WindowAdapter() {
@@ -112,17 +112,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			}
 		});
 		setupMenuBars();
+		this.setMinimumSize(new Dimension(windowHeight, windowLength));
 		this.setVisible(true);
 	}
+
 	/**
 	 * sets up main menu for the game.
 	 */
 	private void setupMainMenu() {
-		mainMenu=new JPanel();
-		Dimension buttonDimension= new Dimension(300,70);
+		mainMenu = new JPanel();
+		Dimension buttonDimension = new Dimension(300, 70);
 
-
-		JButton startNewGame = new JButton("New Game");
+		startNewGame = new JButton("New Game");
 		startNewGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -131,8 +132,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 		startNewGame.setPreferredSize(buttonDimension);
 
-
-		JButton exitGame = new JButton("Exit Game");
+		exitGame = new JButton("Exit Game");
 		exitGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -142,7 +142,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		exitGame.setPreferredSize(buttonDimension);
 
-		JButton loadGame = new JButton("Load Game");
+		loadGame = new JButton("Load Game");
 		loadGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -151,7 +151,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 		loadGame.setPreferredSize(buttonDimension);
 
-		JButton resumeButton = new JButton("Resume Game");
+		resumeButton = new JButton("Resume Game");
 		resumeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -160,8 +160,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 		resumeButton.setPreferredSize(buttonDimension);
 
-
-		JButton saveGame = new JButton("Save Game");
+		saveGame = new JButton("Save Game");
 		startNewGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -171,7 +170,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		saveGame.setPreferredSize(buttonDimension);
 
-		JButton gameControls = new JButton("Game Controls");
+		gameControls = new JButton("Game Controls");
 		gameControls.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -180,7 +179,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 		gameControls.setPreferredSize(buttonDimension);
 
-		JButton gameHelp = new JButton("Game Help");
+		gameHelp = new JButton("Game Help");
 		gameHelp.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -189,47 +188,77 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 		gameHelp.setPreferredSize(buttonDimension);
 
+		// Adds main menu buttons
 
-		GridBagLayout grid = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        mainMenu.setLayout(grid);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        mainMenu.add(resumeButton,gbc);
-        gbc.insets = new Insets(20,0,0,0);  //top padding
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        mainMenu.add(saveGame,gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        mainMenu.add(startNewGame,gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        mainMenu.add(loadGame,gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        mainMenu.add(gameControls,gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        mainMenu.add(gameHelp,gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        mainMenu.add(exitGame,gbc);
+		addButtons();
 
 
-       mainMenu.setVisible(true);
-       //Game started - doesn't need to show these
-       resumeButton.setVisible(false);
-       saveGame.setVisible(false);
-       currentGameBeingPlayed=false;//as just loaded the program
+		mainMenu.setVisible(true);
+	}
+
+	/**
+	 * Adds the buttons to main menu
+	 */
+	private void addButtons() {
+
+		mainMenu.removeAll();
+		gbc.insets = new Insets(20, 0, 0, 0); // top padding
+		mainMenu.setLayout(grid);
+		resumeButton.setVisible(true);
+		if (currentGameBeingPlayed) {
+			System.out.println("made it");
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			mainMenu.add(resumeButton, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			mainMenu.add(saveGame, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 2;
+			mainMenu.add(startNewGame, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			mainMenu.add(loadGame, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 4;
+			mainMenu.add(gameControls, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 5;
+			mainMenu.add(gameHelp, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 6;
+			mainMenu.add(exitGame, gbc);
+		} else {
+
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			mainMenu.add(startNewGame, gbc);
+
+			// startNewGame, loadGame, gameControls, gameHelp, exitGame;
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			mainMenu.add(loadGame, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 2;
+			mainMenu.add(gameControls, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			mainMenu.add(gameHelp, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 4;
+			mainMenu.add(exitGame, gbc);
+		}
+		mainMenu.revalidate();
+
 	}
 
 	/**
@@ -246,7 +275,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		long tickCallTime=1000/GameConstants.TICKS_TO_SECONDS_RATIO;//In milliseconds
 	//	timer.schedule(TimerTask task, Date firstTime, long period)
 		timer.schedule(tickTask, new Date(), tickCallTime);
-
 	}
 
 	/**
@@ -360,7 +388,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			restartGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			pauseGame();
-			model.onAction(ChapsAction.TICK);
 		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
@@ -384,7 +411,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private void updateChapMove(ChapsAction action) {
 		if (!gamePaused) {
 			chapsEvents = model.onAction(action);
-			//updateGraphics();//might not be correct place for this?
+			updateGraphics();//might not be correct place for this?
 		}
 	}
 
@@ -400,8 +427,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		//view.updateInventory(model.getInventoryIcons()); //not yet implemented
 		view.updateRemainingChips(model.getChipsRemaining());
 		view.updateRemainingTime(model.getTimeRemaining());
-		this.add(view.getRootPanel()); //-----------------------Needs CHANGE
-		this.pack();
 	}
 
 	/**
@@ -434,58 +459,59 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * game is in motion.
 	 */
 	private void resumeGame() {
-
-		mainMenu.setVisible(false);
-		gamePanel=view.getRootPanel();
-		gamePanel.setVisible(true);
-
-
-
+		currentGameBeingPlayed=true;
+		this.getContentPane().removeAll();
+		this.setJMenuBar(menuBar);
+		this.getContentPane().add(gamePanel);
 		gamePaused=false;
+		this.getRootPane().repaint();
 	}
 
 	/**
 	 * start a new game at level 1.
 	 */
 	private void restartGame() {
+		//dosomething
 
+
+		resumeGame();
 	}
 
 	/**
 	 * start a new game at the last unfinished level.
 	 */
 	private void restartLevel() {
+		//dosomething
+
 		resumeGame();
 	}
 
 	/**
 	 * Loads a game from json file.
 	 */
-	private void loadGame() {}
+	private void loadGame() {
+		//dosomething
+
+		resumeGame();
+	}
 
 	/**
 	 *  pause the game and display a “game is paused” dialog.
 	 */
 	private void pauseGame() {
 		//Shows certain buttons depending on if a game is being played or not.
-		if(currentGameBeingPlayed) {
-			resumeButton.setVisible(true);
-			saveGame.setVisible(true);
-		}else {
-			resumeButton.setVisible(false);
-			saveGame.setVisible(false);
-
-		}
-
-		gamePanel.setVisible(false);
-
-		mainMenu.setVisible(true);
+		addButtons();
 
 
 		gamePaused=true;
+		this.getContentPane().removeAll();
+		this.setJMenuBar(null);
+		this.getContentPane().add(mainMenu);
+		this.getRootPane().repaint();
 
-		//	JOptionPane.showMessageDialog(this, "Game is paused - Click Ok to unpause");
+
 	}
+
 
 	/**
 	 *Help message that displays the information on how to play the game.
