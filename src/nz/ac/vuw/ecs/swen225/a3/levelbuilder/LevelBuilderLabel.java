@@ -28,6 +28,7 @@ public class LevelBuilderLabel extends JLabel implements MouseListener {
 		this.listener = listener;
 		this.x = x;
 		this.y = y;
+		this.addMouseListener(this);
 	}
 	
 	@Override
