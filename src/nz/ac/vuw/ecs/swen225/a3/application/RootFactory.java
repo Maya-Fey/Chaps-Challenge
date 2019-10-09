@@ -1,6 +1,9 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
+import nz.ac.vuw.ecs.swen225.a3.maze.FreeTileFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
@@ -12,6 +15,12 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 public class RootFactory {
 	
 	private static final RootFactory instance = new RootFactory();
+	
+	static {
+		Contracts.notNull(instance, "Initialization ordering error");
+		
+		instance.tileFactory.addFactory(FreeTile.class.getSimpleName(), new FreeTileFactory());
+	}
 
 	/**
 	 * @return The canonical instance of the root factory class
