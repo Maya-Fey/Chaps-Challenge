@@ -12,6 +12,7 @@ import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
+import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
 /**
@@ -90,6 +91,56 @@ public class LevelBuilderModel {
 		//             ^ Invert the y-axis
 		
 		return arr;
+	}
+	
+	/**
+	 * Sets the tile at the specified position, overwriting any previous one
+	 * 
+	 * @param tile The tile to set/add
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 */
+	public void addTile(Tile tile, int x, int y)
+	{
+		tiles.set(tile, x, y);
+	}
+	
+	/**
+	 * Sets the actor at the specified position, overwriting any previous one
+	 * 
+	 * @param actor The actor to set/add
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 */
+	public void addActor(Actor actor, int x, int y)
+	{
+		Actor toRemove = null;
+		for(Actor other : actors)
+			if(other.getPosition().x == x && other.getPosition().y == y)
+				toRemove = other;
+		if(toRemove != null)
+			actors.remove(toRemove);
+		actor.setPosition(new Position(x, y));
+		actors.add(actor);
+	}
+	
+	/**
+	 * Sets the tile at the specified position, overwriting any previous one
+	 * 
+	 * @param interactable The interactable to set/add
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 */
+	public void addInteractable(Interactable interactable, int x, int y)
+	{
+		Interactable toRemove = null;
+		for(Interactable other : interactables)
+			if(other.getPosition().x == x && other.getPosition().y == y)
+				toRemove = other;
+		if(toRemove != null)
+			interactables.remove(toRemove);
+		interactable.setPosition(new Position(x, y));
+		interactables.add(interactable);
 	}
 	
 	private static class RenderVisible implements Visible
