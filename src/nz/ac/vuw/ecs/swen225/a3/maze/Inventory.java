@@ -26,6 +26,19 @@ public class Inventory implements Persistable, Cloneable {
 		super();
 		this.inventory = new ArrayList<Item>();
 	}
+	
+	
+	/**
+	 * Constructor to create players inventory
+	 * with given list
+	 * @param inventory
+	 */
+	public Inventory(ArrayList<Item> inventory) {
+		super();
+		this.inventory = inventory;
+	}
+
+
 
 	/**
 	 * Returns a clone of the inventory
@@ -35,7 +48,7 @@ public class Inventory implements Persistable, Cloneable {
 		for(Item i:inventory) {
 			inventoryClone.add(i.clone());
 		}
-		return inventoryClone;
+		return new Inventory(inventoryClone);
 	}
 
 	/**

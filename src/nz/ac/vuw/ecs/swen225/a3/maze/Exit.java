@@ -13,6 +13,28 @@ public class Exit implements Tile{
 	private Position position;
 	private String name;
 	private Icon icon;
+	
+	
+
+	/**
+	 * Constructor for new Exit
+	 * @param position
+	 * @param name
+	 * @param icon
+	 */
+	public Exit(Position position, String name, Icon icon) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+	}
+	
+	/**
+	 * Clone Exit tile
+	 */
+	public Exit clone() {
+		return new Exit(position.clone(), name, icon);
+	}
 
 	@Override
 	public Position getPosition() {

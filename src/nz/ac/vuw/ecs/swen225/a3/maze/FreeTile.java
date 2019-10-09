@@ -22,6 +22,10 @@ public class FreeTile implements Tile{
 		this.position = position;
 		this.icon = icon;
 	}
+	
+	public FreeTile clone() {
+		return new FreeTile(position.clone(), icon);
+	}
 
 	@Override
 	public Position getPosition() {

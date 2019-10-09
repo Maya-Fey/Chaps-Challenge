@@ -13,6 +13,27 @@ public class WallTile implements Tile{
 	private Position position;
 	private String name;
 	private Icon icon;
+	
+	
+	/**
+	 * Constructor for new WallTile
+	 * @param position
+	 * @param name
+	 * @param icon
+	 */
+	public WallTile(Position position, String name, Icon icon) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+	}
+	
+	/**
+	 * Method to clone WallTile
+	 */
+	public WallTile clone() {
+		return new WallTile(position.clone(), name, icon);
+	}
 
 	@Override
 	public Position getPosition() {

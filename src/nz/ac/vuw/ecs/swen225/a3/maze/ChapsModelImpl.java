@@ -44,6 +44,17 @@ public class ChapsModelImpl implements ChapsModel{
 		this.timeRemaining = timeRemaining;
 		this.chipsRemaining = chipsRemaining;
 	}
+	
+	
+
+	/**
+	 * Constructor for empty ChapsModel
+	 */
+	public ChapsModelImpl() {
+		super();
+	}
+
+
 
 	public ChapsModelImpl clone() {
 		Tile[][] cloneMaze = cloneMaze();

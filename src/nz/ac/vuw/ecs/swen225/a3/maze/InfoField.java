@@ -31,6 +31,13 @@ public class InfoField implements Tile{
 		this.icon = icon;
 		this.infoText = infoText;
 	}
+	
+	/**
+	 * Method to clone infoField tile
+	 */
+	public InfoField clone() {
+		return new InfoField(position.clone(), name, icon, infoText);
+	}
 
 	@Override
 	public Position getPosition() {

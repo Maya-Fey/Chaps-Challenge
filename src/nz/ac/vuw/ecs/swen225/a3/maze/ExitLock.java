@@ -12,7 +12,28 @@ public class ExitLock implements Tile{
 	private Position position;
 	private String name;
 	private Icon icon;
+	
+	
+	/**
+	 * Constructor for Exit
+	 * @param position
+	 * @param name
+	 * @param icon
+	 */
+	public ExitLock(Position position, String name, Icon icon) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+	}
 
+	/**
+	 * Clone ExitLock tile
+	 */
+	public ExitLock clone() {
+		return new ExitLock(position.clone(), name, icon);
+	}
+	
 	@Override
 	public Position getPosition() {
 		return position;
