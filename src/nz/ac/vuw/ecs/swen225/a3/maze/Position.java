@@ -7,21 +7,25 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 
 /**
  * A 2D position representing somewhere in the maze
- * 
+ *
  * @author Claire 300436297
  */
-public class Position implements Persistable {
+public class Position implements Persistable, Cloneable {
 
 	/**
 	 * X-Coordinate. Width-wise
 	 */
 	public final int x;
-	
+
 	/**
 	 * Y-Coordinate. Height-wise
 	 */
 	public final int y;
-	
+
+	public Position clone() {
+		return new Position(x, y);
+	}
+
 	/**
 	 * @param x
 	 * @param y
@@ -30,22 +34,22 @@ public class Position implements Persistable {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	@Override
-	public JsonObject persist() 
+	public JsonObject persist()
 	{
 		return Json.createObjectBuilder().add("x", x).add("y", y).build();
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "position";
 	}
-	
+
 	/**
 	 * Translates a position one space from its current position.
-	 * 
+	 *
 	 * @param direction
 	 * @return A new position that's one space away in the specified direction
 	 */
@@ -65,10 +69,44 @@ public class Position implements Persistable {
 				throw new AssertionError("Invalid Position enum or unimplemented case statement.");
 		}
 	}
+
+	/**
+	 * Translates a position one space from its current position.
+	 * Using a direction from chaps action rather than NSEW
+	 *
+	 * @param direction
+	 * @return A new position that's one space away in the specified direction
+	 */
+	public Position translate(ChapsAction direction)
+	{
+		switch(direction)
+		{
+			case RIGHT:
+				return new Position(x + 1, y    );
+			case UP:
+				return new Position(x    , y + 1);
+			case DOWN:
+				return new Position(x    , y - 1);
+			case LEFT:
+				return new Position(x - 1, y    );
+			default:
+				throw new AssertionError("Invalid Position enum or unimplemented case statement.");
+		}
+	}
+
+	/**
+	 * @param obj The Json object for use in resurrection.
+	 * 
+	 * @return The position represented by that Json object.
+	 */
+	public static Position resurrect(JsonObject obj)
+	{
+		return new Position(obj.getInt("x"), obj.getInt("y"));
+	}
 	
 	/**
 	 * A cardinal direction on a 2D plane
-	 * 
+	 *
 	 * @author Claire 300436297
 	 */
 	public enum Direction
@@ -77,21 +115,21 @@ public class Position implements Persistable {
 		 * North. X+0, Y+1
 		 */
 		NORTH,
-		
+
 		/**
 		 * South. X+0, Y-1
 		 */
 		SOUTH,
-		
+
 		/**
 		 * East. X+1, Y+0
 		 */
 		EAST,
-		
+
 		/**
 		 * West. X-1, Y+0
 		 */
 		WEST
 	}
-	
+
 }

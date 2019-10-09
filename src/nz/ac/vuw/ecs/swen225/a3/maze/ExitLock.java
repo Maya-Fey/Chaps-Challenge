@@ -12,7 +12,28 @@ public class ExitLock implements Tile{
 	private Position position;
 	private String name;
 	private Icon icon;
+	
+	
+	/**
+	 * Constructor for Exit
+	 * @param position
+	 * @param name
+	 * @param icon
+	 */
+	public ExitLock(Position position, String name, Icon icon) {
+		super();
+		this.position = position;
+		this.name = name;
+		this.icon = icon;
+	}
 
+	/**
+	 * Clone ExitLock tile
+	 */
+	public ExitLock clone() {
+		return new ExitLock(position.clone(), name, icon);
+	}
+	
 	@Override
 	public Position getPosition() {
 		return position;
@@ -20,7 +41,7 @@ public class ExitLock implements Tile{
 
 	@Override
 	public void setPosition(Position position) {
-		this.position = position;		
+		this.position = position;
 	}
 
 	@Override
@@ -58,12 +79,18 @@ public class ExitLock implements Tile{
 	@Override
 	public void onEnter(Interactable interactable, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
+	@Override
+	public FreeTile convertToFreeTile() {
+		return new FreeTile(this.position);
+	}
+
 }

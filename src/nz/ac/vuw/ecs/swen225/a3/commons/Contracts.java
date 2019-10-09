@@ -30,12 +30,12 @@ public class Contracts {
 	}
 	
 	/**
-	 * @param bool The condition
+	 * @param bool The condition. Fails on false
 	 * @param message The message that shows when the contract is violated
 	 */
 	public static void arbitrary(boolean bool, String message)
 	{
-		if(bool)
+		if(!bool)
 			throw new ContractViolationException(message);
 	}
 }

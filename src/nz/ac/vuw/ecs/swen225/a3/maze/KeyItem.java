@@ -10,14 +10,14 @@ import javax.swing.Icon;
  * @author James
  *
  */
-public class KeyItem implements Item{
-	
+public class KeyItem implements Item, Cloneable{
+
 	private Icon icon;
 	private Color keyColour;
-	
-	
-	
-	
+
+
+
+
 
 	/**
 	 * Constructor for new key item
@@ -28,6 +28,11 @@ public class KeyItem implements Item{
 		super();
 		this.icon = icon;
 		this.keyColour = keyColour;
+	}
+
+	public Item clone() {
+		return new KeyItem(icon, keyColour);
+
 	}
 
 	/**

@@ -1,10 +1,14 @@
 package nz.ac.vuw.ecs.swen225.a3.commons;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -22,6 +26,19 @@ public class IconFactory {
 	 * The instance of this factory
 	 */
 	public static final IconFactory INSTANCE = new IconFactory();
+	
+	/**
+	 * A comparator that orders visible objects by Z-Index
+	 */
+	public static final Comparator<Visible> orderByZIndex = new Comparator<Visible>()
+	{
+
+		@Override
+		public int compare(Visible o1, Visible o2) {
+			return o2.zIndex() - o1.zIndex();
+		}
+		
+	};
 	
 	/**
 	 * A map of all the currently loaded icons by their filenames
@@ -50,18 +67,36 @@ public class IconFactory {
 	 * Should only be used by the plugin loader.
 	 * 
 	 * @param name the name of the file that will be referenced later
-	 * @param file The file where the image is stored
+	 * @param file The file where the image is stored. The image should be EXACTLY GameConstants.ICON_SIZE in both directions
 	 */
 	public void loadIcon(String name, File file)
 	{
 		try {
 			Image img = ImageIO.read(file);
+			
+			Contracts.arbitrary((img.getHeight(null) == img.getWidth(null)) && (img.getWidth(null) == GameConstants.ICON_SIZE), "Icons should be exactly " + GameConstants.ICON_SIZE + "x" + GameConstants.ICON_SIZE);
+			
 			ImageIcon icon = new ImageIcon(img);
 			icons.put(name, icon);
 		} catch (IOException e) {
 			throw new UncheckedIOException("IO Exception occured while loading icon from file " + file.getAbsolutePath(), e);
 		}
-		
+	}
+	
+	/**
+	 * 
+	 * @param visibles A list of visibles, to be rendered in order of z-index.
+	 * 
+	 * @return An icon that represents 
+	 */
+	public Icon composite(List<Visible> visibles)
+	{
+		visibles.sort(orderByZIndex);
+		BufferedImage img = new BufferedImage(GameConstants.ICON_SIZE, GameConstants.ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = img.createGraphics();
+		for(Visible visible : visibles)
+			visible.getIcon().paintIcon(null, graphics, 0, 0);
+		return new ImageIcon(img);
 	}
 	
 }

@@ -19,5 +19,10 @@ public class GameConstants {
 	 * The default directory for icon loading
 	 */
 	public static final String DEFAULT_ICON_DIRECTORY = "icons/";
+	
+	/**
+	 * The absolute size of the game icons
+	 */
+	public static final int ICON_SIZE = 64;
 
 }
