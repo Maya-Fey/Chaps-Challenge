@@ -235,7 +235,11 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 					model.addInteractable(interactable, x, y);
 					break;
 				case "tile":
-					model.addTile((Tile) factory.newInstance(dialog.getChoice()), x, y);
+					MultiFactory<Tile> tf = (MultiFactory<Tile>) factory;
+					Tile tile = tf.newInstance(dialog.getChoice());
+					if(dialog.wantsToEdit())
+						tile = doEdit(tile, tf);
+					model.addTile(tile, x, y);
 					break;
 				default:
 					return;	
