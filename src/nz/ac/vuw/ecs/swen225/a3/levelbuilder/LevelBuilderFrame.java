@@ -25,6 +25,9 @@ import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
+import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
+import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
 /**
  * @author Claire
@@ -207,6 +210,29 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		AddObjectDialog dialog = new AddObjectDialog(this, factory, typ);
 		dialog.setVisible(true);
 		
+		if(dialog.hasChoice() && dialog.getChoice() != null && !dialog.getChoice().equals(""))
+		{
+			//TODO: Possibly edit beforehand?
+			int x = translateX();
+			int y = translateY();
+			
+			switch(typ)
+			{
+				case "actor":
+					model.addActor((Actor) factory.newInstance(dialog.getChoice()), x, y);
+					break;
+				case "interactable":
+					model.addInteractable((Interactable) factory.newInstance(dialog.getChoice()), x, y);
+					break;
+				case "tile":
+					model.addTile((Tile) factory.newInstance(dialog.getChoice()), x, y);
+					break;
+				default:
+					return;	
+			}
+			
+			this.redisplay();
+		}
 	}
 	
 	private void loadJar()
@@ -243,7 +269,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	 */
 	private int translateY()
 	{
-		return sY + y - GameConstants.VISIBILE_SIZE / 2;
+		return (8 - sY) + y - GameConstants.VISIBILE_SIZE / 2;
 	}
 	
 	/**
