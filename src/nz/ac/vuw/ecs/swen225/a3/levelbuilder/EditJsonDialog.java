@@ -232,6 +232,18 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 		onText(arg0);
 	}
 
-	
+	/**
+	 * @param obj The object we're trying to edit
+	 * @return Whether it has any fields or not
+	 */
+	public static boolean canEdit(JsonObject obj)
+	{
+		for(Entry<String, JsonValue> entry : obj.entrySet()) {
+			if(entry.getKey().equals("name") || entry.getKey().equals("x") || entry.getKey().equals("y"))
+				continue;
+			return true;
+		}
+		return false;
+	}
 
 }
