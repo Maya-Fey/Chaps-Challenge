@@ -16,7 +16,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
  *
  * @param <Type> The base type this factory can resurrect
  */
-class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
+public class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 {
 	private final Map<String, ChapsFactory<? extends Type>> factories = new HashMap<>();
 	
