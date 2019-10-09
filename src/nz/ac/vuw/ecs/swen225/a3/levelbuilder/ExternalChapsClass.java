@@ -1,7 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.ChapsFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
@@ -25,21 +24,19 @@ public class ExternalChapsClass<Type extends Persistable> {
 	/**
 	 * Creates an instance of this class
 	 * 
-	 * @param concrete
-	 * @param factory
+	 * @param concrete The concrete class
+	 * @param factory The factory class for the concrete class
+	 * 
+	 * @throws Exception If there's an error instantiating the class
 	 */
 	@SuppressWarnings("unchecked")
-	public ExternalChapsClass(Class<? extends Type> concrete, Class<? extends ChapsFactory<Type>> factory)
+	public ExternalChapsClass(Class<? extends Type> concrete, Class<? extends ChapsFactory<Type>> factory) throws Exception
 	{
 		this.concrete = concrete;
 		this.factory = factory;
 		
-		try {
-			Constructor<ChapsFactory<Type>> constructor = (Constructor<ChapsFactory<Type>>) factory.getConstructor(new Class<?>[0]);
-			theFactory = constructor.newInstance();
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new Error(e);
-		}
+		Constructor<ChapsFactory<Type>> constructor = (Constructor<ChapsFactory<Type>>) factory.getConstructor(new Class<?>[0]);
+		theFactory = constructor.newInstance();
 	}
 	
 	/**

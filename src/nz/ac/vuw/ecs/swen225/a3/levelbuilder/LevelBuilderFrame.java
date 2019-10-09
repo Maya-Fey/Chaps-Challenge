@@ -268,8 +268,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				all.deleteCharAt(all.length() - 1);
 				
 				JOptionPane.showMessageDialog(this, all.toString());
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, "There was an error parsing the given jar-file", "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "There was an error parsing the given jar-file: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 	    }

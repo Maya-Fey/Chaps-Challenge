@@ -55,11 +55,14 @@ public class ExternalCodeLoader {
 	public final Set<ExternalChapsClass<Tile>> tileClasses = new HashSet<>();
 	
 	/**
-	 * @param file
-	 * @throws IOException 
+	 * Loads a jar file and extracts all MazeObjects + Items and their factories
+	 * 
+	 * @param file The jar file to load
+	 * 
+	 * @throws Exception if there's an error parsing the file or loading the classes
 	 */
 	@SuppressWarnings("unchecked")
-	public ExternalCodeLoader(File file) throws IOException
+	public ExternalCodeLoader(File file) throws Exception
 	{
 		Contracts.existsAndIsFile(file, "File needs to both exist and be a file");
 		
