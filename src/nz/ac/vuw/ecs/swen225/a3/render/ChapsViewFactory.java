@@ -15,6 +15,6 @@ public class ChapsViewFactory {
 	public ChapsView produce()
 	{
 		return new ChapsViewImpl();
-	}
+	} 
 	
 }
