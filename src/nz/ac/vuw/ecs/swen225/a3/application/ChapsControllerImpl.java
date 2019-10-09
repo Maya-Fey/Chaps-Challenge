@@ -1,4 +1,8 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -9,11 +13,13 @@ import java.util.EnumSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
@@ -40,8 +46,16 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private JMenuBar menuBar;
 	private JMenu gameOptions, help;
 
+	//Menu panel
+	private JPanel mainMenu;
+	private JButton resumeButton, saveGame;
+	private boolean currentGameBeingPlayed=false;
+
+	//Game board panel
+	private JPanel gamePanel;
+
 	//Game state variables
-	private boolean gamePaused=false;
+	private boolean gamePaused=true;
 	private EnumSet<ChapsEvent> chapsEvents;
 
 	//Game timer- controls tick events
@@ -62,6 +76,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		this.addKeyListener(this);
 		this.addWindowListener(this);
+		start();
 	}
 
 	/**
@@ -69,8 +84,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	@Override
 	public void start() {
+		setupMainMenu();
 		setUpWindow();
-
 		//Starts timer
 		setupTimer();
 	}
@@ -83,24 +98,138 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Sets window size.
 	 */
 	private void setUpWindow() {
-		this.add(view.getRootPanel());
+		gamePanel=view.getRootPanel();
+		gamePanel.setVisible(false);
+		this.setTitle("Chaps's Challenge");
+		this.add(gamePanel);
+		this.add(mainMenu);
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent we) {
-				String ObjButtons[] = { "Yes", "No" };
-				int PromptResult = JOptionPane.showOptionDialog(null, "Are you sure you want to exit?", "Chip's Challenge",
-						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
-				if (PromptResult == JOptionPane.YES_OPTION) {
-					System.exit(0);
-				}
+				exitPrompt();
+			}
+		});
+		setupMenuBars();
+		this.setVisible(true);
+	}
+	/**
+	 * sets up main menu for the game.
+	 */
+	private void setupMainMenu() {
+		mainMenu=new JPanel();
+		Dimension buttonDimension= new Dimension(300,70);
+
+
+		JButton startNewGame = new JButton("New Game");
+		startNewGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				restartGame();
+			}
+		});
+		startNewGame.setPreferredSize(buttonDimension);
+
+
+		JButton exitGame = new JButton("Exit Game");
+		exitGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				exitPrompt();
 			}
 		});
 
-		setupMenuBars();
+		exitGame.setPreferredSize(buttonDimension);
 
-		this.setVisible(true);
+		JButton loadGame = new JButton("Load Game");
+		loadGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				loadGame();
+			}
+		});
+		loadGame.setPreferredSize(buttonDimension);
+
+		JButton resumeButton = new JButton("Resume Game");
+		resumeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				resumeGame();
+			}
+		});
+		resumeButton.setPreferredSize(buttonDimension);
+
+
+		JButton saveGame = new JButton("Save Game");
+		startNewGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				saveGame();
+			}
+		});
+
+		saveGame.setPreferredSize(buttonDimension);
+
+		JButton gameControls = new JButton("Game Controls");
+		gameControls.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controlsHelp();
+			}
+		});
+		gameControls.setPreferredSize(buttonDimension);
+
+		JButton gameHelp = new JButton("Game Help");
+		gameHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				instructionsHelp();
+			}
+		});
+		gameHelp.setPreferredSize(buttonDimension);
+
+
+		GridBagLayout grid = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        mainMenu.setLayout(grid);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainMenu.add(resumeButton,gbc);
+        gbc.insets = new Insets(20,0,0,0);  //top padding
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainMenu.add(saveGame,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        mainMenu.add(startNewGame,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        mainMenu.add(loadGame,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainMenu.add(gameControls,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        mainMenu.add(gameHelp,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        mainMenu.add(exitGame,gbc);
+
+
+       mainMenu.setVisible(true);
+       //Game started - doesn't need to show these
+       resumeButton.setVisible(false);
+       saveGame.setVisible(false);
+       currentGameBeingPlayed=false;//as just loaded the program
 	}
 
 	/**
@@ -165,7 +294,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 
 
-
 		// Building help menu
 		help = new JMenu("Help");
 		// controls
@@ -193,6 +321,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		gameOptions.add(resume);
 		gameOptions.add(pause);
 		gameOptions.add(exit);
+
 
 		help.add(controls);
 		help.add(instructions);
@@ -250,11 +379,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	/**
 	 * Updates the game whenever a tick goes through or when a move has been made
-	 * Updates in game timer also
+	 *
 	 */
 	private void updateChapMove(ChapsAction action) {
 		if (!gamePaused) {
 			chapsEvents = model.onAction(action);
+			//updateGraphics();//might not be correct place for this?
 		}
 	}
 
@@ -300,9 +430,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	}
 
 	/**
-	 *  resume a saved game.
+	 * Resume a saved game. Enables save game and resume options if clicked when
+	 * game is in motion.
 	 */
 	private void resumeGame() {
+
+		mainMenu.setVisible(false);
+		gamePanel=view.getRootPanel();
+		gamePanel.setVisible(true);
+
+
+
+		gamePaused=false;
 	}
 
 	/**
@@ -316,18 +455,36 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * start a new game at the last unfinished level.
 	 */
 	private void restartLevel() {
-
+		resumeGame();
 	}
+
+	/**
+	 * Loads a game from json file.
+	 */
+	private void loadGame() {}
 
 	/**
 	 *  pause the game and display a “game is paused” dialog.
 	 */
 	private void pauseGame() {
-		//pause game
-		gamePaused=true;
-		JOptionPane.showMessageDialog(this, "Game is paused - Click Ok to unpause");
-		gamePaused=false;
+		//Shows certain buttons depending on if a game is being played or not.
+		if(currentGameBeingPlayed) {
+			resumeButton.setVisible(true);
+			saveGame.setVisible(true);
+		}else {
+			resumeButton.setVisible(false);
+			saveGame.setVisible(false);
 
+		}
+
+		gamePanel.setVisible(false);
+
+		mainMenu.setVisible(true);
+
+
+		gamePaused=true;
+
+		//	JOptionPane.showMessageDialog(this, "Game is paused - Click Ok to unpause");
 	}
 
 	/**
@@ -358,6 +515,20 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				+ "CTRL-1 - Start's a new game at level 1\n" + "SPACE - Pause's the game\n"
 				+ "ESC - Resume's the game\n" + "UP, DOWN, LEFT, RIGHT ARROWS -- Move's Chap within the maze\n" + "",
 				"Chip's Challenge Game Controls", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/**
+	 * Called for confirmation of exiting th game.
+	 */
+	private void exitPrompt() {
+
+		String ObjButtons[] = { "Yes", "No" };
+		int PromptResult = JOptionPane.showOptionDialog(null, "Are you sure you want to exit?", "Chip's Challenge",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+		if (PromptResult == JOptionPane.YES_OPTION) {
+			exitGame();
+			System.exit(0);
+		}
 	}
 
 	@Override
