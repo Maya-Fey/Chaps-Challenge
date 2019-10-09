@@ -1,6 +1,8 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
+import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.TileWall;
+import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.TileWallFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
 import nz.ac.vuw.ecs.swen225.a3.maze.FreeTileFactory;
@@ -20,6 +22,7 @@ public class RootFactory {
 		Contracts.notNull(instance, "Initialization ordering error");
 		
 		instance.tileFactory.addFactory(FreeTile.class.getSimpleName(), new FreeTileFactory());
+		instance.tileFactory.addFactory(TileWall.class.getSimpleName(), new TileWallFactory());
 	}
 
 	/**
