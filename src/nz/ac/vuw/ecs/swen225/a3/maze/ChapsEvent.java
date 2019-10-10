@@ -44,6 +44,11 @@ public enum ChapsEvent {
 	/**
 	 * The game was lost as the time ran out
 	 */
-	GAME_LOST_TIME_OUT
+	GAME_LOST_TIME_OUT,
+	
+	/**
+	 * The player won
+	 */
+	PLAYER_WINS
 
 }
