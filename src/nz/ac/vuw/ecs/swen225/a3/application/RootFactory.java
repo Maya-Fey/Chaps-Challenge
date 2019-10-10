@@ -1,8 +1,18 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
 
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayerFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChipFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.Item;
+import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileExitFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFreeFactory;
 
 /**
  * @author Claire
@@ -12,6 +22,29 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 public class RootFactory {
 	
 	private static final RootFactory instance = new RootFactory();
+	
+	static {
+		Contracts.notNull(instance, "Initialization ordering error");
+		
+		reinitialize();
+	}
+	
+	/**
+	 * Reinitialize the root factory to default state with no external code
+	 */
+	public static final void reinitialize()
+	{
+		instance.tileFactory.clearAll();
+		instance.interactableFactory.clearAll();
+		instance.actorFactory.clearAll();
+		
+		instance.tileFactory.addFactory(TileFree.class.getSimpleName(), new TileFreeFactory());
+		instance.tileFactory.addFactory(TileExit.class.getSimpleName(), new TileExitFactory());
+		
+		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());
+		
+		instance.actorFactory.addFactory(ActorPlayer.class.getSimpleName(), new ActorPlayerFactory());
+	}
 
 	/**
 	 * @return The canonical instance of the root factory class
@@ -35,5 +68,10 @@ public class RootFactory {
 	 * The actor factory
 	 */
 	public final MultiFactory<Actor> actorFactory = new MultiFactory<Actor>();
+	
+	/**
+	 * The item factory
+	 */
+	public final MultiFactory<Item> itemFactory = new MultiFactory<Item>();
 	
 }

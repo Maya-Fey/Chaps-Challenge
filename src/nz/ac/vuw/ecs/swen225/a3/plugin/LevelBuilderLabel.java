@@ -1,4 +1,4 @@
-package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
+package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -28,6 +28,7 @@ public class LevelBuilderLabel extends JLabel implements MouseListener {
 		this.listener = listener;
 		this.x = x;
 		this.y = y;
+		this.addMouseListener(this);
 	}
 	
 	@Override

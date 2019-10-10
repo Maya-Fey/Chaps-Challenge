@@ -1,5 +1,6 @@
-package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
+package nz.ac.vuw.ecs.swen225.a3.commons;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class List2D<Type> {
 	public List2D(Type default_)
 	{
 		this.NULL_VALUE = default_;
-		this.minX = this.minY;
+		this.minX = this.minY = 0;
 		arr.add(new ArrayList<>());
 		arr.get(0).add(NULL_VALUE);
 		this.sizeX = this.sizeY = 1;
@@ -68,6 +69,28 @@ public class List2D<Type> {
 		ensureMaxY(y);
 		
 		arr.get(x - minX).set(y - minY, value);
+	}
+	
+	/**
+	 * @param toInstantiate A class representing a 1D array of Type Type.
+	 * @param toInstantiateSingle A class representing an object of Type Type.
+	 * @return A 2D version of this array, with <code>null</code> for unassigned values
+	 */
+	@SuppressWarnings("unchecked")
+	public Type[][] export(Class<Type[]> toInstantiate, Class<Type> toInstantiateSingle)
+	{
+		Type[][] arr = (Type[][]) Array.newInstance(toInstantiate, sizeX);
+		for(int i = 0; i < arr.length; i++)
+			arr[i] = (Type[]) Array.newInstance(toInstantiateSingle, sizeY);
+		
+		for(int i = 0; i < this.arr.size(); i++)
+			for(int j = 0; j < this.arr.get(i).size(); j++)
+				if(this.arr.get(i).get(j) != NULL_VALUE)
+					arr[i][j] = this.arr.get(i).get(j);
+				else
+					arr[i][j] = null;
+		
+		return arr;
 	}
 	
 	/**

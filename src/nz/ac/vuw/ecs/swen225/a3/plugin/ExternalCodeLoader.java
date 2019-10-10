@@ -1,7 +1,8 @@
-package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
+package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -54,11 +55,14 @@ public class ExternalCodeLoader {
 	public final Set<ExternalChapsClass<Tile>> tileClasses = new HashSet<>();
 	
 	/**
-	 * @param file
-	 * @throws IOException 
+	 * Loads a jar file and extracts all MazeObjects + Items and their factories
+	 * 
+	 * @param file The jar file to load
+	 * 
+	 * @throws Exception if there's an error parsing the file or loading the classes
 	 */
 	@SuppressWarnings("unchecked")
-	public ExternalCodeLoader(File file) throws IOException
+	public ExternalCodeLoader(File file) throws Exception
 	{
 		Contracts.existsAndIsFile(file, "File needs to both exist and be a file");
 		
@@ -103,8 +107,14 @@ public class ExternalCodeLoader {
 						
 						//If it's concrete
 						if(arg.getClass().equals(Class.class)) {
-							System.out.println(((Class<?>) arg) + " -> " + newClass);
-							factories.put((Class<?>) arg, newClass); 
+							//Check for default constructor
+							boolean hasDef = false;
+							for(Constructor<?> constructor : newClass.getConstructors())
+								if(constructor.getParameterCount() == 0)
+									hasDef = true;
+							
+							if(hasDef)
+								factories.put((Class<?>) arg, newClass); 
 						}
 					}
 				}
@@ -115,7 +125,7 @@ public class ExternalCodeLoader {
 		}
 		
 		/*
-		 * 
+		 * Add all the concrete classes that have factories
 		 */
 		
 		for(Class<?> theClass : concretes.keySet())
@@ -123,7 +133,6 @@ public class ExternalCodeLoader {
 			Class<?> factory = factories.get(theClass);
 			if(factory != null)
 			{
-				System.out.println("(" + theClass + "), (" + factory + ")");
 				switch(concretes.get(theClass))
 				{
 					case "Item":

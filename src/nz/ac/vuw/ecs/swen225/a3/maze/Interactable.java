@@ -12,6 +12,20 @@ public interface Interactable extends MazeObject, Visible, Cloneable{
 	 * a button.
 	 */
 	boolean isPushable();
+	
+	/**
+	 * @param actor The actor trying to walk on it
+	 * @param obj Model access
+	 * @return If this object isn't pushable, can we walk on it?
+	 */
+	boolean isWalkable(Actor actor, ModelAccessObject obj);
+	
+	/**
+	 * @param actor The actor trying to walk on it
+	 * @param obj Model access
+	 * @return if it's walkable, is it safe
+	 */
+	boolean isSafe(Actor actor, ModelAccessObject obj);
 
 	/**
 	 * Called when a actor enters this interactable

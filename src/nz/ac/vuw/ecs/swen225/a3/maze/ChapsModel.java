@@ -13,7 +13,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  * @author Claire
  */
-public interface ChapsModel extends Cloneable {
+public interface ChapsModel  {
 
 	/**
 	 * Processes an action and updates the internal game state. Once done, returns

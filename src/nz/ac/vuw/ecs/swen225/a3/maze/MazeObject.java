@@ -29,8 +29,8 @@ public interface MazeObject extends Persistable {
 	default JsonObjectBuilder getBuilder()
 	{
 		return Json.createObjectBuilder().add("name", this.getClass().getSimpleName())
-										 .add("x", this.getPosition().x)
-										 .add("y", this.getPosition().y);
+										 .add("x", this.getPosition() == null ? 0 : this.getPosition().x)
+										 .add("y", this.getPosition() == null ? 0 : this.getPosition().y);
 	}
 	
 	default JsonObject persist()

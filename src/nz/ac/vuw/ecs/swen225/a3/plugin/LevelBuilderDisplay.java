@@ -1,7 +1,8 @@
-package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
+package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,8 +52,6 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.gridx = i;
 				gbc.gridy = j;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
 				left.add(grid[i][j] = new LevelBuilderLabel(listener, i, j), gbc);
 			}
 		}
@@ -94,7 +93,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	@Override
 	public void updateRemainingTime(int rem) 
 	{
-		time.setText("Time: " + rem);
+		time.setText("Time: " + rem / GameConstants.TICKS_TO_SECONDS_RATIO);
 	}
 	
 	/**
@@ -121,9 +120,21 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	}
 
 	@Override
-	public JPanel getRootPanel() 
+	public JSplitPane getRootPanel() 
 	{
-		return null;
+		return this;
+	}
+
+	@Override
+	public void updateCurrentLevel(int lvl) 
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateInventory(List<Visible> v) 
+	{
+		throw new UnsupportedOperationException();	
 	}
 
 }
