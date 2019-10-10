@@ -20,7 +20,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  */
 public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
-	private List2D<Tile> maze = new List2D<>(new TileFree());
+	private List2D<Tile> tiles = new List2D<>(new TileFree());
 	
 	@SuppressWarnings("unchecked")
 	private List<Visible>[][] buffer = new List[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
@@ -87,7 +87,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
 			Position potentialNewPos = player.getPosition().translate(action);
 			
-			Tile tile = maze.get(potentialNewPos.x, potentialNewPos.y);
+			Tile tile = tiles.get(potentialNewPos.x, potentialNewPos.y);
 			
 			if(tile instanceof TileExit)
 			{
@@ -134,7 +134,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		Inventory cInventory = inv.clone();
 		List<Actor> actors = cloneActors();
 		List<Interactable> interactables = cloneInteractables();
-		Tile[][] maze = this.maze.export(Tile[].class, Tile.class);
+		Tile[][] maze = this.tiles.export(Tile[].class, Tile.class);
 		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining);
 	}
 
@@ -143,11 +143,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	{
 		Tile[][] raw = state.getMaze();
 		
-		this.maze = new List2D<>(new TileFree());
+		this.tiles = new List2D<>(new TileFree());
 		for(int i = 0; i < raw.length; i++)
 			for(int j = 0; j < raw[i].length; j++)
 				if(raw[i][j] != null)
-					this.maze.set(raw[i][j], i, j);
+					this.tiles.set(raw[i][j], raw[i][j].getPosition().x, raw[i][j].getPosition().y);
 		
 		this.actors = state.getActors();
 		this.interactables = state.getInteractables();
@@ -197,7 +197,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		
 		for(int x = minx; x <= maxx; x++)
 			for(int y = miny; y <= maxy; y++)
-				buffer[x - minx][y - miny].add(maze.get(x, y));
+				buffer[x - minx][y - miny].add(tiles.get(x, y));
 		
 		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
