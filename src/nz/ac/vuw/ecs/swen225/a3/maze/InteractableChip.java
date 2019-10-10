@@ -47,10 +47,8 @@ public class InteractableChip implements Interactable {
 	public void onEnter(Actor actor, ModelAccessObject obj) 
 	{
 		if(actor.isPlayer()) {
-			//FIXME: Make the model access object have a chip adding method
-			//obj.addChip()
-			//FIXME: Make the model access object have a remove interactable method
-			//obj.removeInteractable(this);
+			obj.addChips(1);
+			obj.removeInteractable(this);
 		}
 	}
 
