@@ -176,6 +176,14 @@ public class LevelBuilderModel {
 		if(interactable instanceof InteractableChip)
 			chips++;
 		
+		Interactable toRemove = null;
+		for(Interactable other : interactables)
+			if(other.getPosition().x == x && other.getPosition().y == y && other.isPushable() == interactable.isPushable())
+				toRemove = other;
+		
+		if(toRemove != null)
+			interactables.remove(toRemove);
+		
 		interactable.setPosition(new Position(x, y));
 		interactables.add(interactable);
 	}
