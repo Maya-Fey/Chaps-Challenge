@@ -230,7 +230,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	public void addChips(int chips) 
 	{
 		//TODO: Signal for a chips updated signal
-		this.addChips(chips);
+		this.chipsRemaining += chips;
 	}
 
 	@Override
