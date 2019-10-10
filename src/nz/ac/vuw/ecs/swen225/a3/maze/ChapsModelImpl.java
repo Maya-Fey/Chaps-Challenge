@@ -102,6 +102,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 					break root;
 				}
 				
+				player.setPosition(potentialNewPos);
 				
 				
 			}
