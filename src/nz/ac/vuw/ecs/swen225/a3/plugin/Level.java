@@ -2,7 +2,10 @@ package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.util.Set;
 
+import javax.json.JsonObject;
+
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.application.GameStateFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
@@ -16,7 +19,9 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
  */
 public class Level {
 	
-	private final GameState state;
+	private final GameStateFactory stateFactory = new GameStateFactory();
+	
+	private final JsonObject state;
 	
 	private final Set<ExternalCodeLoader> loaders;
 	
@@ -24,10 +29,17 @@ public class Level {
 	 * @param state
 	 * @param loaders
 	 */
-	public Level(GameState state, Set<ExternalCodeLoader> loaders)
+	public Level(JsonObject state, Set<ExternalCodeLoader> loaders)
 	{
 		this.state = state;
 		this.loaders = loaders;
+		
+		try {
+			this.load();
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new ExceptionInInitializerError("Error: invalid level, could not ressurect.");
+		}
 	}
 	
 	/**
@@ -39,7 +51,7 @@ public class Level {
 	{
 		RootFactory.reinitialize();       //Remove all previously loaded code to prevent conflicts
 		this.onLoad();                    //Load all external code
-		return this.state;
+		return stateFactory.resurrect(this.state);
 	}
 	
 	/**
