@@ -12,6 +12,7 @@ import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
@@ -30,6 +31,9 @@ public class LevelBuilderModel {
 	
 	@SuppressWarnings("unchecked")
 	private final List<Visible>[][] buffer = (List<Visible>[][]) new List<?>[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+	
+	private int chips;
+	private int time;
 	
 	/**
 	 * Constructs a basic model with chap at the center position
@@ -94,6 +98,30 @@ public class LevelBuilderModel {
 	}
 	
 	/**
+	 * @param time The desired amount of time allocated to complete the level
+	 */
+	public void setTime(int time)
+	{
+		this.time = time * GameConstants.TICKS_TO_SECONDS_RATIO;
+	}
+	
+	/**
+	 * @return The amount of time allocated to this level
+	 */
+	public int getTime()
+	{
+		return time;
+	}
+	
+	/**
+	 * @return The number of chips on the board
+	 */
+	public int getChips()
+	{
+		return chips;
+	}
+	
+	/**
 	 * Sets the tile at the specified position, overwriting any previous one
 	 * 
 	 * @param tile The tile to set/add
@@ -133,6 +161,9 @@ public class LevelBuilderModel {
 	 */
 	public void addInteractable(Interactable interactable, int x, int y)
 	{
+		if(interactable instanceof InteractableChip)
+			chips++;
+		
 		interactable.setPosition(new Position(x, y));
 		interactables.add(interactable);
 	}
