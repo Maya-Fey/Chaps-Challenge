@@ -14,7 +14,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * @author James
  *
  */
-public class ChapsModelImpl implements ChapsModel {
+public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
 	private List2D<Tile> maze = new List2D<>(new FreeTile());
 	
