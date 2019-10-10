@@ -243,6 +243,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	{
 		Level theLevel = LevelInterface.getInstance().getLevel(currentlevel);
 		model.setState(theLevel.load());
+		view.updateCurrentLevel(this.currentlevel);
 	}
 
 	/**

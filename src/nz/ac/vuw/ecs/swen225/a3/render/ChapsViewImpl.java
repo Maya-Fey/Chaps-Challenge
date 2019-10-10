@@ -134,7 +134,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		levelLabel.setBackground(Color.BLACK);
 		levelLabel.setForeground(Color.GREEN);
 		levelLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		//levelLabel.setBorder(border);
+		chipsLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
 		levelLabel.setFont(levelLabel.getFont().deriveFont(Font.BOLD, 32));
 
 	}
