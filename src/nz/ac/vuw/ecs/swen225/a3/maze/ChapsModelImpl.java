@@ -30,7 +30,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
 	private Inventory inv;
 	
-	private Player player;
+	private ActorPlayer player;
 
 	private int timeRemaining, chipsRemaining;
 	
@@ -117,11 +117,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	 * Goes through the list of actors returning the playable character
 	 * @return
 	 */
-	private Player findPlayer()
+	private ActorPlayer findPlayer()
 	{
 		for(Actor a : actors) {
-			if(a instanceof Player) {
-				return (Player) a;
+			if(a instanceof ActorPlayer) {
+				return (ActorPlayer) a;
 			}
 		}
 

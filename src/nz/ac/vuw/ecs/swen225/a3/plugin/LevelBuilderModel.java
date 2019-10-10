@@ -13,7 +13,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
-import nz.ac.vuw.ecs.swen225.a3.maze.Player;
+import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
@@ -45,7 +45,7 @@ public class LevelBuilderModel {
 		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
 				buffer[i][j] = new ArrayList<>();
-		actors.add(new Player());
+		actors.add(new ActorPlayer());
 		actors.get(0).setPosition(new Position(0, 0));
 	}
 	

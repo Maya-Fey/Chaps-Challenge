@@ -9,21 +9,21 @@ import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
  * @author James
  *
  */
-public class Player implements Actor {
+public class ActorPlayer implements Actor {
 	
 	private Position position;
 	
 	/**
 	 * Main constructor for a new player
 	 */
-	public Player() {}
+	public ActorPlayer() {}
 	
 	/**
 	 * Method to Clone player class
 	 */
-	public Player clone() 
+	public ActorPlayer clone() 
 	{
-		Player player = new Player();
+		ActorPlayer player = new ActorPlayer();
 		player.setPosition(this.position.clone());
 		return player;
 	}
