@@ -44,7 +44,8 @@ public class InteractableChip implements Interactable {
 	}
 
 	@Override
-	public void onEnter(Actor actor, ModelAccessObject obj) {
+	public void onEnter(Actor actor, ModelAccessObject obj) 
+	{
 		if(actor.isPlayer()) {
 			//FIXME: Make the model access object have a chip adding method
 			//obj.addChip()
@@ -62,15 +63,15 @@ public class InteractableChip implements Interactable {
 	}
 
 	@Override
-	public boolean isWalkable(Actor actor, ModelAccessObject obj) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isWalkable(Actor actor, ModelAccessObject obj) 
+	{
+		return true;
 	}
 
 	@Override
-	public boolean isSafe(Actor actor, ModelAccessObject obj) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isSafe(Actor actor, ModelAccessObject obj)
+	{
+		return true;
 	}
 
 }

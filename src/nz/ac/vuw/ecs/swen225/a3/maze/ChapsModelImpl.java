@@ -218,4 +218,17 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		return chipsRemaining;
 	}
 
+	@Override
+	public void addChips(int chips) 
+	{
+		//TODO: Signal for a chips updated signal
+		this.addChips(chips);
+	}
+
+	@Override
+	public void removeInteractable(Interactable interact) 
+	{
+		interactables.remove(interact);
+	}
+
 }
