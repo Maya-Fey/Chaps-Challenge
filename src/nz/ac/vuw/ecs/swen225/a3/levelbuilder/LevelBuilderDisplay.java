@@ -93,7 +93,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	@Override
 	public void updateRemainingTime(int rem) 
 	{
-		time.setText("Time: " + rem);
+		time.setText("Time: " + rem / GameConstants.TICKS_TO_SECONDS_RATIO);
 	}
 	
 	/**

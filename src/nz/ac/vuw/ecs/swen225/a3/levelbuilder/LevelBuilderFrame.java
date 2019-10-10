@@ -47,6 +47,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu load = new JMenu("Load");
 	private final JMenu edit = new JMenu("Edit");
+	private final JMenuItem setTime = new JMenuItem("Set Time Available");
 	
 	private boolean add = true;
 	
@@ -69,6 +70,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		menu.add(load);
 		load.add(loadJar); loadJar.addActionListener(this);
 		menu.add(edit);
+		edit.add(setTime); setTime.addActionListener(this);
 		
 		this.setTitle("Chap's Challenge Level Builder");
 		this.setSize(7 * 125, 5 * 125);
@@ -186,6 +188,18 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	{
 		if(arg0.getSource() == loadJar)
 			loadJar();
+		else if(arg0.getSource() == setTime) {
+			String answer = JOptionPane.showInputDialog(this, "Set time in seconds");
+			try {
+				int i = Integer.parseInt(answer);
+				if(i <= 0)
+					throw new NumberFormatException();
+				model.setTime(i);
+				disp.updateRemainingTime(model.getTime());
+			} catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, "You must enter a positive number of some kind.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
