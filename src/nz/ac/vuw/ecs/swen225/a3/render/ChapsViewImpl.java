@@ -1,35 +1,18 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.awt.GridBagLayout;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
-import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -46,59 +29,29 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	 * Fields
 	 */
 	private final JPanel invPanel = new JPanel();
+	
 	private final JLabel levelLabel = new JLabel("0000");
 	private final JLabel timeLabel = new JLabel("0000");
 	private final JLabel chipsLabel = new JLabel("0000");
+	
 	private final JLabel tutorialMessage = new JLabel();
 	private final JPanel tutorialPanel = new JPanel();
+	
 	private final JLabel text_1 = new JLabel("LEVEL:");
 	private final JLabel text_2 = new JLabel("TIME:");
 	private final JLabel text_3 = new JLabel("CHIPS:");
-
-
-
+	
 	private final JLabel[][] grid;
-
-
+	
 	private final JPanel left, right;
-
-
-
-
-
-
+	
 	/**
 	 * Constructor to initialize GUI
 	 *
 	 */
-	public ChapsViewImpl() {
-
+	public ChapsViewImpl() 
+	{
 		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
-
-
-//Code for faking a list of visible objects to test updateInventory
-//		Visible v = new Visible() {
-//
-//			@Override
-//			public Icon getIcon() {
-//				return IconFactory.INSTANCE.loadIcon("wallTile.png");
-//			}
-//
-//			@Override
-//			public int zIndex() {
-//				// TODO Auto-generated method stub
-//				return 0;
-//			}
-//
-//		};
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
 
 		this.left = (JPanel) this.leftComponent;
 		this.right = (JPanel) this.rightComponent;
@@ -111,13 +64,8 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) {
 			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) {
 				GridBagConstraints gbc = new GridBagConstraints();
-				//Increment through gridbagconstraints to know the location of each label
 				gbc.gridx = x;
 				gbc.gridy = y;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
-				//Initialise every label in the grid as an empty JLabel
-				//and add them to the left display
 				grid[x][y] = new JLabel();
 				left.add(grid[x][y], gbc);
 			}
@@ -152,8 +100,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		right.setBackground(Color.lightGray);
 		right.setBorder(BorderFactory.createRaisedBevelBorder());
 	}
-
-
+	
 	/**
 	 * Function to convert a number string into
 	 * 4 digits i.e. 0004
@@ -164,9 +111,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		String str = String.format("%04d", n);
 		return str;
 	}
-
-
-
+	
 	@Override
 	public void updateBoard(Visible[][] board) {
 		//Iterate through every cell in the board and update its icon
@@ -178,9 +123,6 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 			}
 		}
 	}
-
-
-
 
 	@Override
 	public void updateCurrentLevel(int lvl) {
@@ -229,9 +171,9 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 
 		invPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		
 		//Creates the inventory display as a grid and sets
 		//the icon based on the index in the list of Visible objects.
-		int count = 0;
 		for(int x = 0; x < 4; x++) {
 			for(int y = 0; y < 2; y++) {
 				for(Visible i : v) {
@@ -246,16 +188,11 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
 
 				invPanel.add(label, gbc);
-				count++;
 				}
 			}
 		}
-
-
 	}
-
-
-
+	
 	@Override
 	public void setDisplayTutorialMessage(String message) {
 		//Set the size to the inventory panel
@@ -282,12 +219,5 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	public JSplitPane getRootPanel() {
 		return this;
 	}
-
-
-
-
-
-
-
-
+	
 }
