@@ -126,10 +126,10 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 
 	@Override
 	public void updateCurrentLevel(int lvl) {
-		levelLabel.setOpaque(true);
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(lvl);
 		//Set the text, fontsize, background & foreground colors, and border
+		levelLabel.setOpaque(true);
 		levelLabel.setText(val);
 		levelLabel.setBackground(Color.BLACK);
 		levelLabel.setForeground(Color.GREEN);
@@ -141,10 +141,10 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 
 	@Override
 	public void updateRemainingChips(int rem) {
-		chipsLabel.setOpaque(true);
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(rem);
 		//Set the text, fontsize, background & foreground colors, and border
+		chipsLabel.setOpaque(true);
 		chipsLabel.setText(val);
 		chipsLabel.setBackground(Color.BLACK);
 		chipsLabel.setForeground(Color.GREEN);
@@ -154,11 +154,11 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 
 	@Override
 	public void updateRemainingTime(int rem) {
-		timeLabel.setOpaque(true);
 		//convert from single digit to 0000 format
-		String val = fourDigitFormat(rem);
+		String val = fourDigitFormat(rem / GameConstants.TICKS_TO_SECONDS_RATIO);
 		//Set the text, fontsize, background & foreground colors, and border
 		timeLabel.setText(val);
+		timeLabel.setOpaque(true);
 		timeLabel.setBackground(Color.BLACK);
 		timeLabel.setForeground(Color.GREEN);
 		timeLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
