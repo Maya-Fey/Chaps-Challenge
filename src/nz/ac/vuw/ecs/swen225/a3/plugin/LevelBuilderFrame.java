@@ -98,6 +98,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		this.addKeyListener(this);
 		
 		this.redisplay();
+		
+		center(this);
 	}
 
 	@Override
