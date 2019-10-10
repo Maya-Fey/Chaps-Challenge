@@ -68,10 +68,4 @@ public class TileFree implements Tile {
 	@Override
 	public void onEnter(Actor actor, ModelAccessObject obj) {}
 
-	@Override
-	public TileFree convertToFreeTile() {
-		return null;
-	}
-
-
 }

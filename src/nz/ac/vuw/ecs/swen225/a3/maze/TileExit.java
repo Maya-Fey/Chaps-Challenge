@@ -49,12 +49,6 @@ public class TileExit implements Tile {
 	public void onEnter(Actor actor, ModelAccessObject obj) {}
 
 	@Override
-	public TileFree convertToFreeTile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public TileExit clone() 
 	{
 		TileExit tile = new TileExit();

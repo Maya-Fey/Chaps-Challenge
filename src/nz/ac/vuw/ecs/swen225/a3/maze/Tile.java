@@ -41,14 +41,6 @@ public interface Tile extends MazeObject, Visible, Cloneable {
 	void onEnter(Actor actor, ModelAccessObject obj);
 
 	/**
-	 * Method is used in ChapsModelImpl to return this tile as a free tile
-	 * null will be returned if its type can not be changed
-	 * otherwise method will return a free tile for this tile
-	 * @return new FreeTile
-	 */
-	TileFree convertToFreeTile();
-
-	/**
 	 * @return clone of tile
 	 */
 	Tile clone();
