@@ -15,7 +15,7 @@ public interface ModelAccessObject {
 	 * 
 	 * @param chips The amount of chips to add
 	 */
-	void addChips(int chips);
+	void remChips(int chips);
 	
 	/**
 	 * Removes an interactable from the game

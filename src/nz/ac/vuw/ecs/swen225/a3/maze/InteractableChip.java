@@ -47,7 +47,7 @@ public class InteractableChip implements Interactable {
 	public void onEnter(Actor actor, ModelAccessObject obj) 
 	{
 		if(actor.isPlayer()) {
-			obj.addChips(1);
+			obj.remChips(1);
 			obj.removeInteractable(this);
 		}
 	}
