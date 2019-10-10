@@ -63,13 +63,6 @@ public class Player implements Actor{
 		return new Player(currentPosition.clone(), name, icon, isDead, inventory.clone(), treasureNeeded);
 	}
 	
-	/**
-	 * Returns if the player has collected all treasure items on map
-	 * @return total treasure == players treasure
-	 */
-	public boolean hasAllTreasure() {
-		return treasureNeeded==inventory.treasureCollected();
-	}
 	
 	/**
 	 * Adds item given as parameter to players inventory

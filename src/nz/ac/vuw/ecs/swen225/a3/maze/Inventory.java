@@ -71,38 +71,6 @@ public class Inventory implements Persistable, Cloneable {
 	}
 
 	/**
-	 * Method to count how many treasure items are in a players inventory
-	 * @return amount of treasure
-	 */
-	public int treasureCollected() {
-		int count = 0;
-
-		for (Item item : inventory) {
-			if(item instanceof KeyItem) {
-				count++;
-			}
-		}
-
-		return count;
-	}
-
-	/**
-	 * Method to check if this inventory has a key of the given colour
-	 * @param color key colour to check
-	 * @return if the inventory has a matching key
-	 */
-	public boolean hasKeyColour(Color color) {
-		for (Item item : inventory) {
-			if(item instanceof KeyItem) {
-				KeyItem k = (KeyItem)item;
-				if(k.getKeyColour().equals(color))
-					return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Method to check if this inventory contains an item
 	 * @param item to check
 	 * @return if contains item

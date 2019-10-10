@@ -162,19 +162,7 @@ public class ChapsModelImpl implements ChapsModel{
 		Tile mazeTile = maze[newPos.x][newPos.y];
 		if(newTile!=null) {
 			//if key or treasure item must be picked up and added to inventory requiring inv update
-			if(mazeTile instanceof Key) {
-				events.add(ChapsEvent.INV_UPDATE_REQUIRED);
-				//add item to players inventory
-				Key tile = (Key) mazeTile;
-				inv.addItem(tile.getItem());
-			}
 
-			if(mazeTile instanceof Treasure) {
-				events.add(ChapsEvent.INV_UPDATE_REQUIRED);
-				//add item to players inventory
-				Treasure tile = (Treasure) mazeTile;
-				inv.addItem(tile.getItem());
-			}
 
 
 			//if player is on an info field display contents of it else don't display any
