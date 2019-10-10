@@ -22,6 +22,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.application.MultiFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
@@ -48,8 +49,9 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	
 	private final JMenuBar menu = new JMenuBar();
 	private final JMenu save = new JMenu("Save");
-	private final JMenuItem loadJar = new JMenuItem("Load External Code");
+	private final JMenuItem export = new JMenuItem("Export");
 	private final JMenu load = new JMenu("Load");
+	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu edit = new JMenu("Edit");
 	private final JMenuItem clear = new JMenuItem("Clear");
 	private final JMenuItem setTime = new JMenuItem("Set Time Available");
@@ -72,6 +74,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		
 		this.setJMenuBar(menu);
 		menu.add(save);
+		save.add(export); export.addActionListener(this);
 		menu.add(load);
 		load.add(loadJar); loadJar.addActionListener(this);
 		menu.add(edit);
@@ -212,6 +215,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			this.redisplay();
 			disp.updateRemainingTime(model.getTime());
 			RootFactory.reinitialize();
+		} else if(arg0.getSource() == export) {
+			export();
 		}
 	}
 	
@@ -348,6 +353,13 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				e.printStackTrace();
 			}
 	    }
+	}
+	
+	private void export()
+	{
+		GameState state = model.export();
+		JsonObject obj = state.persist();
+		System.out.println(obj);
 	}
 	
 	/**

@@ -83,10 +83,9 @@ public class List2D<Type> {
 		for(int i = 0; i < arr.length; i++)
 			arr[i] = (Type[]) Array.newInstance(toInstantiateSingle, sizeY);
 		
-		
 		for(int i = 0; i < this.arr.size(); i++)
 			for(int j = 0; j < this.arr.get(i).size(); j++)
-				if(this.arr.get(i).get(j) != null)
+				if(this.arr.get(i).get(j) != NULL_VALUE)
 					arr[i][j] = this.arr.get(i).get(j);
 				else
 					arr[i][j] = null;
