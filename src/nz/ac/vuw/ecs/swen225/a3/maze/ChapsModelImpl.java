@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -15,7 +16,9 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  */
 public class ChapsModelImpl implements ChapsModel {
 	
-	private Tile[][] maze;
+	private List2D<Tile> maze = new List2D<>(new FreeTile());
+	
+	private Tile[][] maze2;
 	
 	private List<Actor> actors;
 	private List<Interactable> interactables;
@@ -28,22 +31,7 @@ public class ChapsModelImpl implements ChapsModel {
 	 * Constructor for empty ChapsModel
 	 */
 	public ChapsModelImpl() {}
-
-	/**
-	 * returns a clone of the maze
-	 * @return
-	 */
-	private Tile[][] cloneMaze() 
-	{
-		Tile[][] newMaze = new Tile[maze.length][maze[0].length];
-		for(int x = 0; x < maze.length; x++) {
-			for(int y = 0; y < maze[x].length; y++) {
-				newMaze[x][y] = maze[x][y].clone();
-			}
-		}
-		return maze;
-	}
-
+	
 	/**
 	 * Returns a clone of the actors
 	 * @return
@@ -63,7 +51,7 @@ public class ChapsModelImpl implements ChapsModel {
 	 * returns a list of cloned interactables
 	 * @return
 	 */
-	private List<Interactable> cloneInteractable()
+	private List<Interactable> cloneInteractables()
 	{
 		List<Interactable> clone = new ArrayList<>();
 		for(Interactable i:interactables) {
@@ -113,15 +101,26 @@ public class ChapsModelImpl implements ChapsModel {
 	}
 
 	@Override
-	public GameState getState() {
-		// TODO Auto-generated method stub
-		return null;
+	public GameState getState() 
+	{
+		Inventory cInventory = inv.clone();
+		List<Actor> actors = cloneActors();
+		List<Interactable> interactables = cloneInteractables();
+		Tile[][] maze = this.maze.export();
+		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining);
 	}
 
 	@Override
 	public void setState(GameState state) 
 	{
-		this.maze = state.getMaze();
+		Tile[][] raw = state.getMaze();
+		
+		this.maze = new List2D<>(new FreeTile());
+		for(int i = 0; i < raw.length; i++)
+			for(int j = 0; j < raw[i].length; j++)
+				if(raw[i][j] != null)
+					this.maze.set(raw[i][j], i, j);
+		
 		this.actors = state.getActors();
 		this.interactables = state.getInteractables();
 		this.inv = state.getInventory();
@@ -132,11 +131,12 @@ public class ChapsModelImpl implements ChapsModel {
 	@Override
 	public Visible[][] getVisibleArea() {
 		//temporary until method has been further developed
-		return maze;
+		return null;
 	}
 
 	@Override
-	public Collection<Visible> getInventoryIcons() {
+	public Collection<Visible> getInventoryIcons() 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}

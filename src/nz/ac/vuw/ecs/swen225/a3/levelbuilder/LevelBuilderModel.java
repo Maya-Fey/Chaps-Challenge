@@ -8,6 +8,7 @@ import javax.swing.Icon;
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
