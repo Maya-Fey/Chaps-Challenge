@@ -37,6 +37,12 @@ public class LevelBuilderModel {
 	private int chips;
 	private int time;
 	
+	{
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				buffer[i][j] = new ArrayList<>();
+	}
+	
 	/**
 	 * Constructs a basic model with chap at the center position
 	 */
@@ -46,9 +52,6 @@ public class LevelBuilderModel {
 		actors = new ArrayList<>();
 		tiles = new List2D<>(new TileFree());
 		
-		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
-			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
-				buffer[i][j] = new ArrayList<>();
 		actors.add(new ActorPlayer());
 		actors.get(0).setPosition(new Position(0, 0));
 	}
@@ -66,7 +69,7 @@ public class LevelBuilderModel {
 		for(int i = 0; i < raw.length; i++)
 			for(int j = 0; j < raw[i].length; j++)
 				if(raw[i][j] != null)
-					this.tiles.set(raw[i][j], i, j);
+					this.tiles.set(raw[i][j], raw[i][j].getPosition().x, raw[i][j].getPosition().y);
 		
 		this.actors = state.getActors();
 		this.interactables = state.getInteractables();
