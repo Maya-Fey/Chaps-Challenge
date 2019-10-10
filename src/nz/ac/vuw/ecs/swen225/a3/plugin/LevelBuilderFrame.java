@@ -8,11 +8,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -357,9 +364,68 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	
 	private void export()
 	{
-		GameState state = model.export();
-		JsonObject obj = state.persist();
-		System.out.println(obj);
+		JFileChooser chooser = new JFileChooser(new File("."));
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Plugin Files", "zip");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Save");
+	    chooser.setDialogTitle("Save Level");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	if(selected.exists() && selected.isDirectory()) 
+	    		JOptionPane.showMessageDialog(this, "That's a Directory", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	if(selected.exists() && selected.isFile() && !(JOptionPane.showConfirmDialog(this, "This file already exists. Are you sure you want to overwrite it?") == JOptionPane.OK_OPTION))
+	    		return;
+	    	
+	    	if(selected.exists() && !selected.delete())
+	    		JOptionPane.showMessageDialog(this, "File couldn't be overwritten", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	try {
+				selected.createNewFile();
+				
+				try(FileOutputStream fos = new FileOutputStream(selected)) {
+					ZipOutputStream zos = new ZipOutputStream(fos);
+					ZipEntry entry;
+					
+					GameState state = model.export();
+					JsonObject obj = state.persist();
+					
+					entry = new ZipEntry("state.json");
+					zos.putNextEntry(entry);
+					
+					JsonWriter writer = Json.createWriter(zos);
+					writer.write(obj);
+					
+					zos.closeEntry();
+					
+					byte[] buf = new byte[1024];
+					
+					for(File jar : referencedJars)
+					{
+						entry = new ZipEntry(jar.getName());
+						zos.putNextEntry(entry);
+						
+						FileInputStream stream = new FileInputStream(jar);
+						
+						int len;
+						while((len = stream.read(buf, 0, 1024)) > 0)
+							zos.write(buf, 0, len);
+						
+						stream.close();
+						zos.closeEntry();
+					}
+					
+					zos.close();
+				}
+				
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} 
+	    }
 	}
 	
 	/**
