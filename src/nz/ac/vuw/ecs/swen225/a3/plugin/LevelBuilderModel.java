@@ -46,6 +46,7 @@ public class LevelBuilderModel {
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
 				buffer[i][j] = new ArrayList<>();
 		actors.add(new Player());
+		actors.get(0).setPosition(new Position(0, 0));
 	}
 	
 	/**
