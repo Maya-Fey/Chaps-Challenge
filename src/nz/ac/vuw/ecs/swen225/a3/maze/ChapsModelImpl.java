@@ -37,7 +37,12 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	/**
 	 * Constructor for empty ChapsModel
 	 */
-	public ChapsModelImpl() {}
+	public ChapsModelImpl() 
+	{
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				buffer[i][j] = new ArrayList<>();
+	}
 	
 	/**
 	 * Returns a clone of the actors
