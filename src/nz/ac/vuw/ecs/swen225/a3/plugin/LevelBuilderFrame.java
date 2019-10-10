@@ -38,6 +38,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
+import nz.ac.vuw.ecs.swen225.a3.maze.Item;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.persistence.JsonFileInterface;
 
@@ -349,6 +350,11 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				}
 				for(ExternalChapsClass<Interactable> ext : loader.interactableClasses) {
 					RootFactory.getInstance().interactableFactory.addFactory(ext.getTypename(), ext.getFactory());
+					all.append(ext.getTypename()); all.append('\n');
+					added = true;
+				}
+				for(ExternalChapsClass<Item> ext : loader.itemClasses) {
+					RootFactory.getInstance().itemFactory.addFactory(ext.getTypename(), ext.getFactory());
 					all.append(ext.getTypename()); all.append('\n');
 					added = true;
 				}
