@@ -63,7 +63,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	//Game state variables
 	private boolean gamePaused=true;
-	private EnumSet<ChapsEvent> chapsEvents;
 
 	//Game timer- controls  events
 	private Timer timer;
@@ -115,9 +114,47 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 *
 	 */
 	private void updateChapMove(ChapsAction action) {
-		if (!gamePaused) {
-			chapsEvents = model.onAction(action);
-			updateGraphics();//might not be correct place for this?
+		if(!gamePaused) 
+			eventHandler(model.onAction(action));
+	}
+	
+	private void eventHandler(EnumSet<ChapsEvent> chapsEvents)
+	{
+		for(ChapsEvent event : chapsEvents)
+		{
+			switch(event)
+			{
+				case CHIPS_UPDATE_REQUIRED:
+					view.updateRemainingChips(model.getChipsRemaining());
+					break;
+				case DISPLAY_UPDATE_REQUIRED:
+					view.updateBoard(model.getVisibleArea());
+					break;
+				case GAME_LOST_PLAYER_DIED:
+					//TODO: Lose message
+					break;
+				case GAME_LOST_TIME_OUT:
+					//TODO: Lose message
+					break;
+				case HIDE_TUTORIAL_MESSAGE:
+					view.clearDisplayTutorialMessage();
+					break;
+				case INV_UPDATE_REQUIRED:
+					view.updateInventory(model.getInventoryIcons());
+					break;
+				case PLAYER_WINS:
+					//TODO: Win message
+					break;
+				case SHOW_TUTORIAL_MESSAGE:
+					//FIXME: Actually make this work
+					view.setDisplayTutorialMessage(null);
+					break;
+				case TIME_UPDATE_REQUIRED:
+					view.updateRemainingTime(model.getTimeRemaining());
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
