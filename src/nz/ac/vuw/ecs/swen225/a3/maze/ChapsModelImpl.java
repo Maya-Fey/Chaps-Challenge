@@ -134,7 +134,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		Inventory cInventory = inv.clone();
 		List<Actor> actors = cloneActors();
 		List<Interactable> interactables = cloneInteractables();
-		Tile[][] maze = this.maze.export();
+		Tile[][] maze = this.maze.export(Tile[].class, Tile.class);
 		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining);
 	}
 

@@ -1,5 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.commons;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,17 +72,24 @@ public class List2D<Type> {
 	}
 	
 	/**
+	 * @param toInstantiate A class representing a 1D array of Type Type.
+	 * @param toInstantiateSingle A class representing an object of Type Type.
 	 * @return A 2D version of this array, with <code>null</code> for unassigned values
 	 */
-	public Type[][] export()
+	@SuppressWarnings("unchecked")
+	public Type[][] export(Class<Type[]> toInstantiate, Class<Type> toInstantiateSingle)
 	{
-		@SuppressWarnings("unchecked")
-		Type[][] arr = (Type[][]) new Object[sizeX][sizeY];
+		Type[][] arr = (Type[][]) Array.newInstance(toInstantiate, sizeX);
+		for(int i = 0; i < arr.length; i++)
+			arr[i] = (Type[]) Array.newInstance(toInstantiateSingle, sizeY);
+		
 		
 		for(int i = 0; i < this.arr.size(); i++)
 			for(int j = 0; j < this.arr.get(i).size(); j++)
 				if(this.arr.get(i).get(j) != null)
 					arr[i][j] = this.arr.get(i).get(j);
+				else
+					arr[i][j] = null;
 		
 		return arr;
 	}

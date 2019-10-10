@@ -54,7 +54,7 @@ public class LevelBuilderModel {
 	 */
 	public GameState export()
 	{
-		return new GameState(tiles.export(), interactables, actors, new Inventory(), time, chips);
+		return new GameState(tiles.export(Tile[].class, Tile.class), interactables, actors, new Inventory(), time, chips);
 	}
 	
 	/**
