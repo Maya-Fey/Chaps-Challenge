@@ -91,6 +91,12 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 			
 			Tile tile = maze.get(potentialNewPos.x, potentialNewPos.y);
 			
+			if(tile instanceof TileExit)
+			{
+				events.add(ChapsEvent.PLAYER_WINS);
+				break root;
+			}
+			
 			if(tile.isFloor()) {
 				
 				if(!tile.isSafe(player, this)) {
