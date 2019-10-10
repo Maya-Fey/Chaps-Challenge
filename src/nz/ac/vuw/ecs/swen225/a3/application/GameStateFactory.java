@@ -11,6 +11,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
+import nz.ac.vuw.ecs.swen225.a3.maze.InventoryFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
 /**
@@ -20,7 +21,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
  */
 public class GameStateFactory implements ChapsFactory<GameState> 
 {	
-	private final ChapsFactory<Inventory> invFactory = null;
+	private final ChapsFactory<Inventory> invFactory = new InventoryFactory();
 	private final ChapsFactory<Tile> tileFactory = RootFactory.getInstance().tileFactory;
 	private final ChapsFactory<Interactable> interactableFactory = RootFactory.getInstance().interactableFactory;
 	private final ChapsFactory<Actor> actorFactory = RootFactory.getInstance().actorFactory;
