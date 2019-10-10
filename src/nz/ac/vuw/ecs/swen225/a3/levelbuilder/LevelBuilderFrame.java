@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.json.JsonObject;
 import javax.swing.Icon;
@@ -41,6 +43,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	
 	private final LevelBuilderDisplay disp = new LevelBuilderDisplay(this);
 	private final LevelBuilderModel model = new LevelBuilderModel();
+	
+	private Set<File> referencedJars = new HashSet<>();
 	
 	private final JMenuBar menu = new JMenuBar();
 	private final JMenu save = new JMenu("Save");
@@ -306,18 +310,26 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				
 				StringBuilder all = new StringBuilder("Added:\n");
 				
+				boolean added = false;
+				
 				for(ExternalChapsClass<Tile> ext : loader.tileClasses) {
 					RootFactory.getInstance().tileFactory.addFactory(ext.getTypename(), ext.getFactory());
-					all.append(ext.getTypename()); all.append('\n');
+					all.append(ext.getTypename()); all.append('\n'); 
+					added = true;
 				}
 				for(ExternalChapsClass<Actor> ext : loader.actorClasses) {
 					RootFactory.getInstance().actorFactory.addFactory(ext.getTypename(), ext.getFactory());
 					all.append(ext.getTypename()); all.append('\n');
+					added = true;
 				}
 				for(ExternalChapsClass<Interactable> ext : loader.interactableClasses) {
 					RootFactory.getInstance().interactableFactory.addFactory(ext.getTypename(), ext.getFactory());
 					all.append(ext.getTypename()); all.append('\n');
+					added = true;
 				}
+				
+				if(added)
+					referencedJars.add(selected);
 				
 				all.deleteCharAt(all.length() - 1);
 				
