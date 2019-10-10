@@ -97,6 +97,7 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 					JTextField field = new JTextField("");
 					field.setText("" + ((JsonNumber) entry.getValue()).intValue());
 					allDocs.put(field.getDocument(), field);
+					field.getDocument().addDocumentListener(this);
 					intValues.put(field, entry.getKey());
 					main.add(field, constraints);
 					break;
@@ -104,6 +105,7 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 					field = new JTextField("");
 					field.setText(((JsonString) entry.getValue()).getString());
 					allDocs.put(field.getDocument(), field);
+					field.getDocument().addDocumentListener(this);
 					stringValues.put(field, entry.getKey());
 					main.add(field, constraints);
 					break;
