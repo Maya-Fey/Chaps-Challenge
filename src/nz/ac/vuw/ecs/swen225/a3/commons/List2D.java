@@ -28,7 +28,7 @@ public class List2D<Type> {
 	public List2D(Type default_)
 	{
 		this.NULL_VALUE = default_;
-		this.minX = this.minY;
+		this.minX = this.minY = 0;
 		arr.add(new ArrayList<>());
 		arr.get(0).add(NULL_VALUE);
 		this.sizeX = this.sizeY = 1;

@@ -85,6 +85,8 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 			main.add(new JLabel(entry.getKey() + ": "), constraints);
 			constraints.gridx = 1;
 			
+			boolean boolValue = false;
+			
 			switch(entry.getValue().getValueType())
 			{
 				case OBJECT:
@@ -110,13 +112,12 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 					main.add(field, constraints);
 					break;
 				case TRUE:
-					boolean boolVal = true;
+					boolValue = true;
 					//Fall through
 				case FALSE:
-					boolVal = false;
 					JCheckBox checkbox = new JCheckBox();
 					checkbox.addActionListener(this);
-					checkbox.setSelected(boolVal);
+					checkbox.setSelected(boolValue);
 					boolValues.put(checkbox, entry.getKey());
 					main.add(checkbox, constraints);
 					break;
