@@ -11,7 +11,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,11 +24,12 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
-import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
+import nz.ac.vuw.ecs.swen225.a3.persistence.LevelInterface;
+import nz.ac.vuw.ecs.swen225.a3.plugin.Level;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 
@@ -69,10 +69,15 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	//Record and playback
 	private boolean inPlayBackMode;
+	
+	/**
+	 * The current level
+	 */
+	private int currentlevel = 0;
+	
 
 	/**
 	 * Constructor for ChapsControllerImpl.
-	 * Set ups
 	 *
 	 * @param factorymodel
 	 * @param factoryview
@@ -84,6 +89,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		this.addKeyListener(this);
 		this.addWindowListener(this);
+		
 		start();
 	}
 
@@ -91,29 +97,31 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Starts the game, initializing setup
 	 */
 	@Override
-	public void start() {
-		gamePaused=true;
-		currentGameBeingPlayed=false;
-		inPlayBackMode=false;
+	public void start() 
+	{
+		gamePaused = true;
+		currentGameBeingPlayed =  false;
+		inPlayBackMode = false;
 
 		setupMainMenu();
-		setUpWindow();
+		setupWindow();
 		setupTimer();
+		
 		mainMenuInGame.addKeyListener(this);
 		mainMenuNotInGame.addKeyListener(this);
 		gamePanel.addKeyListener(this);
+		
 		this.getContentPane().add(mainMenuNotInGame);
 	}
-
+	
 	////////Gameplay functions\\\\\\\\\\
-
-
-	//model communication methods
+	
 	/**
 	 * Updates the game whenever a tick goes through or when a move has been made
 	 *
 	 */
-	private void updateChapMove(ChapsAction action) {
+	private void updateChapMove(ChapsAction action) 
+	{
 		if(!gamePaused) 
 			eventHandler(model.onAction(action));
 	}
@@ -158,19 +166,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		}
 	}
 
-	/**
-	 * Updates the application graphics. Updates timer, inventory and view of the
-	 * board. Does this by getting information from the maze package and sending all
-	 * the information to the Renderer package.
-	 */
-	private void updateGraphics() {
-		model.getInventoryIcons();// needs updating
-		//view.updateBoard(model.getVisibleArea());
-		view.updateInventory( (List<Visible>) model.getInventoryIcons()); //not yet implemented
-		view.updateRemainingChips(model.getChipsRemaining());
-		view.updateRemainingTime(model.getTimeRemaining());
-	}
-
 	//Game state functions
 
 	/**
@@ -187,7 +182,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * exit the game, saves the game state, game will resume next time the
 	 * application will be started.
 	 */
-	private void exitGameWithSave() {
+	private void exitGameWithSave() 
+	{
 		saveGame();
 		exitGame();
 	}
@@ -205,15 +201,22 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Resume a saved game. Enables save game and resume options if clicked when
 	 * game is in motion.
 	 */
-	private void resumeGame() {
+	private void resumeGame() 
+	{
 		this.setTitle("Chaps's Challenge");
-		currentGameBeingPlayed=true;
+		
 		this.getContentPane().removeAll();
+		
 		this.setJMenuBar(menuBar);
+		
 		this.getContentPane().add(gamePanel);
-	  	gamePaused=false;
 		this.getContentPane().revalidate();
 		this.getContentPane().repaint();
+		
+		gamePaused = false;
+		currentGameBeingPlayed = true;
+		
+		this.eventHandler(EnumSet.of(ChapsEvent.DISPLAY_UPDATE_REQUIRED, ChapsEvent.INV_UPDATE_REQUIRED, ChapsEvent.CHIPS_UPDATE_REQUIRED));
 	}
 
 	/**
@@ -235,23 +238,29 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		this.getContentPane().revalidate();
 		this.getContentPane().repaint();
 	}
+	
+	private void loadLevel()
+	{
+		Level theLevel = LevelInterface.getInstance().getLevel(currentlevel);
+		model.setState(theLevel.load());
+	}
 
 	/**
 	 * Start a new game at level 1.
 	 */
 	private void restartGame() {
-		//dosomething
-
-
+		currentlevel = 0;
+		
+		loadLevel();
 		resumeGame();
 	}
 
 	/**
 	 * start a new game at the last unfinished level.
 	 */
-	private void restartLevel() {
-		//dosomething
-
+	private void restartLevel() 
+	{
+		loadLevel();
 		resumeGame();
 	}
 
@@ -333,20 +342,14 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	//	timer.schedule(TimerTask task, Date firstTime, long period)
 		timer.schedule(tickTask, new Date(), tickCallTime);
 	}
-
-
-
-
-
-
-
+	
 	////////Window, main menu, button setup and functions\\\\\\\\\\
 
 	/**
 	 * Sets up all window settings on initalisation. Adds window closing
 	 * confirmation. Sets window size.
 	 */
-	private void setUpWindow() {
+	private void setupWindow() {
 		gamePanel = view.getRootPanel();
 		gamePanel.setVisible(true);
 		this.setTitle("Chaps's Challenge");
@@ -372,11 +375,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		Dimension buttonDimension = new Dimension(300, 70);
 
 		startNewGame = new JButton("New Game");
-		startNewGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				restartGame();
-			}
+		startNewGame.addActionListener((e) -> {
+		
+			restartGame();
+		
 		});
 		startNewGame.setPreferredSize(buttonDimension);
 
