@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -87,7 +88,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		model = factorymodel.produce();
 		view = factoryview.produce();
 
-		this.addKeyListener(this);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 		this.addWindowListener(this);
 		
 		start();
@@ -106,10 +107,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		setupMainMenu();
 		setupWindow();
 		setupTimer();
-		
-		mainMenuInGame.addKeyListener(this);
-		mainMenuNotInGame.addKeyListener(this);
-		gamePanel.addKeyListener(this);
 		
 		this.getContentPane().add(mainMenuNotInGame);
 	}
@@ -274,9 +271,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		resumeGame();
 	}
 
-
-	//Recorded gameplay playback functions
-
 	/**
 	 * Starts the recorded game
 	 * Adds recorded game to menu bar.
@@ -357,7 +351,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	private void setupWindow() {
 		gamePanel = view.getRootPanel();
-		gamePanel.setVisible(true);
+		
 		this.setTitle("Chaps's Challenge");
 		this.setSize(windowHeight, windowLength);
 		// Adds a window confirmation for closing game
@@ -666,7 +660,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * @param e - KeyEvent
 	 */
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public boolean dispatchKeyEvent(KeyEvent e) {
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
 			exitGame();
 		}
@@ -689,26 +683,35 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 			resumeGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
+			
 			if(inPlayBackMode)
 				playRecordedGame();
 			else
-			updateChapMove(ChapsAction.UP);
+				updateChapMove(ChapsAction.UP);
+			
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			
 			if(inPlayBackMode)
 				pauseRecordedGame();
 			else
-			updateChapMove(ChapsAction.DOWN);
+				updateChapMove(ChapsAction.DOWN);
+			
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			
 			if(inPlayBackMode)
 				stepBackwardRecordedGame();
 			else
-			updateChapMove(ChapsAction.LEFT);
+				updateChapMove(ChapsAction.LEFT);
+			
 		} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			
 			if(inPlayBackMode)
 				stepForwardRecordedGame();
-				else
-			updateChapMove(ChapsAction.RIGHT);
+			else
+				updateChapMove(ChapsAction.RIGHT);
 		}
+		
+		return true;
 	}
 
 
@@ -769,16 +772,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			System.exit(0);
 		}
 	}
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub				//exitPrompt();
-
-	}
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
