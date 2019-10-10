@@ -11,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
+import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
@@ -47,12 +49,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	//menuBar
 	private JMenuBar menuBar;
-	private JMenu gameOptions, help;
+	private JMenu gameOptions, help, recordedPlayback;
 
 	//Menu panel
-	private JPanel mainMenu;
-	private JButton resumeButton, saveGame, startNewGame, loadGame, gameControls, gameHelp, exitGame;
-	private boolean currentGameBeingPlayed=false;
+	private JPanel mainMenuInGame, mainMenuNotInGame;
+	private JButton resumeButton, saveGame, startNewGame, loadGame, gameControls, gameHelp, exitGame, playRecordedGame;
+	private boolean currentGameBeingPlayed;
 	private GridBagLayout grid = new GridBagLayout();
     private GridBagConstraints gbc = new GridBagConstraints();
 
@@ -66,6 +68,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	//Game timer- controls  events
 	private Timer timer;
 
+	//Record and playback
+	private boolean inPlayBackMode;
 
 	/**
 	 * Constructor for ChapsControllerImpl.
@@ -89,13 +93,217 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	@Override
 	public void start() {
+		gamePaused=true;
+		currentGameBeingPlayed=false;
+		inPlayBackMode=false;
+
 		setupMainMenu();
 		setUpWindow();
-		//Starts timer
 		setupTimer();
-		pauseGame();
+		mainMenuInGame.addKeyListener(this);
+		mainMenuNotInGame.addKeyListener(this);
+		gamePanel.addKeyListener(this);
+		this.getContentPane().add(mainMenuNotInGame);
 	}
 
+	////////Gameplay functions\\\\\\\\\\
+
+
+	//model communication methods
+	/**
+	 * Updates the game whenever a tick goes through or when a move has been made
+	 *
+	 */
+	private void updateChapMove(ChapsAction action) {
+		if (!gamePaused) {
+			chapsEvents = model.onAction(action);
+			updateGraphics();//might not be correct place for this?
+		}
+	}
+
+	/**
+	 * Updates the application graphics. Updates timer, inventory and view of the
+	 * board. Does this by getting information from the maze package and sending all
+	 * the information to the Renderer package.
+	 */
+	private void updateGraphics() {
+		model.getInventoryIcons();// needs updating
+		//view.updateBoard(model.getVisibleArea());
+		view.updateInventory( (List<Visible>) model.getInventoryIcons()); //not yet implemented
+		view.updateRemainingChips(model.getChipsRemaining());
+		view.updateRemainingTime(model.getTimeRemaining());
+	}
+
+	//Game state functions
+
+	/**
+	 * Exit the game, the current game state will be lost, the next time the game is
+	 * started, it will resume from the last unfinished level.
+	 */
+	private void exitGame() {
+		//exitPrompt();
+
+		//dosomething
+	}
+
+	/**
+	 * exit the game, saves the game state, game will resume next time the
+	 * application will be started.
+	 */
+	private void exitGameWithSave() {
+		saveGame();
+		exitGame();
+	}
+
+	/**
+	 * Saves the game state.
+	 */
+	private void saveGame() {
+		this.getRootPane().repaint();
+
+
+	}
+
+	/**
+	 * Resume a saved game. Enables save game and resume options if clicked when
+	 * game is in motion.
+	 */
+	private void resumeGame() {
+		this.setTitle("Chaps's Challenge");
+		currentGameBeingPlayed=true;
+		this.getContentPane().removeAll();
+		this.setJMenuBar(menuBar);
+		this.getContentPane().add(gamePanel);
+	  	gamePaused=false;
+		this.getContentPane().revalidate();
+		this.getContentPane().repaint();
+	}
+
+	/**
+	 *  pause the game and display a game is paused dialog.
+	 */
+	private void pauseGame() {
+		this.setTitle("Chaps's Challenge - Game Paused");
+
+		gamePaused=true;
+		this.getContentPane().removeAll();
+		this.setJMenuBar(null);
+		addButtons(); //Get's called because buttons will show up differently if there currently is  game being played or not
+
+		//Shows certain buttons depending on if a game is being played or not.
+		if(currentGameBeingPlayed)
+			this.getContentPane().add(mainMenuInGame);
+		else
+			this.getContentPane().add(mainMenuNotInGame);
+		this.getContentPane().revalidate();
+		this.getContentPane().repaint();
+	}
+
+	/**
+	 * Start a new game at level 1.
+	 */
+	private void restartGame() {
+		//dosomething
+
+
+		resumeGame();
+	}
+
+	/**
+	 * start a new game at the last unfinished level.
+	 */
+	private void restartLevel() {
+		//dosomething
+
+		resumeGame();
+	}
+
+	/**
+	 * Loads a game from json file.
+	 */
+	private void loadGame() {
+		//dosomething
+
+		resumeGame();
+	}
+
+
+	//Recorded gameplay playback functions
+
+	/**
+	 * Starts the recorded game
+	 * Adds recorded game to menu bar.
+	 */
+	private void startRecordedGame() {
+		inPlayBackMode=true;
+		menuBar.add(recordedPlayback);
+		resumeGame();
+		//dosomething
+	}
+
+	/**
+	 * Stops the recorded game.
+	 * Removes recored game from menu bar.
+	 */
+	private void stopRecordedGame() {
+		inPlayBackMode=false;
+		menuBar.remove(recordedPlayback);
+		//dosomething
+	}
+
+	/**
+	 * Initates the start of a recorded playback of a game to tick through.
+	 */
+	private void playRecordedGame() {
+		//dosomething
+	}
+
+	/**
+	 * Pauses the recorded playback of a game to tick through.
+	 */
+	private void pauseRecordedGame() {
+		//dosomething
+	}
+
+	/**
+	 * Steps one step forwards in the recorded game
+	 */
+	private void stepForwardRecordedGame() {
+		//dosomething
+	}
+
+	/**
+	 * Steps one step backwards in the recorded game
+	 */
+	private void stepBackwardRecordedGame() {
+		//dosomething
+	}
+
+	//Timer
+
+	/**
+	 * Sets up timer that schedules tick events
+	 */
+	private void setupTimer() {
+		timer=new Timer("Game Timer");
+		TimerTask tickTask= new TimerTask() { //Task that get called repeatedly after fixed duration - for game tick
+			@Override
+			public void run() {
+					updateChapMove(ChapsAction.TICK);
+			};
+		};
+		long tickCallTime=1000/GameConstants.TICKS_TO_SECONDS_RATIO;//In milliseconds
+	//	timer.schedule(TimerTask task, Date firstTime, long period)
+		timer.schedule(tickTask, new Date(), tickCallTime);
+	}
+
+
+
+
+
+
+
+	////////Window, main menu, button setup and functions\\\\\\\\\\
 
 	/**
 	 * Sets up all window settings on initalisation. Adds window closing
@@ -122,7 +330,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * sets up main menu for the game.
 	 */
 	private void setupMainMenu() {
-		mainMenu = new JPanel();
+		mainMenuInGame = new JPanel();
+		mainMenuNotInGame = new JPanel();
 		Dimension buttonDimension = new Dimension(300, 70);
 
 		startNewGame = new JButton("New Game");
@@ -138,7 +347,9 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		exitGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				exitPrompt();
+
+				currentGameBeingPlayed=!currentGameBeingPlayed;
+				pauseGame();
 			}
 		});
 
@@ -169,8 +380,16 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				saveGame();
 			}
 		});
-
 		saveGame.setPreferredSize(buttonDimension);
+
+		playRecordedGame = new JButton("Play Recorded Game");
+		playRecordedGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				startRecordedGame();
+			}
+		});
+		playRecordedGame.setPreferredSize(buttonDimension);
 
 		gameControls = new JButton("Game Controls");
 		gameControls.addActionListener(new ActionListener() {
@@ -191,92 +410,82 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		gameHelp.setPreferredSize(buttonDimension);
 
 		// Adds main menu buttons
-
 		addButtons();
-
-
-		mainMenu.setVisible(true);
 	}
 
 	/**
-	 * Adds the buttons to main menu
+	 * Adds the buttons to main menu. Adds resume game and save game buttons only if
+	 * currently in a game.
 	 */
 	private void addButtons() {
 
-		mainMenu.removeAll();
 		gbc.insets = new Insets(20, 0, 0, 0); // top padding
-		mainMenu.setLayout(grid);
+		mainMenuInGame.setLayout(grid);
+		mainMenuNotInGame.setLayout(grid);
+
 		resumeButton.setVisible(true);
+
+		// whilst in game
 		if (currentGameBeingPlayed) {
 			System.out.println("made it");
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			mainMenu.add(resumeButton, gbc);
+			mainMenuInGame.add(resumeButton, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 1;
-			mainMenu.add(saveGame, gbc);
+			mainMenuInGame.add(saveGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 2;
-			mainMenu.add(startNewGame, gbc);
+			mainMenuInGame.add(startNewGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 3;
-			mainMenu.add(loadGame, gbc);
+			mainMenuInGame.add(loadGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 4;
-			mainMenu.add(gameControls, gbc);
+			mainMenuInGame.add(playRecordedGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 5;
-			mainMenu.add(gameHelp, gbc);
+			mainMenuInGame.add(gameControls, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 6;
-			mainMenu.add(exitGame, gbc);
+			mainMenuInGame.add(gameHelp, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 7;
+			mainMenuInGame.add(exitGame, gbc);
 		} else {
 
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			mainMenu.add(startNewGame, gbc);
+			mainMenuNotInGame.add(startNewGame, gbc);
 
-			// startNewGame, loadGame, gameControls, gameHelp, exitGame;
+			// whilst not in game
 			gbc.gridx = 0;
 			gbc.gridy = 1;
-			mainMenu.add(loadGame, gbc);
+			mainMenuNotInGame.add(loadGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 2;
-			mainMenu.add(gameControls, gbc);
+			mainMenuNotInGame.add(playRecordedGame, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 3;
-			mainMenu.add(gameHelp, gbc);
+			mainMenuNotInGame.add(gameControls, gbc);
 
 			gbc.gridx = 0;
 			gbc.gridy = 4;
-			mainMenu.add(exitGame, gbc);
+			mainMenuNotInGame.add(gameHelp, gbc);
+
+			gbc.gridx = 0;
+			gbc.gridy = 5;
+			mainMenuNotInGame.add(exitGame, gbc);
 		}
-		mainMenu.revalidate();
-
-	}
-
-	/**
-	 * Sets up timer that schedules tick events
-	 */
-	private void setupTimer() {
-		timer=new Timer("Game Timer");
-		TimerTask tickTask= new TimerTask() { //Task that get called repeatedly after fixed duration - for game tick
-			@Override
-			public void run() {
-					updateChapMove(ChapsAction.TICK);
-			};
-		};
-		long tickCallTime=1000/GameConstants.TICKS_TO_SECONDS_RATIO;//In milliseconds
-	//	timer.schedule(TimerTask task, Date firstTime, long period)
-		timer.schedule(tickTask, new Date(), tickCallTime);
 	}
 
 	/**
@@ -289,7 +498,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		// save
 		JMenuItem save = new JMenuItem("Save game");
 		save.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				saveGame();
@@ -298,7 +506,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		// resume
 		JMenuItem resume = new JMenuItem("Resume");
 		resume.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				resumeGame();
@@ -307,7 +514,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		// pause
 		JMenuItem pause = new JMenuItem("Pause");
 		pause.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				pauseGame();
@@ -316,14 +522,11 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		// exit
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				exitGame();
+				exitPrompt();
 			}
 		});
-
-
 		// Building help menu
 		help = new JMenu("Help");
 		// controls
@@ -335,8 +538,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				controlsHelp();
 			}
 		});
-
-
 		// Instructions
 		JMenuItem instructions = new JMenuItem("Instructions");
 		instructions.addActionListener(new ActionListener() {
@@ -347,19 +548,66 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			}
 		});
 
+		// Recorded game playback
+
+		recordedPlayback = new JMenu("Recorded Playback");
+
+		// play
+		JMenuItem playRecorded = new JMenuItem("Play");
+		playRecorded.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				playRecordedGame();
+			}
+		});
+
+		// pause
+		JMenuItem pauseRecorded = new JMenuItem("Pause");
+		pauseRecorded.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				pauseRecordedGame();
+
+			}
+		});
+
+		// step forwards
+		JMenuItem stepForward = new JMenuItem("Step Forward");
+		stepForward.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				stepForwardRecordedGame();
+			}
+		});
+
+		// step back
+		JMenuItem stepBackward = new JMenuItem("Step Backward");
+		stepBackward.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				stepBackwardRecordedGame();
+			}
+		});
+
 		gameOptions.add(save);
 		gameOptions.add(resume);
 		gameOptions.add(pause);
 		gameOptions.add(exit);
 
-
 		help.add(controls);
 		help.add(instructions);
+
+		recordedPlayback.add(playRecorded);
+		recordedPlayback.add(pauseRecorded);
+		recordedPlayback.add(stepForward);
+		recordedPlayback.add(stepBackward);
 
 		menuBar.add(gameOptions);
 		menuBar.add(help);
 		this.setJMenuBar(menuBar);
 	}
+
+	///////////////Action listeners\\\\\\\\\\\\\\\\\\\\\\\\
 
 	/**
 	 * CTRL-X  - exit the game, the current game state will be lost, the next time the game is started, it will resume from the last unfinished level
@@ -389,131 +637,38 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_1) {
 			restartGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			//System.out.println("space - pause");
 			pauseGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			//System.out.println("escape - resume");
 
+			resumeGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
+			if(inPlayBackMode)
+				playRecordedGame();
+			else
 			updateChapMove(ChapsAction.UP);
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			if(inPlayBackMode)
+				pauseRecordedGame();
+			else
 			updateChapMove(ChapsAction.DOWN);
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			if(inPlayBackMode)
+				stepBackwardRecordedGame();
+			else
 			updateChapMove(ChapsAction.LEFT);
 		} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if(inPlayBackMode)
+				stepForwardRecordedGame();
+				else
 			updateChapMove(ChapsAction.RIGHT);
 		}
 	}
 
 
 
-
-	/**
-	 * Updates the game whenever a tick goes through or when a move has been made
-	 *
-	 */
-	private void updateChapMove(ChapsAction action) {
-		if (!gamePaused) {
-			chapsEvents = model.onAction(action);
-			updateGraphics();//might not be correct place for this?
-		}
-	}
-
-	/**
-	 * Updates the application graphics. Updates timer, inventory and view of the
-	 * board. Does this by getting information from the maze package and sending all
-	 * the information to the Renderer package.
-	 */
-	private void updateGraphics() {
-		model.getInventoryIcons();// needs updating
-		view.updateBoard(model.getVisibleArea());
-		// view.getRootPanel();
-		//view.updateInventory(model.getInventoryIcons()); //not yet implemented
-		view.updateRemainingChips(model.getChipsRemaining());
-		view.updateRemainingTime(model.getTimeRemaining());
-	}
-
-	/**
-	 * Exit the game, the current game state will be lost, the next time the game is
-	 * started, it will resume from the last unfinished level.
-	 */
-	private void exitGame() {
-		System.exit(0);
-	}
-
-	/**
-	 * exit the game, saves the game state, game will resume next time the
-	 * application will be started.
-	 */
-	private void exitGameWithSave() {
-		saveGame();
-		exitGame();
-	}
-
-	/**
-	 * Saves the game.
-	 */
-	private void saveGame() {
-
-
-	}
-
-	/**
-	 * Resume a saved game. Enables save game and resume options if clicked when
-	 * game is in motion.
-	 */
-	private void resumeGame() {
-		currentGameBeingPlayed=true;
-		this.getContentPane().removeAll();
-		this.setJMenuBar(menuBar);
-		this.getContentPane().add(gamePanel);
-		gamePaused=false;
-		this.getRootPane().repaint();
-	}
-
-	/**
-	 * start a new game at level 1.
-	 */
-	private void restartGame() {
-		//dosomething
-
-
-		resumeGame();
-	}
-
-	/**
-	 * start a new game at the last unfinished level.
-	 */
-	private void restartLevel() {
-		//dosomething
-
-		resumeGame();
-	}
-
-	/**
-	 * Loads a game from json file.
-	 */
-	private void loadGame() {
-		//dosomething
-
-		resumeGame();
-	}
-
-	/**
-	 *  pause the game and display a game is paused dialog.
-	 */
-	private void pauseGame() {
-		//Shows certain buttons depending on if a game is being played or not.
-		addButtons();
-
-
-		gamePaused=true;
-		this.getContentPane().removeAll();
-		this.setJMenuBar(null);
-		this.getContentPane().add(mainMenu);
-		this.getRootPane().repaint();
-
-
-	}
-
+//////////////Message Dialogs\\\\\\\\\\\\\\\
 
 	/**
 	 *Help message that displays the information on how to play the game.
@@ -536,17 +691,28 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 *
 	 */
 	private void controlsHelp() {
-		JOptionPane.showMessageDialog(this, "CTRL-X  - Exit's the game without saving\n" + // resumes at start of last
-																							// unfinished level
+		JOptionPane.showMessageDialog(this, "CTRL-X  - Exit's the game without saving\n" +
 				"CTRL-S  - Exit and saves the game\n" + "CTRL-R  - Resume's a saved game\n"
 				+ "CTRL-P  - Start's a new game at the last unfinished level\n"
 				+ "CTRL-1 - Start's a new game at level 1\n" + "SPACE - Pause's the game\n"
-				+ "ESC - Resume's the game\n" + "UP, DOWN, LEFT, RIGHT ARROWS -- Move's Chap within the maze\n" + "",
-				"Chip's Challenge Game Controls", JOptionPane.INFORMATION_MESSAGE);
+				+ "ESC - Resume's the game\n" + "UP, DOWN, LEFT, RIGHT ARROWS -- Move's Chap within the maze\n"
+				+"",
+				"Chap's Challenge Game Controls", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	private void playBackRecordedGameControls() {
+
+		JOptionPane.showMessageDialog(this,
+				"Up Arrow  - Plays the recorded game through" +
+						"Down Arrow  - Pauses the play of the recorded game\n" +
+						"Left Arrow  - Steps Backward in the recored game\n" +
+						"Right Arrow  - Steps forward in the recorded game\n",
+						"Chap's Challenge Recorded game Controls",
+						JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
-	 * Called for confirmation of exiting th game.
+	 * Called for confirmation of exiting the game.
 	 */
 	private void exitPrompt() {
 
@@ -558,57 +724,48 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			System.exit(0);
 		}
 	}
-
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-	}
+		// TODO Auto-generated method stub				//exitPrompt();
 
+	}
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 	}
-
 }
