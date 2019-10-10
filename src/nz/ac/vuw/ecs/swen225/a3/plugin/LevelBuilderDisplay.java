@@ -2,7 +2,7 @@ package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -132,7 +132,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	}
 
 	@Override
-	public void updateInventory(List<Visible> v) 
+	public void updateInventory(Collection<Visible> v) 
 	{
 		throw new UnsupportedOperationException();	
 	}
