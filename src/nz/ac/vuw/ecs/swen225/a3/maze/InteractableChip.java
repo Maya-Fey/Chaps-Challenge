@@ -61,4 +61,16 @@ public class InteractableChip implements Interactable {
 		return nChip;
 	}
 
+	@Override
+	public boolean isWalkable(Actor actor, ModelAccessObject obj) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSafe(Actor actor, ModelAccessObject obj) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
