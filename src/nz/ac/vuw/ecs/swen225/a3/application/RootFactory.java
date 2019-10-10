@@ -21,6 +21,18 @@ public class RootFactory {
 	static {
 		Contracts.notNull(instance, "Initialization ordering error");
 		
+		reinitialize();
+	}
+	
+	/**
+	 * Reinitialize the root factory to default state with no external code
+	 */
+	public static final void reinitialize()
+	{
+		instance.tileFactory.clearAll();
+		instance.interactableFactory.clearAll();
+		instance.actorFactory.clearAll();
+		
 		instance.tileFactory.addFactory(FreeTile.class.getSimpleName(), new FreeTileFactory());
 		
 		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());

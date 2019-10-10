@@ -77,4 +77,12 @@ public class MultiFactory<Type extends Persistable> implements ChapsFactory<Type
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * Removes all factories from this MultiFactory
+	 */
+	void clearAll()
+	{
+		factories.clear();
+	}
+	
 }
