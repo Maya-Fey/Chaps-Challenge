@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
@@ -63,6 +64,8 @@ public class LevelBuilderModel {
 	 */
 	public LevelBuilderModel(GameState state)
 	{
+		Contracts.notNull(state, "Tried to initialize model with null state");
+		
 		Tile[][] raw = state.getMaze();
 		
 		this.tiles = new List2D<>(new TileFree());
@@ -75,6 +78,13 @@ public class LevelBuilderModel {
 		this.interactables = state.getInteractables();
 		this.time = state.getTimeRemaining();
 		this.chips = state.getChipsRemaining();
+		
+		int p = 0;
+		for(Actor actor : actors)
+			if(actor instanceof ActorPlayer)
+				p++;
+		
+		Contracts.arbitrary(p == 1, "The number of players should be exactly one");
 	}
 	
 	/**
@@ -182,6 +192,9 @@ public class LevelBuilderModel {
 	 */
 	public void addActor(Actor actor, int x, int y)
 	{
+		if(actor instanceof ActorPlayer)
+			return;
+		
 		Actor toRemove = null;
 		for(Actor other : actors)
 			if(other.getPosition().x == x && other.getPosition().y == y)
