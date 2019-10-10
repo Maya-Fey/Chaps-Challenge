@@ -134,20 +134,22 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Collection<Visible> getInventoryIcons() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return (Collection<Visible>) ((Collection) inv.getAll());
 	}
 
 	@Override
-	public int getTimeRemaining() {
+	public int getTimeRemaining() 
+	{
 		return timeRemaining;
 	}
 
 	@Override
-	public int getChipsRemaining() {
+	public int getChipsRemaining() 
+	{
 		return chipsRemaining;
 	}
 
