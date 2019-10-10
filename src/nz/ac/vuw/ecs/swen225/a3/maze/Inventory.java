@@ -1,6 +1,7 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -29,9 +30,9 @@ public class Inventory implements Persistable, Cloneable {
 	}
 	
 	/**
-	 * Constructor to create players inventory
-	 * with given list
-	 * @param inventory
+	 * Constructor to create players inventory with given list
+	 * 
+	 * @param inventory The list
 	 */
 	public Inventory(ArrayList<Item> inventory) 
 	{
@@ -39,7 +40,13 @@ public class Inventory implements Persistable, Cloneable {
 		this.inventory = inventory;
 	}
 
-
+	/**
+	 * @return All the items in this inventory
+	 */
+	public Collection<Item> getAll()
+	{
+		return inventory;
+	}
 
 	/**
 	 * Returns a clone of the inventory
@@ -63,23 +70,30 @@ public class Inventory implements Persistable, Cloneable {
 
 	/**
 	 * Removes item given as parameter from players inventory
-	 * @param item
+	 * 
+	 * @param type The type of item we're removing
 	 */
-	public void removeItem(Item item) 
+	public void removeItemOfType(String type) 
 	{
-		if(inventory.contains(item)) {
-			inventory.remove(item);
-		}
+		for(int i = 0; i < inventory.size(); i++)
+			if(inventory.get(i).getClass().getSimpleName().equals(type))
+			{
+				inventory.remove(i);
+				return;
+			}
 	}
 
 	/**
 	 * Method to check if this inventory contains an item
-	 * @param item to check
+	 * @param type The type of item we're removing
 	 * @return if contains item
 	 */
-	public boolean hasItem(Item item) 
+	public boolean hasItemOfType(String type) 
 	{
-		return inventory.contains(item);
+		for(int i = 0; i < inventory.size(); i++)
+			if(inventory.get(i).getClass().getSimpleName().equals(type))
+				return true;
+		return false;
 	}
 	
 	public JsonObject persist()
