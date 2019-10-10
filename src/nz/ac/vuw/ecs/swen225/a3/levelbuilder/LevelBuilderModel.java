@@ -133,12 +133,6 @@ public class LevelBuilderModel {
 	 */
 	public void addInteractable(Interactable interactable, int x, int y)
 	{
-		Interactable toRemove = null;
-		for(Interactable other : interactables)
-			if(other.getPosition().x == x && other.getPosition().y == y)
-				toRemove = other;
-		if(toRemove != null)
-			interactables.remove(toRemove);
 		interactable.setPosition(new Position(x, y));
 		interactables.add(interactable);
 	}
