@@ -59,6 +59,8 @@ public class EditJsonDialog extends JDialog implements ActionListener, DocumentL
 		super(owner, "Edit JSON object", ModalityType.APPLICATION_MODAL);
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		this.setLayout(new BorderLayout());
+		ok.addActionListener(this);
+		cancel.addActionListener(this);
 		
 		JPanel main = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
