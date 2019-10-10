@@ -6,7 +6,10 @@ import java.util.EnumSet;
 import java.util.List;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
+import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
+import nz.ac.vuw.ecs.swen225.a3.commons.RenderVisible;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -18,12 +21,16 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
 	private List2D<Tile> maze = new List2D<>(new FreeTile());
 	
+	@SuppressWarnings("unchecked")
+	private List<Visible>[][] buffer = new List[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
 	private Tile[][] maze2;
 	
 	private List<Actor> actors;
 	private List<Interactable> interactables;
 	
 	private Inventory inv;
+	
+	private int xc, yc;
 
 	private int timeRemaining, chipsRemaining;
 	
@@ -129,9 +136,47 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	}
 
 	@Override
-	public Visible[][] getVisibleArea() {
-		//temporary until method has been further developed
-		return null;
+	public Visible[][] getVisibleArea() 
+	{
+		Visible[][] arr = new Visible[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+		
+		int minx = xc - GameConstants.VISIBILE_SIZE / 2;
+		int miny = yc - GameConstants.VISIBILE_SIZE / 2;
+		int maxx = xc + GameConstants.VISIBILE_SIZE / 2;
+		int maxy = yc + GameConstants.VISIBILE_SIZE / 2;
+		
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				buffer[i][j].clear();
+		
+		for(Actor actor : actors)
+		{
+			int x = actor.getPosition().x;
+			int y = actor.getPosition().y;
+			if(minx <= x && x <= maxx)
+				if(miny <= y && y <= maxy)
+					buffer[x - minx][y - miny].add(actor);
+		}
+		
+		for(Interactable interactable : interactables)
+		{
+			int x = interactable.getPosition().x;
+			int y = interactable.getPosition().y;
+			if(minx <= x && x <= maxx)
+				if(miny <= y && y <= maxy)
+					buffer[x - minx][y - miny].add(interactable);
+		}
+		
+		for(int x = minx; x <= maxx; x++)
+			for(int y = miny; y <= maxy; y++)
+				buffer[x - minx][y - miny].add(maze.get(x, y));
+		
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				arr[i][GameConstants.VISIBILE_SIZE - j - 1] = new RenderVisible(IconFactory.INSTANCE.composite(buffer[i][j]));
+		//             ^ Invert the y-axis
+		
+		return arr;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
