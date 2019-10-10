@@ -26,10 +26,10 @@ import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
  */
 public class LevelBuilderModel {
 	
-	private final List<Actor> actors = new ArrayList<>();
-	private final List<Interactable> interactables = new ArrayList<>();
+	private final List<Actor> actors;
+	private final List<Interactable> interactables;
 
-	private final List2D<Tile> tiles = new List2D<>(new TileFree());
+	private final List2D<Tile> tiles;
 	
 	@SuppressWarnings("unchecked")
 	private final List<Visible>[][] buffer = (List<Visible>[][]) new List<?>[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
@@ -42,11 +42,36 @@ public class LevelBuilderModel {
 	 */
 	public LevelBuilderModel()
 	{
+		interactables = new ArrayList<>();
+		actors = new ArrayList<>();
+		tiles = new List2D<>(new TileFree());
+		
 		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
 				buffer[i][j] = new ArrayList<>();
 		actors.add(new ActorPlayer());
 		actors.get(0).setPosition(new Position(0, 0));
+	}
+	
+	/**
+	 * Constructs a model from existing state
+	 * 
+	 * @param state The state to use
+	 */
+	public LevelBuilderModel(GameState state)
+	{
+		Tile[][] raw = state.getMaze();
+		
+		this.tiles = new List2D<>(new TileFree());
+		for(int i = 0; i < raw.length; i++)
+			for(int j = 0; j < raw[i].length; j++)
+				if(raw[i][j] != null)
+					this.tiles.set(raw[i][j], i, j);
+		
+		this.actors = state.getActors();
+		this.interactables = state.getInteractables();
+		this.time = state.getTimeRemaining();
+		this.chips = state.getChipsRemaining();
 	}
 	
 	/**
