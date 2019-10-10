@@ -11,13 +11,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * @author James
  */
 public interface Item extends Persistable, Visible, Cloneable {
-
-	@Override
-	default String getName()
-	{
-		return "item";
-	}
-	
+		
 	default JsonObject persist()
 	{
 		return this.getBuilder().build();

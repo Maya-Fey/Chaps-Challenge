@@ -127,16 +127,11 @@ public class GameState implements Persistable {
 						 .add("width", maze.length)
 						 .add("height", maze[0].length)
 						 .add("tiles", xwise)
-						 .add(inv.getName(), inv.persist())
+						 .add("inventory", inv.persist())
 						 .add("interactables", interactables)
 						 .add("actors", actors);
 		
 		return builder.build();
-	}
-
-	public String getName() 
-	{
-		return "state";
 	}
 
 }

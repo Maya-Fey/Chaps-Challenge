@@ -42,11 +42,6 @@ public class Player implements Actor {
 	}
 
 	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
 	public Icon getIcon() 
 	{
 		return IconFactory.INSTANCE.loadIcon("chap.png");

@@ -109,9 +109,4 @@ public class Inventory implements Persistable, Cloneable {
 		return builder.build();
 	}
 
-	public String getName()
-	{
-		return "inventory";
-	}
-
 }

@@ -44,12 +44,7 @@ public class TileFree implements Tile {
 	{
 		this.position = position;
 	}
-
-	@Override
-	public String getName() {
-		return "FreeTile";
-	}
-
+	
 	@Override
 	public Icon getIcon() {
 		return IconFactory.INSTANCE.loadIcon("freeTile.png");

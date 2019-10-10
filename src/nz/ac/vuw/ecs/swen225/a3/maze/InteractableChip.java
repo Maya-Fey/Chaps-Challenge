@@ -24,13 +24,7 @@ public class InteractableChip implements Interactable {
 	{
 		this.position = position;
 	}
-
-	@Override
-	public String getName() 
-	{
-		return null;
-	}
-
+	
 	@Override
 	public Icon getIcon() 
 	{
