@@ -5,6 +5,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChipFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.Item;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExitFactory;
@@ -63,5 +64,10 @@ public class RootFactory {
 	 * The actor factory
 	 */
 	public final MultiFactory<Actor> actorFactory = new MultiFactory<Actor>();
+	
+	/**
+	 * The item factory
+	 */
+	public final MultiFactory<Item> itemFactory = new MultiFactory<Item>();
 	
 }

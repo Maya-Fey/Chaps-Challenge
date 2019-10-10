@@ -141,6 +141,7 @@ public class LevelBuilderModel {
 	 */
 	public void addTile(Tile tile, int x, int y)
 	{
+		tile.setPosition(new Position(x, y));
 		tiles.set(tile, x, y);
 	}
 	
