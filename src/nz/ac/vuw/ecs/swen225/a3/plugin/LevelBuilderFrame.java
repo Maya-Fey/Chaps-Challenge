@@ -29,7 +29,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import nz.ac.vuw.ecs.swen225.a3.application.FactoryNotFoundException;
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.application.GameStateFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.MultiFactory;
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
@@ -61,6 +63,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	private final JMenuItem saveState = new JMenuItem("Save");
 	private final JMenuItem export = new JMenuItem("Export");
 	private final JMenu load = new JMenu("Load");
+	private final JMenuItem loadState = new JMenuItem("Load");
 	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu edit = new JMenu("Edit");
 	private final JMenuItem clear = new JMenuItem("Clear");
@@ -76,10 +79,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	 * Constructor
 	 */
 	public LevelBuilderFrame()
-	{
-		x = y = 0;
-		sX = sY = -1;
-		
+	{		
 		this.add(disp);
 		
 		this.setJMenuBar(menu);
@@ -87,6 +87,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		save.add(saveState); saveState.addActionListener(this);
 		save.add(export); export.addActionListener(this);
 		menu.add(load);
+		load.add(loadState); loadState.addActionListener(this);
 		load.add(loadJar); loadJar.addActionListener(this);
 		menu.add(edit);
 		edit.add(clear); clear.addActionListener(this);
@@ -97,22 +98,16 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		this.setVisible(true);
 		this.addKeyListener(this);
 		
-		this.redisplay();
+		reinitialize(null);
 		
 		center(this);
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) 
-	{
-		
-	}
+	public void keyPressed(KeyEvent arg0) {}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) 
-	{
-		
-	}
+	public void keyReleased(KeyEvent arg0) {}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) 
@@ -222,17 +217,30 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				JOptionPane.showMessageDialog(this, "You must enter a positive number of some kind.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if(arg0.getSource() == clear) {
-			model = new LevelBuilderModel();
-			sX = sY = -1;
-			x = y = 0;
-			this.redisplay();
-			disp.updateRemainingTime(model.getTime());
-			RootFactory.reinitialize();
+			reinitialize(null);
 		} else if(arg0.getSource() == export) {
 			export();
 		} else if(arg0.getSource() == saveState) {
 			save();
+		} else if(arg0.getSource() == loadState) {
+			load();
 		}
+	}
+	
+	/**
+	 * Reinitialize the builder to either a brand new level or a different level
+	 * 
+	 * @param state The state of the existing level, if there is one
+	 */
+	private void reinitialize(GameState state)
+	{
+		if(state == null)
+			RootFactory.reinitialize();
+		model = state == null ? new LevelBuilderModel() : new LevelBuilderModel(state);
+		sX = sY = -1;
+		x = y = 0;
+		this.redisplay();
+		disp.updateRemainingTime(model.getTime());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -475,6 +483,40 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 				JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			} 
+	    }
+	}
+	
+	/**
+	 * Loads state from file
+	 */
+	private void load()
+	{
+		if(!(JOptionPane.showConfirmDialog(this, "Loading a state will overwrite whatever you currently have. Are you sure?") == JOptionPane.OK_OPTION))
+    		return;
+		
+		JFileChooser chooser = new JFileChooser(new File("."));
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Save Files", "json");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Load");
+	    chooser.setDialogTitle("Load Level for Further Editing");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	try {
+	    		JsonObject obj = JsonFileInterface.loadFromFile(selected);
+	    		GameStateFactory factory = new GameStateFactory();
+	    		GameState state = factory.resurrect(obj);
+	    		
+	    		this.reinitialize(state);
+	    		
+	    	} catch(FactoryNotFoundException e) {
+	    		JOptionPane.showMessageDialog(this, "There was an error in loading your file. It's likely that you haven't imported all the external code that this level requires.", "Error", JOptionPane.ERROR_MESSAGE);
+	    	} catch(Exception e) {
+	    		JOptionPane.showMessageDialog(this, "There was an error in loading: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+	    	}
 	    }
 	}
 	
