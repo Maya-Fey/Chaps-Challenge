@@ -16,10 +16,11 @@ public interface Tile extends MazeObject, Visible, Cloneable {
 
 	/**
 	 * @param actor The actor that is now on top of the tile
+	 * @param obj Model Access
 	 *
 	 * @return true if this actor can walk on top of this tile, false otherwise
 	 */
-	boolean isSafe(Actor actor);
+	boolean isSafe(Actor actor, ModelAccessObject obj);
 
 	/**
 	 * Called when an interactable object (e.g. dirt) stands on top
@@ -45,7 +46,7 @@ public interface Tile extends MazeObject, Visible, Cloneable {
 	 * otherwise method will return a free tile for this tile
 	 * @return new FreeTile
 	 */
-	FreeTile convertToFreeTile();
+	TileFree convertToFreeTile();
 
 	/**
 	 * @return clone of tile

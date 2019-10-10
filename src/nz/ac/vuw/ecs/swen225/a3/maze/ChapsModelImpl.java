@@ -20,7 +20,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  */
 public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
-	private List2D<Tile> maze = new List2D<>(new FreeTile());
+	private List2D<Tile> maze = new List2D<>(new TileFree());
 	
 	@SuppressWarnings("unchecked")
 	private List<Visible>[][] buffer = new List[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
@@ -75,18 +75,36 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		
 		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
+			
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
 			timeRemaining--;
 			//return game over time time <= to 0
 			if(timeRemaining <= 0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
+			
+			
 		}
 		
+		root:
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
-			Position newPos = player.getPosition().translate(action);
+			Position potentialNewPos = player.getPosition().translate(action);
+			
+			Tile tile = maze.get(potentialNewPos.x, potentialNewPos.y);
+			
+			if(tile.isFloor()) {
+				
+				if(!tile.isSafe(player, this)) {
+					events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+					break root;
+				}
+				
+				
+				
+			}
 		}
 		
 		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
+		
 		return enumEvents;
 	}
 
@@ -120,7 +138,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	{
 		Tile[][] raw = state.getMaze();
 		
-		this.maze = new List2D<>(new FreeTile());
+		this.maze = new List2D<>(new TileFree());
 		for(int i = 0; i < raw.length; i++)
 			for(int j = 0; j < raw[i].length; j++)
 				if(raw[i][j] != null)

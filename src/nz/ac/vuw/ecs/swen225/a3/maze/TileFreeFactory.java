@@ -5,14 +5,14 @@ package nz.ac.vuw.ecs.swen225.a3.maze;
  * 
  * @author Claire
  */
-public class FreeTileFactory extends MazeObjectFactory<FreeTile> {
+public class TileFreeFactory extends MazeObjectFactory<TileFree> {
 
 	/**
 	 * Constructor
 	 */
-	public FreeTileFactory() 
+	public TileFreeFactory() 
 	{
-		super(() -> { return new FreeTile(); });
+		super(() -> { return new TileFree(); });
 	}
 
 	

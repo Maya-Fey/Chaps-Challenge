@@ -9,26 +9,26 @@ import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
  * @author James
  *
  */
-public class FreeTile implements Tile {
+public class TileFree implements Tile {
 	
 	private Position position;
 	
 	/**
 	 * Blank constructor for newInstance
 	 */
-	public FreeTile() {}
+	public TileFree() {}
 	
 	/**
 	 * @param pos
 	 */
-	public FreeTile(Position pos)
+	public TileFree(Position pos)
 	{
 		this.position = pos;
 	}
 	
-	public FreeTile clone() 
+	public TileFree clone() 
 	{
-		FreeTile tile = new FreeTile();
+		TileFree tile = new TileFree();
 		tile.setPosition(this.position.clone());
 		return tile;
 	}
@@ -62,36 +62,21 @@ public class FreeTile implements Tile {
 	}
 
 	@Override
-	public boolean isSafe(Actor actor) 
+	public boolean isSafe(Actor actor, ModelAccessObject obj) 
 	{
 		return true;
 	}
 
 	@Override
-	public void onEnter(Interactable interactable, ModelAccessObject obj) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onEnter(Interactable interactable, ModelAccessObject obj) {}
 
 	@Override
-	public void onEnter(Actor actor, ModelAccessObject obj) {
-		// TODO Auto-generated method stub
-		//TODO
-
-	}
+	public void onEnter(Actor actor, ModelAccessObject obj) {}
 
 	@Override
-	public FreeTile convertToFreeTile() {
+	public TileFree convertToFreeTile() {
 		return null;
 	}
-
-//	/**
-//	 * Method is run when a player is on this tile to convert this tile to a free tile
-//	 * @return new free tile
-//	 */
-//	public FreeTile convertToFreeTile() {
-//		return new FreeTile(this.position, icon);
-//	}
 
 
 }

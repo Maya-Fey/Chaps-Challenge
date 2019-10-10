@@ -2,8 +2,8 @@ package nz.ac.vuw.ecs.swen225.a3.application;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
-import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
-import nz.ac.vuw.ecs.swen225.a3.maze.FreeTileFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFreeFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChipFactory;
@@ -33,7 +33,7 @@ public class RootFactory {
 		instance.interactableFactory.clearAll();
 		instance.actorFactory.clearAll();
 		
-		instance.tileFactory.addFactory(FreeTile.class.getSimpleName(), new FreeTileFactory());
+		instance.tileFactory.addFactory(TileFree.class.getSimpleName(), new TileFreeFactory());
 		
 		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());
 	}

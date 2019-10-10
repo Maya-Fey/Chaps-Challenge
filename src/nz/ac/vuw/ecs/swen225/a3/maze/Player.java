@@ -78,7 +78,7 @@ public class Player implements Actor{
 	 */
 	public void removeInventoryItem(Item item) {
 		//TODO check the .contains works as .equals might need to be overridden
-		inventory.removeItem(item);
+		//inventory.removeItem(item);
 	}
 	
 	/**

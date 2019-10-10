@@ -11,7 +11,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.RenderVisible;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.levelbuilder.tmp.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
-import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
@@ -29,7 +29,7 @@ public class LevelBuilderModel {
 	private final List<Actor> actors = new ArrayList<>();
 	private final List<Interactable> interactables = new ArrayList<>();
 
-	private final List2D<Tile> tiles = new List2D<>(new FreeTile());
+	private final List2D<Tile> tiles = new List2D<>(new TileFree());
 	
 	@SuppressWarnings("unchecked")
 	private final List<Visible>[][] buffer = (List<Visible>[][]) new List<?>[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
