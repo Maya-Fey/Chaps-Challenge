@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
@@ -23,12 +24,13 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	
 	@SuppressWarnings("unchecked")
 	private List<Visible>[][] buffer = new List[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
-	private Tile[][] maze2;
 	
 	private List<Actor> actors;
 	private List<Interactable> interactables;
 	
 	private Inventory inv;
+	
+	private Player player;
 	
 	private int xc, yc;
 
@@ -70,21 +72,17 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
 		List<ChapsEvent> events = new ArrayList<ChapsEvent>();
+		
 		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
 			timeRemaining--;
 			//return game over time time <= to 0
-			if(timeRemaining<=0)
+			if(timeRemaining <= 0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
 		}
-
-
-		if(action.equals(ChapsAction.UP)||action.equals(ChapsAction.DOWN)||action.equals(ChapsAction.LEFT)||action.equals(ChapsAction.RIGHT)) {
-			//find player actor throwing error if none found
-
-			Player player = findPlayer();
-			
+		
+		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
 			Position newPos = player.getPosition().translate(action);
 		}
 		
@@ -99,8 +97,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	private Player findPlayer()
 	{
 		for(Actor a : actors) {
-			if (a instanceof Player) {
-				return (Player)a;
+			if(a instanceof Player) {
+				return (Player) a;
 			}
 		}
 
@@ -133,6 +131,10 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		this.inv = state.getInventory();
 		this.timeRemaining = state.getTimeRemaining();
 		this.chipsRemaining = state.getChipsRemaining();
+		
+		this.player = findPlayer();
+		
+		Contracts.notNull(player, "A valid GameState should contain a player");
 	}
 
 	@Override
