@@ -42,7 +42,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	private static final long serialVersionUID = -6560472484901364076L;
 	
 	private final LevelBuilderDisplay disp = new LevelBuilderDisplay(this);
-	private final LevelBuilderModel model = new LevelBuilderModel();
+	private LevelBuilderModel model = new LevelBuilderModel();
 	
 	private Set<File> referencedJars = new HashSet<>();
 	
@@ -51,6 +51,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	private final JMenuItem loadJar = new JMenuItem("Load External Code");
 	private final JMenu load = new JMenu("Load");
 	private final JMenu edit = new JMenu("Edit");
+	private final JMenuItem clear = new JMenuItem("Clear");
 	private final JMenuItem setTime = new JMenuItem("Set Time Available");
 	
 	private boolean add = true;
@@ -74,6 +75,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		menu.add(load);
 		load.add(loadJar); loadJar.addActionListener(this);
 		menu.add(edit);
+		edit.add(clear); clear.addActionListener(this);
 		edit.add(setTime); setTime.addActionListener(this);
 		
 		this.setTitle("Chap's Challenge Level Builder");
@@ -203,6 +205,13 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			} catch(NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "You must enter a positive number of some kind.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
+		} else if(arg0.getSource() == clear) {
+			model = new LevelBuilderModel();
+			sX = sY = -1;
+			x = y = 0;
+			this.redisplay();
+			disp.updateRemainingTime(model.getTime());
+			RootFactory.reinitialize();
 		}
 	}
 	
@@ -280,7 +289,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	{
 		JsonObject jObj = obj.persist();
 		
-		if(EditJsonDialog.canEdit(jObj))
+		if(!EditJsonDialog.canEdit(jObj))
 			return obj;
 		
 		EditJsonDialog dialog = new EditJsonDialog(this, jObj, true);
