@@ -53,12 +53,7 @@ public class Player implements Actor {
 	}
 
 	@Override
-	public void tick() {}
-	
-	@Override
-	public void kill() {
-		
-	}
+	public void tick(ModelAccessObject obj) {}
 
 	@Override
 	public boolean isPlayer() 
@@ -70,12 +65,6 @@ public class Player implements Actor {
 	public void onCollide(Actor actor, ModelAccessObject obj) 
 	{
 		//TODO not sure what do do here
-	}
-
-	@Override
-	public boolean isDead() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }
