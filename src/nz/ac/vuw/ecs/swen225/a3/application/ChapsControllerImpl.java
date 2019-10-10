@@ -331,15 +331,20 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Sets up timer that schedules tick events
 	 */
 	private void setupTimer() {
-		timer=new Timer("Game Timer");
-		TimerTask tickTask= new TimerTask() { //Task that get called repeatedly after fixed duration - for game tick
+		
+		timer = new Timer("Game Timer");
+		
+		TimerTask tickTask = new TimerTask() { //Task that get called repeatedly after fixed duration - for game tick
+			
 			@Override
 			public void run() {
-					updateChapMove(ChapsAction.TICK);
+				updateChapMove(ChapsAction.TICK);
 			};
+			
 		};
-		long tickCallTime=1000/GameConstants.TICKS_TO_SECONDS_RATIO;//In milliseconds
-	//	timer.schedule(TimerTask task, Date firstTime, long period)
+
+		long tickCallTime = 1000 / GameConstants.TICKS_TO_SECONDS_RATIO; //In milliseconds
+		
 		timer.schedule(tickTask, new Date(), tickCallTime);
 	}
 	
