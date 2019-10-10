@@ -71,6 +71,22 @@ public class List2D<Type> {
 	}
 	
 	/**
+	 * @return A 2D version of this array, with <code>null</code> for unassigned values
+	 */
+	public Type[][] export()
+	{
+		@SuppressWarnings("unchecked")
+		Type[][] arr = (Type[][]) new Object[sizeX][sizeY];
+		
+		for(int i = 0; i < this.arr.size(); i++)
+			for(int j = 0; j < this.arr.get(i).size(); j++)
+				if(this.arr.get(i).get(j) != null)
+					arr[i][j] = this.arr.get(i).get(j);
+		
+		return arr;
+	}
+	
+	/**
 	 * Ensures the minimum x is a certain value
 	 * 
 	 * @param x the needed x

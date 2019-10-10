@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.Icon;
 
+import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -13,6 +14,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
+import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 
@@ -44,6 +46,14 @@ public class LevelBuilderModel {
 			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
 				buffer[i][j] = new ArrayList<>();
 		actors.add(new ActorPlayer());
+	}
+	
+	/**
+	 * @return The state of this model represented by a GameState
+	 */
+	public GameState export()
+	{
+		return new GameState(tiles.export(), interactables, actors, new Inventory(), time, chips);
 	}
 	
 	/**
