@@ -1,7 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -15,7 +14,6 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * well as display important information such as the time, level, inventory, etc.
  *
  * @author Claire 300436297
- * @author Jakob 300444995
  */
 public interface ChapsView {
 
@@ -60,7 +58,7 @@ public interface ChapsView {
 	 *
 	 *
 	 */
-	void updateInventory(Collection<Visible> v);
+	void updateInventory(List<Visible> v);
 
 
 	/**
@@ -80,7 +78,7 @@ public interface ChapsView {
 	 * for the game. This JPanel isn't new but rather a reference to the one
 	 * updated by this view.
 	 *
-	 * @return This view's root JSplitPane
+	 * @return This view's root JPanel
 	 */
 	JSplitPane getRootPanel();
 
