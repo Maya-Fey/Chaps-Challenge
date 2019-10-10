@@ -177,6 +177,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			
 			};
 		}
+		disp.updateRemainingChips(model.getChips());
 		disp.updateBoard(vis);
 	}
 
