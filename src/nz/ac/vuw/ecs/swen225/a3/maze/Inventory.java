@@ -1,9 +1,11 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 
@@ -16,24 +18,23 @@ public class Inventory implements Persistable, Cloneable {
 
 	private ArrayList<Item> inventory;
 
-
-
 	/**
 	 * Constructor to create the players inventory
 	 * starting as empty
 	 */
-	public Inventory() {
+	public Inventory() 
+	{
 		super();
 		this.inventory = new ArrayList<Item>();
 	}
-	
 	
 	/**
 	 * Constructor to create players inventory
 	 * with given list
 	 * @param inventory
 	 */
-	public Inventory(ArrayList<Item> inventory) {
+	public Inventory(ArrayList<Item> inventory) 
+	{
 		super();
 		this.inventory = inventory;
 	}
@@ -43,11 +44,11 @@ public class Inventory implements Persistable, Cloneable {
 	/**
 	 * Returns a clone of the inventory
 	 */
-	public Inventory clone() {
+	public Inventory clone() 
+	{
 		ArrayList<Item> inventoryClone = new ArrayList<>();
-		for(Item i:inventory) {
+		for(Item i : inventory) 
 			inventoryClone.add(i.clone());
-		}
 		return new Inventory(inventoryClone);
 	}
 
@@ -55,7 +56,8 @@ public class Inventory implements Persistable, Cloneable {
 	 * Adds item given as parameter to players inventory
 	 * @param item
 	 */
-	public void addItem(Item item) {
+	public void addItem(Item item) 
+	{
 		inventory.add(item);
 	}
 
@@ -63,9 +65,9 @@ public class Inventory implements Persistable, Cloneable {
 	 * Removes item given as parameter from players inventory
 	 * @param item
 	 */
-	public void removeItem(Item item) {
-		//TODO check the .contains works as .equals might need to be overridden
-		if (inventory.contains(item)) {
+	public void removeItem(Item item) 
+	{
+		if(inventory.contains(item)) {
 			inventory.remove(item);
 		}
 	}
@@ -75,21 +77,22 @@ public class Inventory implements Persistable, Cloneable {
 	 * @param item to check
 	 * @return if contains item
 	 */
-	public boolean hasItem(Item item) {
+	public boolean hasItem(Item item) 
+	{
 		return inventory.contains(item);
 	}
-
-	/*
-	 * Ideally, this class should be able to facilitate:
-	 *  - Checking whether an item of a certain type is in the inventory.
-	 *  - Adding items
-	 *  - Removing only one item of a certain type
-	 */
-
+	
 	public JsonObject persist()
 	{
-		//TODO: Implement
-		throw new UnsupportedOperationException("Not implemented yet.");
+		JsonObjectBuilder builder = this.getBuilder();
+		JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
+		
+		for(Item item : inventory)
+			arrBuilder.add(item.getClass().getName());
+		
+		builder.add("items", arrBuilder.build());
+		
+		return builder.build();
 	}
 
 	public String getName()
