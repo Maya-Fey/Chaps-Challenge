@@ -31,8 +31,6 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	private Inventory inv;
 	
 	private Player player;
-	
-	private int xc, yc;
 
 	private int timeRemaining, chipsRemaining;
 	
@@ -165,6 +163,9 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	public Visible[][] getVisibleArea() 
 	{
 		Visible[][] arr = new Visible[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+		
+		int xc = player.getPosition().x;
+		int yc = player.getPosition().y;
 		
 		int minx = xc - GameConstants.VISIBILE_SIZE / 2;
 		int miny = yc - GameConstants.VISIBILE_SIZE / 2;
