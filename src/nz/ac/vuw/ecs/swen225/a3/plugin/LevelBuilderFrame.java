@@ -1,4 +1,4 @@
-package nz.ac.vuw.ecs.swen225.a3.levelbuilder;
+package nz.ac.vuw.ecs.swen225.a3.plugin;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
