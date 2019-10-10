@@ -39,6 +39,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
+import nz.ac.vuw.ecs.swen225.a3.persistence.JsonFileInterface;
 
 /**
  * @author Claire
@@ -56,6 +57,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	
 	private final JMenuBar menu = new JMenuBar();
 	private final JMenu save = new JMenu("Save");
+	private final JMenuItem saveState = new JMenuItem("Save");
 	private final JMenuItem export = new JMenuItem("Export");
 	private final JMenu load = new JMenu("Load");
 	private final JMenuItem loadJar = new JMenuItem("Load External Code");
@@ -81,6 +83,7 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		
 		this.setJMenuBar(menu);
 		menu.add(save);
+		save.add(saveState); saveState.addActionListener(this);
 		save.add(export); export.addActionListener(this);
 		menu.add(load);
 		load.add(loadJar); loadJar.addActionListener(this);
@@ -224,6 +227,8 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 			RootFactory.reinitialize();
 		} else if(arg0.getSource() == export) {
 			export();
+		} else if(arg0.getSource() == saveState) {
+			save();
 		}
 	}
 	
@@ -254,7 +259,6 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 		
 		if(dialog.hasChoice() && dialog.getChoice() != null && !dialog.getChoice().equals(""))
 		{
-			//TODO: Possibly edit beforehand?
 			int x = translateX();
 			int y = translateY();
 			
@@ -362,6 +366,9 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 	    }
 	}
 	
+	/**
+	 * Collates all required files for the designed level into a zip
+	 */
 	private void export()
 	{
 		JFileChooser chooser = new JFileChooser(new File("."));
@@ -421,6 +428,41 @@ public class LevelBuilderFrame extends JFrame implements KeyListener, ActionList
 					zos.close();
 				}
 				
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} 
+	    }
+	}
+	
+	/**
+	 * Saves the state for later loading
+	 */
+	private void save()
+	{
+		JFileChooser chooser = new JFileChooser(new File("."));
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Save Files", "json");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Save");
+	    chooser.setDialogTitle("Save State for Later Editing");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	if(selected.exists() && selected.isDirectory()) 
+	    		JOptionPane.showMessageDialog(this, "That's a Directory", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	if(selected.exists() && selected.isFile() && !(JOptionPane.showConfirmDialog(this, "This file already exists. Are you sure you want to overwrite it?") == JOptionPane.OK_OPTION))
+	    		return;
+	    	
+	    	if(selected.exists() && !selected.delete())
+	    		JOptionPane.showMessageDialog(this, "File couldn't be overwritten", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	try {
+				selected.createNewFile();
+				
+				JsonFileInterface.saveToFile(model.export().persist(), selected);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
