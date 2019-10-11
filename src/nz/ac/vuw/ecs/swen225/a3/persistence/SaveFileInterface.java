@@ -56,5 +56,25 @@ public class SaveFileInterface {
 			return null;
 		}
 	}
+	
+	/**
+	 * @return The state that was saved to the file, or <code>null</code> if the file
+	 * doesn't exist or is invalid.
+	 */
+	public static int getLevel()
+	{
+		if(!(SAVE_LOCATION.exists() && SAVE_LOCATION.isFile()))
+			return -1;
+		
+		try {
+			
+			JsonObject saveObj = JsonFileInterface.loadFromFile(SAVE_LOCATION);
+		
+			return saveObj.getInt("level");
+			
+		} catch (IOException e) {
+			return -1;
+		}
+	}
 
 }

@@ -54,7 +54,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private JPanel mainMenuInGame, mainMenuNotInGame;
 	private JButton resumeButton, saveGame, startNewGame, loadGame, gameControls, gameHelp, exitGame, playRecordedGame;
 	private boolean currentGameBeingPlayed;
-	private GridBagLayout grid = new GridBagLayout();
     private GridBagConstraints gbc = new GridBagConstraints();
 
 	//Game board panel
@@ -180,16 +179,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		//dosomething
 	}
-
-	/**
-	 * exit the game, saves the game state, game will resume next time the
-	 * application will be started.
-	 */
-	private void exitGameWithSave() 
-	{
-		saveGame();
-		exitGame();
-	}
 	
 	/**
 	 * Resume a saved game. Enables save game and resume options if clicked when
@@ -220,8 +209,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		this.setTitle("Chaps's Challenge - Game Paused");
 
 		gamePaused=true;
+		
 		this.getContentPane().removeAll();
 		this.setJMenuBar(null);
+		
 		addButtons(); //Get's called because buttons will show up differently if there currently is  game being played or not
 
 		//Shows certain buttons depending on if a game is being played or not.
@@ -229,6 +220,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			this.getContentPane().add(mainMenuInGame);
 		else
 			this.getContentPane().add(mainMenuNotInGame);
+		
 		this.getContentPane().revalidate();
 		this.getContentPane().repaint();
 	}
@@ -273,12 +265,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 
 	/**
-	 * Loads a game from json file.
+	 * Loads the game from the last saved state and starts it, or does nothing if there is no saved game
 	 */
-	private void loadGame() {
-		GameState state = SaveFileInterface.load();
-		this.currentlevel = state.getLevel();
+	private void loadGame() 
+	{
+		int levelNum = SaveFileInterface.getLevel();
+		
+		if(levelNum == -1)
+			return;
+		
+		this.currentlevel = levelNum;
 		this.loadLevel();
+		GameState state = SaveFileInterface.load();
 		model.setState(state);
 		resumeGame();
 	}
@@ -389,8 +387,14 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		exitGame = new JButton("Exit Game");
 		exitGame.addActionListener((e) -> {
-				currentGameBeingPlayed=!currentGameBeingPlayed;
+			if(currentGameBeingPlayed) {
+				this.currentGameBeingPlayed = false;
 				pauseGame();
+			} else {
+				this.setVisible(false);
+				this.dispose();
+				timer.cancel();
+			}
 		});
 
 		exitGame.setPreferredSize(buttonDimension);
@@ -443,14 +447,14 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private void addButtons() {
 
 		gbc.insets = new Insets(20, 0, 0, 0); // top padding
-		mainMenuInGame.setLayout(grid);
-		mainMenuNotInGame.setLayout(grid);
+		mainMenuInGame.setLayout(new GridBagLayout());
+		mainMenuNotInGame.setLayout(new GridBagLayout());
 
 		resumeButton.setVisible(true);
 
 		// whilst in game
-		if (currentGameBeingPlayed) {
-			System.out.println("made it");
+		if(currentGameBeingPlayed) {
+			gbc.weightx = gbc.weighty = 1;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			mainMenuInGame.add(resumeButton, gbc);
@@ -461,14 +465,13 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			gbc.gridy = 3;
 			mainMenuInGame.add(loadGame, gbc);
 			gbc.gridy = 4;
-			mainMenuInGame.add(playRecordedGame, gbc);
-			gbc.gridy = 5;
 			mainMenuInGame.add(gameControls, gbc);
-			gbc.gridy = 6;
+			gbc.gridy = 5;
 			mainMenuInGame.add(gameHelp, gbc);
-			gbc.gridy = 7;
+			gbc.gridy = 6;
 			mainMenuInGame.add(exitGame, gbc);
 		} else {
+			gbc.weightx = gbc.weighty = 1;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			mainMenuNotInGame.add(startNewGame, gbc);
@@ -591,8 +594,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
 			exitGame();
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
-			exitGameWithSave();
+			saveGame();
+			exitGame();
 		} else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_R) {
+			loadGame();
 			resumeGame();
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_P) {
 			restartLevel();
