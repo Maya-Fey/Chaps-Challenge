@@ -70,8 +70,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	private List<Interactable> cloneInteractables()
 	{
 		List<Interactable> clone = new ArrayList<>();
-		for(Interactable i:interactables) {
-			clone.add(i.clone());
+		for(Interactable i : interactables) {
+			clone.add((Interactable) i.clone());
 		}
 		return clone;
 	}
