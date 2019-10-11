@@ -14,6 +14,7 @@ import java.util.EnumSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.json.JsonObject;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ import nz.ac.vuw.ecs.swen225.a3.persistence.SaveFileInterface;
 import nz.ac.vuw.ecs.swen225.a3.plugin.Level;
 import nz.ac.vuw.ecs.swen225.a3.recnplay.RecnplayProxy;
 import nz.ac.vuw.ecs.swen225.a3.recnplay.RecordedGame;
+import nz.ac.vuw.ecs.swen225.a3.recnplay.RecordedGameFactory;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 
@@ -71,7 +73,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	private Timer timer;
 
 	//Record and playback
-	private boolean inPlayBackMode;
+	private boolean inPlaybackMode;
+	private boolean playbackPaused;
+	private RecordedGame theGame;
+	private int playbackLocation;
 	
 	/**
 	 * The current level
@@ -104,7 +109,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	{
 		gamePaused = true;
 		currentGameBeingPlayed =  false;
-		inPlayBackMode = false;
+		inPlaybackMode = false;
 
 		setupMainMenu();
 		setupWindow();
@@ -121,8 +126,11 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	private void updateChapMove(ChapsAction action) 
 	{
-		if(!gamePaused) 
+		if(!gamePaused && this.currentGameBeingPlayed) 
 			eventHandler(model.onAction(action));
+		else if(this.inPlaybackMode && !this.playbackPaused)
+			this.stepForwardRecordedGame();
+			
 	}
 	
 	private void eventHandler(EnumSet<ChapsEvent> chapsEvents)
@@ -139,10 +147,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 					break;
 				case GAME_LOST_PLAYER_DIED:
 					JOptionPane.showMessageDialog(this, "You died!");
+					
+					if(this.inPlaybackMode)
+						break;
+					
 					this.restartLevel();
 					break;
 				case GAME_LOST_TIME_OUT:
 					JOptionPane.showMessageDialog(this, "Time's up!");
+					
+					if(this.inPlaybackMode)
+						break;
+					
 					this.restartLevel();
 					break;
 				case HIDE_TUTORIAL_MESSAGE:
@@ -153,6 +169,10 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 					break;
 				case PLAYER_WINS:
 					JOptionPane.showMessageDialog(this, "You win!");
+					
+					if(this.inPlaybackMode)
+						break;
+					
 					this.currentlevel++;
 					if(LevelInterface.getInstance().levels() <= this.currentlevel) {
 						JOptionPane.showMessageDialog(this, "That's the last level in the game.");
@@ -202,7 +222,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		this.getContentPane().repaint();
 		
 		gamePaused = false;
-		currentGameBeingPlayed = true;
+		if(!this.inPlaybackMode)
+			currentGameBeingPlayed = true;
 		
 		this.eventHandler(EnumSet.of(ChapsEvent.DISPLAY_UPDATE_REQUIRED, ChapsEvent.INV_UPDATE_REQUIRED, ChapsEvent.CHIPS_UPDATE_REQUIRED));
 	}
@@ -211,9 +232,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 *  pause the game and display a game is paused dialog.
 	 */
 	private void pauseGame() {
+		if(this.inPlaybackMode)
+			return;
+		
 		this.setTitle("Chaps's Challenge - Game Paused");
 
-		gamePaused=true;
+		gamePaused = true;
 		
 		this.getContentPane().removeAll();
 		this.setJMenuBar(null);
@@ -289,8 +313,14 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		resumeGame();
 	}
 	
+	/**
+	 * Stops recording, and asks the user to save the recording.
+	 */
 	private void stopRecording()
 	{
+		if(!proxy.isRecording())
+			return;
+		
 		JFileChooser chooser = new JFileChooser(new File("."));
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Recoding Files", "json");
 	    chooser.setFileFilter(filter);
@@ -326,48 +356,76 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Adds recorded game to menu bar.
 	 */
 	private void startRecordedGame() {
-		inPlayBackMode = true;
-		menuBar.add(recordedPlayback);
-		resumeGame();
-		//dosomething
+		JFileChooser chooser = new JFileChooser(new File("."));
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Recoding Files", "json");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Load");
+	    chooser.setDialogTitle("Load Recording");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	try {
+	    		RecordedGameFactory factory = new RecordedGameFactory();
+	    		JsonObject obj = JsonFileInterface.loadFromFile(selected);
+	    		int level = factory.levelOf(obj);
+	    		LevelInterface.getInstance().getLevel(level).load();
+	    		theGame = factory.resurrect(obj);
+	    		model.setState(theGame.getStartingState());
+	    		
+	    		playbackLocation = 0;
+	    		playbackPaused = false;
+	    		inPlaybackMode = true;
+	    		
+	    		menuBar.add(recordedPlayback);
+	    		
+	    		resumeGame();	    		
+	    	} catch(IOException e) {
+	    		JOptionPane.showMessageDialog(this, "There was an error in loading: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+	    	}
+	    }
 	}
 
 	/**
 	 * Stops the recorded game.
 	 * Removes recored game from menu bar.
 	 */
-	private void stopRecordedGame() {
-		inPlayBackMode = false;
+	private void stopRecordedGame() 
+	{
+		inPlaybackMode = false;
 		menuBar.remove(recordedPlayback);
-		//dosomething
+		pauseGame();
 	}
 
 	/**
-	 * Initates the start of a recorded playback of a game to tick through.
+	 * Sets the game to start playing (again)
 	 */
-	private void playRecordedGame() {
-		//dosomething
+	private void playRecordedGame() 
+	{
+		this.playbackPaused = false;
 	}
 
 	/**
 	 * Pauses the recorded playback of a game to tick through.
 	 */
-	private void pauseRecordedGame() {
-		//dosomething
+	private void pauseRecordedGame() 
+	{
+		this.playbackPaused = true;
 	}
 
 	/**
 	 * Steps one step forwards in the recorded game
 	 */
-	private void stepForwardRecordedGame() {
-		//dosomething
-	}
-
-	/**
-	 * Steps one step backwards in the recorded game
-	 */
-	private void stepBackwardRecordedGame() {
-		//dosomething
+	private void stepForwardRecordedGame() 
+	{
+		if(playbackLocation < theGame.getPlayback().size()) {
+			eventHandler(model.onAction(theGame.getPlayback().get(playbackLocation++)));
+		} else {
+			JOptionPane.showMessageDialog(this, "You've reached the end of the playback!");
+			playbackPaused = true;
+		}
 	}
 
 	//Timer
@@ -447,31 +505,31 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		resumeButton = new JButton("Resume Game");
 		resumeButton.addActionListener((e) -> {
-				resumeGame();
+			resumeGame();
 		});
 		resumeButton.setPreferredSize(buttonDimension);
 
 		saveGame = new JButton("Save Game");
 		saveGame.addActionListener((e) -> {
-				saveGame();
+			saveGame();
 		});
 		saveGame.setPreferredSize(buttonDimension);
 
 		playRecordedGame = new JButton("Play Recorded Game");
 		playRecordedGame.addActionListener((e) -> {
-				startRecordedGame();
+			startRecordedGame();
 		});
 		playRecordedGame.setPreferredSize(buttonDimension);
 
 		gameControls = new JButton("Game Controls");
 		gameControls.addActionListener((e) -> {
-				controlsHelp();
+			controlsHelp();
 		});
 		gameControls.setPreferredSize(buttonDimension);
 
 		gameHelp = new JButton("Game Help");
 		gameHelp.addActionListener((e) -> {
-				instructionsHelp();
+			instructionsHelp();
 		});
 		
 		gameHelp.setPreferredSize(buttonDimension);
@@ -582,24 +640,23 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		// play
 		JMenuItem playRecorded = new JMenuItem("Play");
 		playRecorded.addActionListener((e) -> {
-				playRecordedGame();
+			playRecordedGame();
 		});
 		
 		JMenuItem pauseRecorded = new JMenuItem("Pause");
 		pauseRecorded.addActionListener((e) -> {
-				pauseRecordedGame();
+			pauseRecordedGame();
 		});
 
 		// step forwards
 		JMenuItem stepForward = new JMenuItem("Step Forward");
 		stepForward.addActionListener((e) -> {
-				stepForwardRecordedGame();
+			stepForwardRecordedGame();
 		});
-
-		// step back
-		JMenuItem stepBackward = new JMenuItem("Step Backward");
-		stepBackward.addActionListener((e) -> {
-				stepBackwardRecordedGame();
+		
+		JMenuItem stopRecorded = new JMenuItem("Stop Playback");
+		stopRecorded.addActionListener((e) -> {
+			stopRecordedGame();
 		});
 
 		gameOptions.add(save);
@@ -614,7 +671,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		recordedPlayback.add(playRecorded);
 		recordedPlayback.add(pauseRecorded);
 		recordedPlayback.add(stepForward);
-		recordedPlayback.add(stepBackward);
+		recordedPlayback.add(stopRecorded);
 
 		menuBar.add(gameOptions);
 		menuBar.add(help);
@@ -657,28 +714,26 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			resumeGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
 			
-			if(inPlayBackMode)
+			if(inPlaybackMode)
 				playRecordedGame();
 			else
 				updateChapMove(ChapsAction.UP);
 			
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 			
-			if(inPlayBackMode)
+			if(inPlaybackMode)
 				pauseRecordedGame();
 			else
 				updateChapMove(ChapsAction.DOWN);
 			
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			
-			if(inPlayBackMode)
-				stepBackwardRecordedGame();
-			else
+			if(!inPlaybackMode)
 				updateChapMove(ChapsAction.LEFT);
 			
 		} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
-			if(inPlayBackMode)
+			if(inPlaybackMode)
 				stepForwardRecordedGame();
 			else
 				updateChapMove(ChapsAction.RIGHT);
@@ -719,17 +774,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				+ "ESC - Resume's the game\n" + "UP, DOWN, LEFT, RIGHT ARROWS -- Move's Chap within the maze\n"
 				+"",
 				"Chap's Challenge Game Controls", JOptionPane.INFORMATION_MESSAGE);
-	}
-
-	private void playBackRecordedGameControls() {
-
-		JOptionPane.showMessageDialog(this,
-				"Up Arrow  - Plays the recorded game through" +
-						"Down Arrow  - Pauses the play of the recorded game\n" +
-						"Left Arrow  - Steps Backward in the recored game\n" +
-						"Right Arrow  - Steps forward in the recorded game\n",
-						"Chap's Challenge Recorded game Controls",
-						JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**

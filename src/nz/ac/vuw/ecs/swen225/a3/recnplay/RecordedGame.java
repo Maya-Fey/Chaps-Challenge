@@ -44,6 +44,22 @@ public class RecordedGame implements Persistable {
 		this.actions.add(action);
 	}
 	
+	/**
+	 * @return The state this recording started in.
+	 */
+	public GameState getStartingState()
+	{
+		return this.startingState;
+	}
+	
+	/**
+	 * @return An iterator for all the actions in this game
+	 */
+	public List<ChapsAction> getPlayback()
+	{
+		return actions;
+	}
+	
 	@Override
 	public JsonObject persist() 
 	{
