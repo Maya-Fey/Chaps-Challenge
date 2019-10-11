@@ -181,8 +181,10 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 				invGrid[x][y].setIcon(null);
 		
 		int i = 0;
-		for(Visible v : visibles)
-			invGrid[i / 4][i % 4].setIcon(v.getIcon());
+		for(Visible v : visibles) {
+			invGrid[i % 4][i / 4].setIcon(v.getIcon());
+			i++;
+		}
 	}
 	
 	@Override
