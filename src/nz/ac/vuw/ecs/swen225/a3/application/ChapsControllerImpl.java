@@ -370,7 +370,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		setupMainMenu();
 		setupMenuBars();
 		
-		//this.setMinimumSize(new Dimension(windowHeight, windowLength));
 		this.setVisible(true);
 	}
 
@@ -384,76 +383,53 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		startNewGame = new JButton("New Game");
 		startNewGame.addActionListener((e) -> {
-		
 			restartGame();
-		
 		});
 		startNewGame.setPreferredSize(buttonDimension);
 
 		exitGame = new JButton("Exit Game");
-		exitGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
+		exitGame.addActionListener((e) -> {
 				currentGameBeingPlayed=!currentGameBeingPlayed;
 				pauseGame();
-			}
 		});
 
 		exitGame.setPreferredSize(buttonDimension);
 
 		loadGame = new JButton("Load Game");
-		loadGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		loadGame.addActionListener((e) -> {
 				loadGame();
-			}
 		});
 		loadGame.setPreferredSize(buttonDimension);
 
 		resumeButton = new JButton("Resume Game");
-		resumeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		resumeButton.addActionListener((e) -> {
 				resumeGame();
-			}
 		});
 		resumeButton.setPreferredSize(buttonDimension);
 
 		saveGame = new JButton("Save Game");
-		saveGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		saveGame.addActionListener((e) -> {
 				saveGame();
-			}
 		});
 		saveGame.setPreferredSize(buttonDimension);
 
 		playRecordedGame = new JButton("Play Recorded Game");
-		playRecordedGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		playRecordedGame.addActionListener((e) -> {
 				startRecordedGame();
-			}
 		});
 		playRecordedGame.setPreferredSize(buttonDimension);
 
 		gameControls = new JButton("Game Controls");
-		gameControls.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		gameControls.addActionListener((e) -> {
 				controlsHelp();
-			}
 		});
 		gameControls.setPreferredSize(buttonDimension);
 
 		gameHelp = new JButton("Game Help");
-		gameHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		gameHelp.addActionListener((e) -> {
 				instructionsHelp();
-			}
 		});
+		
 		gameHelp.setPreferredSize(buttonDimension);
 
 		// Adds main menu buttons
@@ -478,58 +454,32 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			mainMenuInGame.add(resumeButton, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 1;
 			mainMenuInGame.add(saveGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 2;
 			mainMenuInGame.add(startNewGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 3;
 			mainMenuInGame.add(loadGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 4;
 			mainMenuInGame.add(playRecordedGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 5;
 			mainMenuInGame.add(gameControls, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 6;
 			mainMenuInGame.add(gameHelp, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 7;
 			mainMenuInGame.add(exitGame, gbc);
 		} else {
-
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			mainMenuNotInGame.add(startNewGame, gbc);
-
-			// whilst not in game
-			gbc.gridx = 0;
 			gbc.gridy = 1;
 			mainMenuNotInGame.add(loadGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 2;
 			mainMenuNotInGame.add(playRecordedGame, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 3;
 			mainMenuNotInGame.add(gameControls, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 4;
 			mainMenuNotInGame.add(gameHelp, gbc);
-
-			gbc.gridx = 0;
 			gbc.gridy = 5;
 			mainMenuNotInGame.add(exitGame, gbc);
 		}
@@ -544,55 +494,35 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		gameOptions = new JMenu("Game Options");
 		// save
 		JMenuItem save = new JMenuItem("Save game");
-		save.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		save.addActionListener((e) -> {
 				saveGame();
-			}
 		});
-		// resume
+		
 		JMenuItem resume = new JMenuItem("Resume");
-		resume.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		resume.addActionListener((e) -> {
 				resumeGame();
-			}
 		});
-		// pause
+		
 		JMenuItem pause = new JMenuItem("Pause");
-		pause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		pause.addActionListener((e) -> {
 				pauseGame();
-			}
 		});
-		// exit
+		
 		JMenuItem exit = new JMenuItem("Exit");
-		exit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		exit.addActionListener((e) -> {
 				exitPrompt();
-			}
 		});
-		// Building help menu
+		
 		help = new JMenu("Help");
-		// controls
+		
 		JMenuItem controls = new JMenuItem("Controls");
-		controls.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		controls.addActionListener((e) -> {
 				controlsHelp();
-			}
 		});
-		// Instructions
+		
 		JMenuItem instructions = new JMenuItem("Instructions");
-		instructions.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		instructions.addActionListener((e) -> {
 				instructionsHelp();
-			}
 		});
 
 		// Recorded game playback
@@ -601,39 +531,25 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 		// play
 		JMenuItem playRecorded = new JMenuItem("Play");
-		playRecorded.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		playRecorded.addActionListener((e) -> {
 				playRecordedGame();
-			}
 		});
-
-		// pause
+		
 		JMenuItem pauseRecorded = new JMenuItem("Pause");
-		pauseRecorded.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		pauseRecorded.addActionListener((e) -> {
 				pauseRecordedGame();
-
-			}
 		});
 
 		// step forwards
 		JMenuItem stepForward = new JMenuItem("Step Forward");
-		stepForward.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		stepForward.addActionListener((e) -> {
 				stepForwardRecordedGame();
-			}
 		});
 
 		// step back
 		JMenuItem stepBackward = new JMenuItem("Step Backward");
-		stepBackward.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		stepBackward.addActionListener((e) -> {
 				stepBackwardRecordedGame();
-			}
 		});
 
 		gameOptions.add(save);
