@@ -1,7 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
 import javax.json.JsonObject;
-import javax.json.JsonValue.ValueType;
 
 import nz.ac.vuw.ecs.swen225.a3.application.RootFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.ChapsFactory;

@@ -85,6 +85,7 @@ public class InteractableItem implements Interactable {
 	{
 		if(this.item != null)
 			obj.getInventory().addItem(this.item);
+		obj.removeInteractable(this);
 	}
 	
 	@Override
