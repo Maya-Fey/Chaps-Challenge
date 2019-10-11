@@ -23,5 +23,10 @@ public interface ModelAccessObject {
 	 * @param interact The interactable to remove
 	 */
 	void removeInteractable(Interactable interact);
+	
+	/**
+	 * @return The inventory for the model
+	 */
+	Inventory getInventory();
 
 }

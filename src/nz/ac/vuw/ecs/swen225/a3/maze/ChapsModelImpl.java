@@ -313,4 +313,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		interactables.remove(interact);
 	}
 
+	@Override
+	public Inventory getInventory() 
+	{
+		events.add(ChapsEvent.INV_UPDATE_REQUIRED);
+		return this.inv;
+	}
+
 }
