@@ -770,6 +770,42 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		}
 	}
 	
+	/**
+	 * Getter for testing
+	 * @return .
+	 */
+	public boolean isCurrentGameBeingPlayed()
+	{
+		return this.currentGameBeingPlayed;
+	}
+	
+	/**
+	 * Getter for testing
+	 * @return .
+	 */
+	public boolean isGamePaused()
+	{
+		return this.gamePaused;
+	}
+	
+	/**
+	 * Getter for testing
+	 * @return .
+	 */
+	public JPanel getMainMenuIngame()
+	{
+		return this.mainMenuInGame;
+	}
+	
+	/**
+	 * Getter for testing
+	 * @return .
+	 */
+	public JPanel getMainMenuNotIngame()
+	{
+		return this.mainMenuNotInGame;
+	}
+	
 	@Override
 	public void windowClosing(WindowEvent arg0) 
 	{
