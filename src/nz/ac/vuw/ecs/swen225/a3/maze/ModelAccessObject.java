@@ -28,5 +28,10 @@ public interface ModelAccessObject {
 	 * @return The inventory for the model
 	 */
 	Inventory getInventory();
+	
+	/**
+	 * @return If the player has all the chips or not
+	 */
+	boolean hasAllChips();
 
 }

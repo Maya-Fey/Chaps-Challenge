@@ -320,4 +320,10 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		return this.inv;
 	}
 
+	@Override
+	public boolean hasAllChips() 
+	{
+		return this.chipsRemaining == 0;
+	}
+
 }
