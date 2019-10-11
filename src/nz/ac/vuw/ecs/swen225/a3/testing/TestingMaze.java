@@ -15,8 +15,13 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
+import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
+import nz.ac.vuw.ecs.swen225.a3.maze.Item;
+import nz.ac.vuw.ecs.swen225.a3.maze.MazeObject;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position.Direction;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
 
 /**
  * JUnit test cases for maze package, basic functionalities of game
@@ -159,5 +164,67 @@ class TestingMaze {
 		//Test is play
 		assertTrue(a.isPlayer() == true);
 	}
+	
+	/**
+	 * Tests Inventory Class --- FINISH THIS TEST LATER ONCE CONCRETE ITEM CLASS ADDED 
+	 */
+	@Test
+	void test_inventory() {
+		//Both constructors
+		//Item item = new Item();
+		Inventory i = new Inventory(); 
+		//Inventory ii = new Inventory((ArrayList<Item>)(i.getAll()));
+		//Cloning 
+		Inventory i2 = i.clone();
+		assertTrue(i != i2);
+		//Get all
+		assertTrue(i.getAll().size() == 0);
+		fail();
+		
+	}
+	
+	/**
+	 * Tests TileExit class 
+	 */
+	@Test
+	void test_tileexit() {
+		TileExit a = new TileExit();
+		//Setting and Getting position
+		Position p = new Position(0,0);
+		a.setPosition(p);
+		assertTrue(a.getPosition().x == p.x && a.getPosition().y == p.y );
+		//Clone
+		TileExit ic2 = a.clone();
+		assertTrue(ic2 != a);
+		//Check gets treasure icon
+		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("exit.png");
+		assertTrue(img == a.getIcon());
+		//Other
+		assertTrue(a.isFloor() == true);
+		assertTrue(a.isSafe(null,null) == true);
+	}
+	
+	/**
+	 * Tests TileExit class 
+	 */
+	@Test
+	void test_tilefree() {
+		Position p = new Position(0,0);
+		TileFree a = new TileFree(p);
+		//Setting and Getting position
+		a.setPosition(p);
+		assertTrue(a.getPosition().x == p.x && a.getPosition().y == p.y );
+		//Clone
+		TileFree ic2 = a.clone();
+		assertTrue(ic2 != a);
+		//Check gets treasure icon
+		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("freeTile.png");
+		assertTrue(img == a.getIcon());
+		//Other
+		assertTrue(a.isFloor() == true);
+		assertTrue(a.isSafe(null,null) == true);
+	}
+	
+	
 	
 }
