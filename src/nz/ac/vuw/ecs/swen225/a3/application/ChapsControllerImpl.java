@@ -134,10 +134,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 					view.updateBoard(model.getVisibleArea());
 					break;
 				case GAME_LOST_PLAYER_DIED:
-					//TODO: Lose message
+					JOptionPane.showMessageDialog(this, "You died!");
+					this.restartLevel();
 					break;
 				case GAME_LOST_TIME_OUT:
-					//TODO: Lose message
+					JOptionPane.showMessageDialog(this, "Time's up!");
+					this.restartLevel();
 					break;
 				case HIDE_TUTORIAL_MESSAGE:
 					view.clearDisplayTutorialMessage();
