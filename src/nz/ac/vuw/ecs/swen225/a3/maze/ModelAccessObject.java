@@ -15,7 +15,7 @@ public interface ModelAccessObject {
 	 * 
 	 * @param chips The amount of chips to add
 	 */
-	void addChips(int chips);
+	void remChips(int chips);
 	
 	/**
 	 * Removes an interactable from the game
@@ -23,5 +23,15 @@ public interface ModelAccessObject {
 	 * @param interact The interactable to remove
 	 */
 	void removeInteractable(Interactable interact);
+	
+	/**
+	 * @return The inventory for the model
+	 */
+	Inventory getInventory();
+	
+	/**
+	 * @return If the player has all the chips or not
+	 */
+	boolean hasAllChips();
 
 }

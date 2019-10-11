@@ -3,7 +3,9 @@ package nz.ac.vuw.ecs.swen225.a3.maze;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
@@ -19,6 +21,8 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  */
 public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
+	
+	private Set<ChapsEvent> events = new HashSet<>();
 	
 	private List2D<Tile> tiles = new List2D<>(new TileFree());
 	
@@ -37,7 +41,12 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	/**
 	 * Constructor for empty ChapsModel
 	 */
-	public ChapsModelImpl() {}
+	public ChapsModelImpl() 
+	{
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				buffer[i][j] = new ArrayList<>();
+	}
 	
 	/**
 	 * Returns a clone of the actors
@@ -61,36 +70,82 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	private List<Interactable> cloneInteractables()
 	{
 		List<Interactable> clone = new ArrayList<>();
-		for(Interactable i:interactables) {
-			clone.add(i.clone());
+		for(Interactable i : interactables) {
+			clone.add((Interactable) i.clone());
 		}
 		return clone;
+	}
+	
+	/**
+	 * Goes through the list of actors returning the playable character
+	 * @return The player in this game
+	 */
+	private ActorPlayer findPlayer()
+	{
+		for(Actor a : actors) 
+			if(a instanceof ActorPlayer) 
+				return (ActorPlayer) a;
+		return null;
+	}
+	
+	/**
+	 * Returns all the interactables within a certain space
+	 * 
+	 * @return A list of interactables at the given position
+	 */
+	private List<Interactable> getInteractablesAt(Position pos)
+	{
+		List<Interactable> interactables = new ArrayList<>();
+		for(Interactable interactable : this.interactables)
+			if(interactable.getPosition().x == pos.x && interactable.getPosition().y == pos.y)
+				interactables.add(interactable);
+		return interactables;
+	}
+	
+	/**
+	 * Can an object move to this position?
+	 * <br><br>
+	 * <i>Note, this is not used in onAction as the decision tree needs more complexity to function</i>
+	 * 
+	 * @param pos The position we're testing
+	 * @return Whether it's possible
+	 */
+	private boolean canMoveTo(Position pos)
+	{
+		Tile tile = tiles.get(pos.x, pos.y);
+		List<Interactable> interactables = getInteractablesAt(pos);
+		boolean hasPushable = false;
+		for(Interactable interactable : interactables)
+			if(interactable.isPushable())
+				hasPushable = true;
+		return !hasPushable && tile.isFloor();
 	}
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
-		List<ChapsEvent> events = new ArrayList<ChapsEvent>();
+		events.clear();
 		
-		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
 			
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
+			
 			timeRemaining--;
-			//return game over time time <= to 0
+			
 			if(timeRemaining <= 0)
-				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
-			
-			
+				events.add(ChapsEvent.GAME_LOST_TIME_OUT);			
 		}
 		
 		root:
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
+			
 			Position potentialNewPos = player.getPosition().translate(action);
 			
 			Tile tile = tiles.get(potentialNewPos.x, potentialNewPos.y);
 			
 			if(tile instanceof TileExit)
 			{
+				player.setPosition(potentialNewPos);
+				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 				events.add(ChapsEvent.PLAYER_WINS);
 				break root;
 			}
@@ -102,30 +157,48 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 					break root;
 				}
 				
-				player.setPosition(potentialNewPos);
+				List<Interactable> interactables = this.getInteractablesAt(potentialNewPos);
+				for(Interactable interactable : interactables)
+				{
+					if(interactable.isPushable())
+					{
+						if(this.canMoveTo(potentialNewPos.translate(action)))
+						{
+							interactable.setPosition(potentialNewPos.translate(action));
+						} else {
+							break root;
+						}
+					}
+				}
 				
+				for(Interactable interactable : interactables)
+				{
+					if(!interactable.isPushable())
+					{
+						if(!interactable.isWalkable(player, this)) {
+							break root;
+						} else if(!interactable.isSafe(player, this)) {
+							events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+							break root;
+						} else {
+							interactable.onEnter(player, this);
+						}
+					}
+				}
+				
+				player.setPosition(potentialNewPos);
+				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 				
 			}
 		}
 		
-		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
+		EnumSet<ChapsEvent> enumEvents;
+		if(events.size() != 0)
+			enumEvents = EnumSet.copyOf(events);
+		else 
+			enumEvents = EnumSet.noneOf(ChapsEvent.class);
 		
 		return enumEvents;
-	}
-
-	/**
-	 * Goes through the list of actors returning the playable character
-	 * @return
-	 */
-	private ActorPlayer findPlayer()
-	{
-		for(Actor a : actors) {
-			if(a instanceof ActorPlayer) {
-				return (ActorPlayer) a;
-			}
-		}
-
-		return null;
 	}
 
 	@Override
@@ -227,16 +300,30 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	}
 
 	@Override
-	public void addChips(int chips) 
+	public void remChips(int chips) 
 	{
-		//TODO: Signal for a chips updated signal
-		this.chipsRemaining += chips;
+		events.add(ChapsEvent.CHIPS_UPDATE_REQUIRED);
+		this.chipsRemaining -= chips;
 	}
 
 	@Override
 	public void removeInteractable(Interactable interact) 
 	{
+		events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 		interactables.remove(interact);
+	}
+
+	@Override
+	public Inventory getInventory() 
+	{
+		events.add(ChapsEvent.INV_UPDATE_REQUIRED);
+		return this.inv;
+	}
+
+	@Override
+	public boolean hasAllChips() 
+	{
+		return this.chipsRemaining == 0;
 	}
 
 }

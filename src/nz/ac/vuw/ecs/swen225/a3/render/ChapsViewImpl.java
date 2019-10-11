@@ -3,33 +3,16 @@ package nz.ac.vuw.ecs.swen225.a3.render;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.awt.GridBagLayout;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
-import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -37,7 +20,6 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * Chap's Challenge.
  *
  * @author Jakob 300444995
- *
  */
 @SuppressWarnings("serial")
 public class ChapsViewImpl extends JSplitPane implements ChapsView {
@@ -46,64 +28,36 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	 * Fields
 	 */
 	private final JPanel invPanel = new JPanel();
+	
 	private final JLabel levelLabel = new JLabel("0000");
 	private final JLabel timeLabel = new JLabel("0000");
 	private final JLabel chipsLabel = new JLabel("0000");
+	
 	private final JLabel tutorialMessage = new JLabel();
 	private final JPanel tutorialPanel = new JPanel();
+	
 	private final JLabel text_1 = new JLabel("LEVEL:");
 	private final JLabel text_2 = new JLabel("TIME:");
 	private final JLabel text_3 = new JLabel("CHIPS:");
-
-
-
+	
 	private final JLabel[][] grid;
-
-
+	private final JLabel[][] invGrid = new JLabel[4][2];
+	
 	private final JPanel left, right;
-
-
-
-
-
-
+	
 	/**
 	 * Constructor to initialize GUI
 	 *
 	 */
-	public ChapsViewImpl() {
-
+	public ChapsViewImpl() 
+	{
 		super(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), new JPanel());
-
-
-//Code for faking a list of visible objects to test updateInventory
-//		Visible v = new Visible() {
-//
-//			@Override
-//			public Icon getIcon() {
-//				return IconFactory.INSTANCE.loadIcon("wallTile.png");
-//			}
-//
-//			@Override
-//			public int zIndex() {
-//				// TODO Auto-generated method stub
-//				return 0;
-//			}
-//
-//		};
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
-//		vList.add(v);
 
 		this.left = (JPanel) this.leftComponent;
 		this.right = (JPanel) this.rightComponent;
 		left.setLayout(new GridBagLayout());
 		right.setLayout(new GridBagLayout());
+		invPanel.setLayout(new GridBagLayout());
 
 		//Create a grid of labels to act as holders for the icons in the board
 		grid = new JLabel[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
@@ -111,13 +65,8 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) {
 			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) {
 				GridBagConstraints gbc = new GridBagConstraints();
-				//Increment through gridbagconstraints to know the location of each label
 				gbc.gridx = x;
 				gbc.gridy = y;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
-				//Initialise every label in the grid as an empty JLabel
-				//and add them to the left display
 				grid[x][y] = new JLabel();
 				left.add(grid[x][y], gbc);
 			}
@@ -125,6 +74,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gbc.gridy = 0;
 		gbc.weightx = gbc.weighty = 1;
+		
 		//Edit the color and size of the Level, time, and chips texts
 		text_1.setForeground(Color.RED);
 		text_1.setFont(text_1.getFont().deriveFont(Font.BOLD, 32));
@@ -132,6 +82,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		text_2.setFont(text_2.getFont().deriveFont(Font.BOLD, 32));
 		text_3.setForeground(Color.RED);
 		text_3.setFont(text_3.getFont().deriveFont(Font.BOLD, 32));
+		
 		//Add all the text and info labels to the right panel
 		//while also incrementing the y position down
 		right.add(text_1, gbc);
@@ -148,12 +99,34 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		gbc.gridy++;
 		right.add(invPanel, gbc);
 		right.add(tutorialPanel, gbc);
+		
 		//Set the background to gray with a bevel border around
 		right.setBackground(Color.lightGray);
 		right.setBorder(BorderFactory.createRaisedBevelBorder());
+		
+		stylizeNumLabel(levelLabel);
+		stylizeNumLabel(timeLabel);
+		stylizeNumLabel(chipsLabel);
+		
+		//Creates the inventory display as a grid and sets
+		//the icon based on the index in the list of Visible objects.
+		for(int x = 0; x < 4; x++) {
+			for(int y = 0; y < 2; y++) {
+				gbc.gridx = x;
+				gbc.gridy = y;
+				
+				JLabel label = invGrid[x][y] = new JLabel();
+				label.setOpaque(true);
+				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+				label.setPreferredSize(new Dimension(64, 64));
+				label.setMinimumSize(new Dimension(64, 64));
+				label.setMaximumSize(new Dimension(64, 64));
+				
+				invPanel.add(label, gbc);
+			}
+		}
 	}
-
-
+	
 	/**
 	 * Function to convert a number string into
 	 * 4 digits i.e. 0004
@@ -164,98 +137,56 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		String str = String.format("%04d", n);
 		return str;
 	}
-
-
-
+	
 	@Override
-	public void updateBoard(Visible[][] board) {
+	public void updateBoard(Visible[][] board) 
+	{
 		//Iterate through every cell in the board and update its icon
 		//which is retrieved by the an array of visible objects
-		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) {
-			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) {
-				Icon i = board[x][y].getIcon();
-				grid[x][y].setIcon(i);
-			}
-		}
+		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) 
+			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) 
+				grid[x][y].setIcon(board[x][y].getIcon());
 	}
 
-
-
-
 	@Override
-	public void updateCurrentLevel(int lvl) {
-		levelLabel.setOpaque(true);
+	public void updateCurrentLevel(int lvl) 
+	{
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(lvl);
-		//Set the text, fontsize, background & foreground colors, and border
 		levelLabel.setText(val);
-		levelLabel.setBackground(Color.BLACK);
-		levelLabel.setForeground(Color.GREEN);
-		levelLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		//levelLabel.setBorder(border);
-		levelLabel.setFont(levelLabel.getFont().deriveFont(Font.BOLD, 32));
 
 	}
 
 	@Override
-	public void updateRemainingChips(int rem) {
-		chipsLabel.setOpaque(true);
+	public void updateRemainingChips(int rem) 
+	{
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(rem);
-		//Set the text, fontsize, background & foreground colors, and border
 		chipsLabel.setText(val);
-		chipsLabel.setBackground(Color.BLACK);
-		chipsLabel.setForeground(Color.GREEN);
-		chipsLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		chipsLabel.setFont(chipsLabel.getFont().deriveFont(Font.BOLD, 32));
 	}
 
 	@Override
-	public void updateRemainingTime(int rem) {
-		timeLabel.setOpaque(true);
+	public void updateRemainingTime(int rem) 
+	{
 		//convert from single digit to 0000 format
-		String val = fourDigitFormat(rem);
-		//Set the text, fontsize, background & foreground colors, and border
+		String val = fourDigitFormat(rem / GameConstants.TICKS_TO_SECONDS_RATIO);
 		timeLabel.setText(val);
-		timeLabel.setBackground(Color.BLACK);
-		timeLabel.setForeground(Color.GREEN);
-		timeLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		timeLabel.setFont(timeLabel.getFont().deriveFont(Font.BOLD, 32));
-
 	}
 
 	@Override
-	public void updateInventory(Collection<Visible> v) {
-
-		invPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		//Creates the inventory display as a grid and sets
-		//the icon based on the index in the list of Visible objects.
-		int count = 0;
-		for(int x = 0; x < 4; x++) {
-			for(int y = 0; y < 2; y++) {
-				for(Visible i : v) {
-				gbc.gridx = x;
-				gbc.gridy = y;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
-				JLabel label = new JLabel();
-				label.setOpaque(true);
-
-				label.setIcon(i.getIcon());
-				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
-
-				invPanel.add(label, gbc);
-				count++;
-				}
-			}
+	public void updateInventory(Collection<Visible> visibles) 
+	{
+		for(int x = 0; x < 4; x++) 
+			for(int y = 0; y < 2; y++)
+				invGrid[x][y].setIcon(null);
+		
+		int i = 0;
+		for(Visible v : visibles) {
+			invGrid[i % 4][i / 4].setIcon(v.getIcon());
+			i++;
 		}
-
-
 	}
-
-
-
+	
 	@Override
 	public void setDisplayTutorialMessage(String message) {
 		//Set the size to the inventory panel
@@ -282,12 +213,20 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	public JSplitPane getRootPanel() {
 		return this;
 	}
-
-
-
-
-
-
-
-
+	
+	/**
+	 * Stylize the number labels
+	 * 
+	 * @param label
+	 */
+	private void stylizeNumLabel(JLabel label)
+	{
+		//Set the text, fontsize, background & foreground colors, and border
+		label.setOpaque(true);
+		label.setBackground(Color.BLACK);
+		label.setForeground(Color.GREEN);
+		label.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
+		label.setFont(timeLabel.getFont().deriveFont(Font.BOLD, 32));
+	}
+	
 }

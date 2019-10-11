@@ -38,8 +38,7 @@ public interface ChapsView {
 	 *
 	 */
 	void updateRemainingTime(int rem);
-
-
+	
 	/**
 	 * Updates the display with the current level
 	 *
@@ -54,8 +53,7 @@ public interface ChapsView {
 	 * @param v list of icons
 	 */
 	void updateInventory(Collection<Visible> v);
-
-
+	
 	/**
 	 * Sets a tutorial message to be displayed, occluding the inventory area.
 	 *

@@ -19,8 +19,7 @@ public class Main {
 		ChapsControllerFactory factory = new ChapsControllerFactory();
 		ChapsModelFactory modelFactory = new ChapsModelFactory();
 		ChapsViewFactory viewFactory = new ChapsViewFactory();
-		ChapsController controller = factory.produce(modelFactory, viewFactory);
-		controller.start();
+		factory.produce(modelFactory, viewFactory);
 	}
 
 }

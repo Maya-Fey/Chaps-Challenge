@@ -5,7 +5,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 /**
  * An interactable object on top of a tile.
  */
-public interface Interactable extends MazeObject, Visible, Cloneable{
+public interface Interactable extends MazeObject, Visible, Cloneable {
 
 	/**
 	 * @return Whether this object can be pushed, or whether it can be stood on like
@@ -34,10 +34,9 @@ public interface Interactable extends MazeObject, Visible, Cloneable{
 	 * @param obj Access object
 	 */
 	void onEnter(Actor actor, ModelAccessObject obj);
-
+	
 	/**
-	 * Clone this interactable
-	 * @return clone
+	 * @return A clone of this object
 	 */
 	Interactable clone();
 
