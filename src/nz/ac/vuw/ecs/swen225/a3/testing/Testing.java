@@ -2,6 +2,7 @@ package nz.ac.vuw.ecs.swen225.a3.testing;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 import java.awt.event.KeyEvent;
 
 import javax.swing.Icon;
@@ -17,7 +18,7 @@ import nz.ac.vuw.ecs.swen225.a3.application.Main;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
-import nz.ac.vuw.ecs.swen225.a3.maze.Exit;
+
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewImpl;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
@@ -47,18 +48,7 @@ class Testing {
 	}
 	
 	
-	/**
-	 * Test the four digit format method of ChapsViewImpl works correctly 
-	 */
-	@Test
-	void test_four_digit_format() {
-		int x = 4;
-		String expected = "0004";
-		
-		String result = new ChapsViewImpl().fourDigitFormat(x);
-		assertTrue(result.equals(expected));
 
-	}
 	
 	
 	
