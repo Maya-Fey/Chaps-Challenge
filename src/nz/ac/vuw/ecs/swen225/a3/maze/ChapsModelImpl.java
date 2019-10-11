@@ -352,4 +352,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		this.message = message;
 	}
 
+	@Override
+	public void setTile(Tile tile, int x, int y) 
+	{
+		events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
+		tiles.set(tile, x, y);
+	}
+
 }

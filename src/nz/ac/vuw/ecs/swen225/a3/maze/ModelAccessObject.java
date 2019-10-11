@@ -38,5 +38,14 @@ public interface ModelAccessObject {
 	 * @param message The message to display
 	 */
 	void setTutorialMessage(String message);
+	
+	/**
+	 * Sets the tile at the specified position
+	 * 
+	 * @param tile The tile to place
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 */
+	void setTile(Tile tile, int x, int y);
 
 }
