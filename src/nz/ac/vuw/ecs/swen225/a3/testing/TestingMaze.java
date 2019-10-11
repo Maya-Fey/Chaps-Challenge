@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
+import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.Exit;
+import nz.ac.vuw.ecs.swen225.a3.maze.ExitLock;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position.Direction;
 
@@ -32,7 +34,7 @@ class TestingMaze {
 		Exit e = null;
 		ImageIcon i = null;
 		try {
-			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("dirt.png");
+			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("exit.png");
 			Position p = new Position(0, 0);
 			e = new Exit(p, "", i);
 		} catch (Error ee) {
@@ -87,5 +89,55 @@ class TestingMaze {
 		// Other
 		assertTrue(p.getName().equals("position"));
 	}
+	
+	/**
+	 * Tests the exitLock class
+	 */
+	@Test
+	void test_exitLock() {
+		// Constructing
+		ExitLock e = null;
+		ImageIcon i = null;
+		try {
+			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("exitLock.png");
+			Position p = new Position(0, 0);
+			e = new ExitLock(p, "", i);
+		} catch (Error ee) {
+			assert (false);
+		}
+		assert (true);
+		// Clone
+		ExitLock e2 = e.clone();
+		assertTrue(e2 != e);
+		assertTrue(e2.getName().equals(e.getName()));
+		assertTrue(e2.getPosition().x == (e.getPosition().x) && e2.getPosition().y == (e.getPosition().y));
+		// Set position
+		Position pp = new Position(0, 1);
+		e.setPosition(pp);
+		assertTrue(e.getPosition().y == 1);
+		// Other
+		assertTrue(e.isFloor() == true);
+		assertTrue(e.getIcon() == i);
+	}
+	
+	//DISPLAY_UPDATE_REQUIRED,INV_UPDATE_REQUIRED,TIME_UPDATE_REQUIRED,CHIPS_UPDATE_REQUIRED,SHOW_TUTORIAL_MESSAGE,HIDE_TUTORIAL_MESSAGE,GAME_LOST_PLAYER_DIED,GAME_LOST_TIME_OUT
 
+	/**
+	 * Tests ChapsEvent has the correct enums 
+	 */
+	@Test
+	void test_chaps_event() {
+		ArrayList<String> correct = new ArrayList<String>(Arrays.asList("DISPLAY_UPDATE_REQUIRED",
+				"INV_UPDATE_REQUIRED","TIME_UPDATE_REQUIRED","CHIPS_UPDATE_REQUIRED","SHOW_TUTORIAL_MESSAGE",
+				"HIDE_TUTORIAL_MESSAGE","GAME_LOST_PLAYER_DIED","GAME_LOST_TIME_OUT"));
+		int count = 0;
+		for(ChapsEvent c : ChapsEvent.values()) {
+			if(!(c.name().equals(correct.get(count)))) {
+				assert(false);
+			}
+			count++;
+		}
+		assert(true);
+		
+	}
 }
