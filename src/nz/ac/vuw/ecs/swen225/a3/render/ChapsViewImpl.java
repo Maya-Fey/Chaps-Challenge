@@ -73,6 +73,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gbc.gridy = 0;
 		gbc.weightx = gbc.weighty = 1;
+		
 		//Edit the color and size of the Level, time, and chips texts
 		text_1.setForeground(Color.RED);
 		text_1.setFont(text_1.getFont().deriveFont(Font.BOLD, 32));
@@ -80,6 +81,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		text_2.setFont(text_2.getFont().deriveFont(Font.BOLD, 32));
 		text_3.setForeground(Color.RED);
 		text_3.setFont(text_3.getFont().deriveFont(Font.BOLD, 32));
+		
 		//Add all the text and info labels to the right panel
 		//while also incrementing the y position down
 		right.add(text_1, gbc);
@@ -96,9 +98,14 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		gbc.gridy++;
 		right.add(invPanel, gbc);
 		right.add(tutorialPanel, gbc);
+		
 		//Set the background to gray with a bevel border around
 		right.setBackground(Color.lightGray);
 		right.setBorder(BorderFactory.createRaisedBevelBorder());
+		
+		stylizeNumLabel(levelLabel);
+		stylizeNumLabel(timeLabel);
+		stylizeNumLabel(chipsLabel);
 	}
 	
 	/**
@@ -113,57 +120,38 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	}
 	
 	@Override
-	public void updateBoard(Visible[][] board) {
+	public void updateBoard(Visible[][] board) 
+	{
 		//Iterate through every cell in the board and update its icon
 		//which is retrieved by the an array of visible objects
-		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) {
-			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) {
-				Icon i = board[x][y].getIcon();
-				grid[x][y].setIcon(i);
-			}
-		}
+		for(int x = 0; x < GameConstants.VISIBILE_SIZE; x++) 
+			for(int y = 0; y < GameConstants.VISIBILE_SIZE; y++) 
+				grid[x][y].setIcon(board[x][y].getIcon());
 	}
 
 	@Override
-	public void updateCurrentLevel(int lvl) {
+	public void updateCurrentLevel(int lvl) 
+	{
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(lvl);
-		//Set the text, fontsize, background & foreground colors, and border
-		levelLabel.setOpaque(true);
 		levelLabel.setText(val);
-		levelLabel.setBackground(Color.BLACK);
-		levelLabel.setForeground(Color.GREEN);
-		levelLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		chipsLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		levelLabel.setFont(levelLabel.getFont().deriveFont(Font.BOLD, 32));
 
 	}
 
 	@Override
-	public void updateRemainingChips(int rem) {
+	public void updateRemainingChips(int rem) 
+	{
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(rem);
-		//Set the text, fontsize, background & foreground colors, and border
-		chipsLabel.setOpaque(true);
 		chipsLabel.setText(val);
-		chipsLabel.setBackground(Color.BLACK);
-		chipsLabel.setForeground(Color.GREEN);
-		chipsLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		chipsLabel.setFont(chipsLabel.getFont().deriveFont(Font.BOLD, 32));
 	}
 
 	@Override
-	public void updateRemainingTime(int rem) {
+	public void updateRemainingTime(int rem) 
+	{
 		//convert from single digit to 0000 format
 		String val = fourDigitFormat(rem / GameConstants.TICKS_TO_SECONDS_RATIO);
-		//Set the text, fontsize, background & foreground colors, and border
 		timeLabel.setText(val);
-		timeLabel.setOpaque(true);
-		timeLabel.setBackground(Color.BLACK);
-		timeLabel.setForeground(Color.GREEN);
-		timeLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
-		timeLabel.setFont(timeLabel.getFont().deriveFont(Font.BOLD, 32));
-
 	}
 
 	@Override
@@ -218,6 +206,21 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	@Override
 	public JSplitPane getRootPanel() {
 		return this;
+	}
+	
+	/**
+	 * Stylize the number labels
+	 * 
+	 * @param label
+	 */
+	private void stylizeNumLabel(JLabel label)
+	{
+		//Set the text, fontsize, background & foreground colors, and border
+		label.setOpaque(true);
+		label.setBackground(Color.BLACK);
+		label.setForeground(Color.GREEN);
+		label.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.GRAY));
+		label.setFont(timeLabel.getFont().deriveFont(Font.BOLD, 32));
 	}
 	
 }
