@@ -195,6 +195,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 					}
 				}
 				
+				tile.onEnter(player, this);
+				
 				player.setPosition(potentialNewPos);
 				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 				

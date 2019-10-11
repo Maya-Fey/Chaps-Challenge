@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -33,7 +34,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	private final JLabel timeLabel = new JLabel("0000");
 	private final JLabel chipsLabel = new JLabel("0000");
 	
-	private final JLabel tutorialMessage = new JLabel();
+	private final JTextArea tutorialMessage = new JTextArea();
 	private final JPanel tutorialPanel = new JPanel();
 	
 	private final JLabel text_1 = new JLabel("LEVEL:");
@@ -125,6 +126,10 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 				invPanel.add(label, gbc);
 			}
 		}
+		
+		tutorialPanel.add(tutorialMessage);
+		tutorialMessage.setEditable(false);
+		tutorialMessage.setLineWrap(true);
 	}
 	
 	/**
@@ -189,13 +194,13 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	
 	@Override
 	public void setDisplayTutorialMessage(String message) {
-		System.out.println(message);
 		//Set the size to the inventory panel
 		tutorialPanel.setPreferredSize(invPanel.getSize());
+		tutorialMessage.setPreferredSize(invPanel.getSize());
 		tutorialMessage.setText(message);
+		tutorialMessage.setWrapStyleWord(true);
 		//makes the tutorial panel visible and the inventory panel invisible
 		//so the tutorial text covers the inventory section
-		tutorialPanel.add(tutorialMessage);
 		invPanel.setVisible(false);
 		tutorialPanel.setVisible(true);
 	}
