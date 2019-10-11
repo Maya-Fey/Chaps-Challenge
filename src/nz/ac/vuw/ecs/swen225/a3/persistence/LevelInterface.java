@@ -132,5 +132,13 @@ public class LevelInterface {
 	{
 		return levels.get(num);
 	}
+	
+	/**
+	 * @return The number of levels
+	 */
+	public int levels()
+	{
+		return levels.size();
+	}
 
 }

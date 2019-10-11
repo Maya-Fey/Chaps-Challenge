@@ -148,7 +148,14 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 					view.updateInventory(model.getInventoryIcons());
 					break;
 				case PLAYER_WINS:
-					//TODO: Win message
+					JOptionPane.showMessageDialog(this, "You win!");
+					this.currentlevel++;
+					if(LevelInterface.getInstance().levels() <= this.currentlevel) {
+						JOptionPane.showMessageDialog(this, "That's the last level in the game.");
+					} else {
+						this.loadLevel();
+						this.resumeGame();
+					}
 					break;
 				case SHOW_TUTORIAL_MESSAGE:
 					view.setDisplayTutorialMessage(model.getTutorialMessage());
@@ -270,6 +277,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	private void loadGame() {
 		GameState state = SaveFileInterface.load();
+		this.currentlevel = state.getLevel();
+		this.loadLevel();
 		model.setState(state);
 		resumeGame();
 	}
