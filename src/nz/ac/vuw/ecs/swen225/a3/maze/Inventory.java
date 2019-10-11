@@ -102,7 +102,7 @@ public class Inventory implements Persistable, Cloneable {
 		JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
 		
 		for(Item item : inventory)
-			arrBuilder.add(item.getClass().getName());
+			arrBuilder.add(item.getClass().getSimpleName());
 		
 		builder.add("items", arrBuilder.build());
 		
