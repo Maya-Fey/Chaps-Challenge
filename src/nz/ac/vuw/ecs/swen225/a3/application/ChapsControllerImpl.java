@@ -661,17 +661,16 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
+		if(e.getID() != KeyEvent.KEY_PRESSED)
+			return false;
+		
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
 			exitGame();
-		}
-
-		if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
 			exitGameWithSave();
-		}
-		if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_R) {
+		} else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_R) {
 			resumeGame();
-		}
-		if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_P) {
+		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_P) {
 			restartLevel();
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_1) {
 			restartGame();
