@@ -129,7 +129,7 @@ class TestingMaze {
 		ActorPlayer ic2 = a.clone();
 		assertTrue(ic2 != a);
 		// Check gets treasure icon
-		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("chap.png");
+		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("front.png");
 		assertTrue(img == a.getIcon());
 		// Test is play
 		assertTrue(a.isPlayer() == true);
@@ -207,7 +207,7 @@ class TestingMaze {
 		assertTrue(interactables == gs.getInteractables());
 		assertTrue(actors == gs.getActors());
 		// Persist
-		String target = "{\"timeRemaining\":10,\"chipsRemaining\":10,\"width\":2,\"height\":2,\"tiles\":[],\"inventory\":{\"name\":\"Inventory\",\"items\":[]},\"interactables\":[{\"name\":\"InteractableChip\",\"x\":0,\"y\":0}],\"actors\":[{\"name\":\"ActorPlayer\",\"x\":0,\"y\":0}]}";
+		String target = "{\"timeRemaining\":10,\"chipsRemaining\":10,\"level\":0,\"tiles\":[],\"inventory\":{\"name\":\"Inventory\",\"items\":[]},\"interactables\":[{\"name\":\"InteractableChip\",\"x\":0,\"y\":0}],\"actors\":[{\"name\":\"ActorPlayer\",\"x\":0,\"y\":0}]}";
 		assertTrue(target.equals(gs.persist().toString()));
 
 	}
