@@ -343,4 +343,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		return this.chipsRemaining == 0;
 	}
 
+	@Override
+	public void setTutorialMessage(String message) 
+	{
+		events.add(ChapsEvent.SHOW_TUTORIAL_MESSAGE);
+		this.message = message;
+	}
+
 }

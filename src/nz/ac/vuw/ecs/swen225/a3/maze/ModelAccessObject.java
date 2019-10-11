@@ -33,5 +33,10 @@ public interface ModelAccessObject {
 	 * @return If the player has all the chips or not
 	 */
 	boolean hasAllChips();
+	
+	/**
+	 * @param message The message to display
+	 */
+	void setTutorialMessage(String message);
 
 }
