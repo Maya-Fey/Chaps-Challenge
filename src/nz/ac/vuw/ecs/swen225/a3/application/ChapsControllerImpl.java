@@ -5,8 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -32,6 +30,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
 import nz.ac.vuw.ecs.swen225.a3.persistence.LevelInterface;
 import nz.ac.vuw.ecs.swen225.a3.persistence.SaveFileInterface;
 import nz.ac.vuw.ecs.swen225.a3.plugin.Level;
+import nz.ac.vuw.ecs.swen225.a3.recnplay.RecnplayProxy;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 
@@ -45,6 +44,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	//game components - model and view
 	private final ChapsModel model;
 	private final ChapsView view;
+	private final RecnplayProxy proxy;
 
 	//menuBar
 	private JMenuBar menuBar;
@@ -83,7 +83,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 */
 	ChapsControllerImpl(ChapsModelFactory factorymodel, ChapsViewFactory factoryview)
 	{
-		model = factorymodel.produce();
+		model = (proxy = new RecnplayProxy(factorymodel.produce()));
 		view = factoryview.produce();
 
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
@@ -599,11 +599,8 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		} else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_1) {
 			restartGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			//System.out.println("space - pause");
 			pauseGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			//System.out.println("escape - resume");
-
 			resumeGame();
 		} else if(e.getKeyCode() == KeyEvent.VK_UP) {
 			

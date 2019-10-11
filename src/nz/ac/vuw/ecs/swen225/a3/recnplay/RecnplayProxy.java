@@ -19,6 +19,14 @@ public class RecnplayProxy implements ChapsModel {
 	
 	private ChapsModel actual;
 
+	/**
+	 * @param actual The model you want this to be a proxy to.
+	 */
+	public RecnplayProxy(ChapsModel actual) 
+	{
+		this.actual = actual;
+	}
+
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) 
 	{
