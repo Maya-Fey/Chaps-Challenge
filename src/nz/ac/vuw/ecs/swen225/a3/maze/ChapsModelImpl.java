@@ -3,7 +3,9 @@ package nz.ac.vuw.ecs.swen225.a3.maze;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
@@ -19,6 +21,8 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  *
  */
 public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
+	
+	private Set<ChapsEvent> events = new HashSet<>();
 	
 	private List2D<Tile> tiles = new List2D<>(new TileFree());
 	
@@ -74,13 +78,14 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
-		List<ChapsEvent> events = new ArrayList<ChapsEvent>();
+		events.clear();
 		
-		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
+			
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
+			
 			timeRemaining--;
-			//return game over time time <= to 0
+			
 			if(timeRemaining <= 0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);			
 		}
@@ -106,7 +111,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 				}
 				
 				player.setPosition(potentialNewPos);
-				
+				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 				
 			}
 		}
@@ -236,13 +241,14 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	@Override
 	public void remChips(int chips) 
 	{
-		//TODO: Signal for a chips updated signal
+		events.add(ChapsEvent.CHIPS_UPDATE_REQUIRED);
 		this.chipsRemaining -= chips;
 	}
 
 	@Override
 	public void removeInteractable(Interactable interact) 
 	{
+		events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 		interactables.remove(interact);
 	}
 
