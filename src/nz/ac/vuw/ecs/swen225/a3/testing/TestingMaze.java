@@ -10,8 +10,11 @@ import javax.swing.ImageIcon;
 import org.junit.jupiter.api.Test;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position.Direction;
 
@@ -96,7 +99,7 @@ class TestingMaze {
 	void test_chaps_event() {
 		ArrayList<String> correct = new ArrayList<String>(Arrays.asList("DISPLAY_UPDATE_REQUIRED",
 				"INV_UPDATE_REQUIRED","TIME_UPDATE_REQUIRED","CHIPS_UPDATE_REQUIRED","SHOW_TUTORIAL_MESSAGE",
-				"HIDE_TUTORIAL_MESSAGE","GAME_LOST_PLAYER_DIED","GAME_LOST_TIME_OUT"));
+				"HIDE_TUTORIAL_MESSAGE","GAME_LOST_PLAYER_DIED","GAME_LOST_TIME_OUT","PLAYER_WINS"));
 		int count = 0;
 		for(ChapsEvent c : ChapsEvent.values()) {
 			if(!(c.name().equals(correct.get(count)))) {
@@ -106,6 +109,55 @@ class TestingMaze {
 		}
 		assert(true);
 		
+	}
+	
+	/**
+	 * Tests InteractableChip class 
+	 */
+	@Test
+	void test_interactable_chip() {
+		InteractableChip ic = new InteractableChip();
+		//Check gets treasure icon
+		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("treasure.png");
+		assertTrue(img == ic.getIcon());
+		//Position get/set
+		Position p = new Position(0,0);
+		ic.setPosition(p);
+		assertTrue(ic.getPosition().x == p.x && ic.getPosition().y == p.y );
+		assert(true);
+
+		//Clone
+		InteractableChip ic2 = ic.clone();
+		assertTrue(ic2 != ic);
+		
+		//Could add on enter test...
+		
+		//Other
+		assertTrue(ic.zIndex() == 1);
+		assertTrue(ic.isPushable() == false);
+		assertTrue(ic.isWalkable(null,null) == true);
+		assertTrue(ic.isSafe(null,null) == true);
+		
+	}
+	
+	/**
+	 * Tests ActorPlayer class 
+	 */
+	@Test
+	void test_actorplayer() {
+		ActorPlayer a = new ActorPlayer();
+		//Setting and Getting position
+		Position p = new Position(0,0);
+		a.setPosition(p);
+		assertTrue(a.getPosition().x == p.x && a.getPosition().y == p.y );
+		//Clone
+		ActorPlayer ic2 = a.clone();
+		assertTrue(ic2 != a);
+		//Check gets treasure icon
+		ImageIcon img = (ImageIcon) IconFactory.INSTANCE.loadIcon("chap.png");
+		assertTrue(img == a.getIcon());
+		//Test is play
+		assertTrue(a.isPlayer() == true);
 	}
 	
 }
