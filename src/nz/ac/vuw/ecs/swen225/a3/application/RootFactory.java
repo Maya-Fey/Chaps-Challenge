@@ -7,6 +7,8 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayerFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChipFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableExitLock;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableExitLockFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableItem;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableItemFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Item;
@@ -45,6 +47,7 @@ public class RootFactory {
 		
 		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());
 		instance.interactableFactory.addFactory(InteractableItem.class.getSimpleName(), new InteractableItemFactory());
+		instance.interactableFactory.addFactory(InteractableExitLock.class.getSimpleName(), new InteractableExitLockFactory());
 		
 		instance.actorFactory.addFactory(ActorPlayer.class.getSimpleName(), new ActorPlayerFactory());
 	}
