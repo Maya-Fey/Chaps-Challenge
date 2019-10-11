@@ -157,6 +157,34 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 					break root;
 				}
 				
+				List<Interactable> interactables = this.getInteractablesAt(potentialNewPos);
+				for(Interactable interactable : interactables)
+				{
+					if(interactable.isPushable())
+					{
+						if(this.canMoveTo(potentialNewPos.translate(action)))
+						{
+							interactable.setPosition(potentialNewPos.translate(action));
+						} else {
+							break root;
+						}
+					}
+				}
+				
+				for(Interactable interactable : interactables)
+				{
+					if(!interactable.isPushable())
+					{
+						if(!interactable.isWalkable(player, this)) {
+							break root;
+						} else if(!interactable.isSafe(player, this)) {
+							events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+							break root;
+						} else {
+							interactable.onEnter(player, this);
+						}
+					}
+				}
 				
 				player.setPosition(potentialNewPos);
 				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
