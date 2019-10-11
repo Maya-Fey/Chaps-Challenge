@@ -87,7 +87,7 @@ public class LevelBuilderDisplay extends JSplitPane implements ChapsView {
 	@Override
 	public void updateRemainingChips(int rem) 
 	{
-		time.setText("Chips: " + rem);
+		chips.setText("Chips: " + rem);
 	}
 
 	@Override
