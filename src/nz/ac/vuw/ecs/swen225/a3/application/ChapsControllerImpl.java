@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Timer;
@@ -29,6 +30,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
 import nz.ac.vuw.ecs.swen225.a3.persistence.LevelInterface;
+import nz.ac.vuw.ecs.swen225.a3.persistence.SaveFileInterface;
 import nz.ac.vuw.ecs.swen225.a3.plugin.Level;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
@@ -180,16 +182,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		saveGame();
 		exitGame();
 	}
-
-	/**
-	 * Saves the game state.
-	 */
-	private void saveGame() {
-		this.getRootPane().repaint();
-
-
-	}
-
+	
 	/**
 	 * Resume a saved game. Enables save game and resume options if clicked when
 	 * game is in motion.
@@ -257,13 +250,26 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		loadLevel();
 		resumeGame();
 	}
+	
+	/**
+	 * Saves the game state.
+	 */
+	private void saveGame() 
+	{
+		try {
+			SaveFileInterface.save(model.getState());
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 
 	/**
 	 * Loads a game from json file.
 	 */
 	private void loadGame() {
-		//dosomething
-
+		GameState state = SaveFileInterface.load();
+		model.setState(state);
 		resumeGame();
 	}
 
@@ -405,7 +411,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		resumeButton.setPreferredSize(buttonDimension);
 
 		saveGame = new JButton("Save Game");
-		startNewGame.addActionListener(new ActionListener() {
+		saveGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				saveGame();
@@ -763,8 +769,6 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 			System.exit(0);
 		}
 	}
-	
-	
 	
 	@Override
 	public void windowClosing(WindowEvent arg0) 
