@@ -75,6 +75,32 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		}
 		return clone;
 	}
+	
+	/**
+	 * Goes through the list of actors returning the playable character
+	 * @return The player in this game
+	 */
+	private ActorPlayer findPlayer()
+	{
+		for(Actor a : actors) 
+			if(a instanceof ActorPlayer) 
+				return (ActorPlayer) a;
+		return null;
+	}
+	
+	/**
+	 * Returns all the interactables within a certain space
+	 * 
+	 * @return A list of interactables at the given position
+	 */
+	private List<Interactable> getInteractablesAt(Position pos)
+	{
+		List<Interactable> interactables = new ArrayList<>();
+		for(Interactable interactable : this.interactables)
+			if(interactable.getPosition().x == pos.x && interactable.getPosition().y == pos.y)
+				interactables.add(interactable);
+		return interactables;
+	}
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
@@ -125,21 +151,6 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 			enumEvents = EnumSet.noneOf(ChapsEvent.class);
 		
 		return enumEvents;
-	}
-
-	/**
-	 * Goes through the list of actors returning the playable character
-	 * @return
-	 */
-	private ActorPlayer findPlayer()
-	{
-		for(Actor a : actors) {
-			if(a instanceof ActorPlayer) {
-				return (ActorPlayer) a;
-			}
-		}
-
-		return null;
 	}
 
 	@Override

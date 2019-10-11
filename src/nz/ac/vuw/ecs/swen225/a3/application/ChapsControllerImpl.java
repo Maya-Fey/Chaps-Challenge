@@ -8,7 +8,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.EnumSet;
@@ -40,9 +39,6 @@ import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 public class ChapsControllerImpl extends JFrame implements ChapsController {
 
 	private static final long serialVersionUID = -6798111243001006598L;
-
-	private final int windowHeight = 800;
-	private final int windowLength = 800;
 
 	//game components - model and view
 	private final ChapsModel model;
