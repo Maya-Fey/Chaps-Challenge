@@ -1,9 +1,8 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
 
-import java.util.List;
+import java.util.Collection;
 
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
@@ -53,12 +52,8 @@ public interface ChapsView {
 	 * Updates the display with what's
 	 * currently in the inventory
 	 * @param v list of icons
-	 *
-	 *
-	 *
-	 *
 	 */
-	void updateInventory(List<Visible> v);
+	void updateInventory(Collection<Visible> v);
 
 
 	/**

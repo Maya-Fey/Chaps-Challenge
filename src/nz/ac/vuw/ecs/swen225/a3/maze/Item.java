@@ -1,5 +1,7 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
+import javax.json.JsonObject;
+
 import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
@@ -9,11 +11,10 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * @author James
  */
 public interface Item extends Persistable, Visible, Cloneable {
-
-	@Override
-	default String getName()
+		
+	default JsonObject persist()
 	{
-		return "item";
+		return this.getBuilder().build();
 	}
 
 	/**

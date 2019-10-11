@@ -1,13 +1,16 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
-
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
+import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
+import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
+import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
+import nz.ac.vuw.ecs.swen225.a3.commons.RenderVisible;
 import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 
 /**
@@ -15,76 +18,33 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * @author James
  *
  */
-public class ChapsModelImpl implements ChapsModel{
-	private Tile[][] maze;
+public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
+	
+	private List2D<Tile> tiles = new List2D<>(new TileFree());
+	
+	@SuppressWarnings("unchecked")
+	private List<Visible>[][] buffer = new List[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+	
 	private List<Actor> actors;
 	private List<Interactable> interactables;
+	
 	private Inventory inv;
+	
+	private ActorPlayer player;
 
 	private int timeRemaining, chipsRemaining;
-
-
-
-	/**
-	 * Constructor for new ChapsModelImpl object
-	 * @param maze
-	 * @param actors
-	 * @param interactables
-	 * @param inv
-	 * @param timeRemaining
-	 * @param chipsRemaining
-	 */
-	public ChapsModelImpl(Tile[][] maze, List<Actor> actors, List<Interactable> interactables, Inventory inv,
-			int timeRemaining, int chipsRemaining) {
-		super();
-		this.maze = maze;
-		this.actors = actors;
-		this.interactables = interactables;
-		this.inv = inv;
-		this.timeRemaining = timeRemaining;
-		this.chipsRemaining = chipsRemaining;
-	}
 	
-	
-
 	/**
 	 * Constructor for empty ChapsModel
 	 */
-	public ChapsModelImpl() {
-		super();
-	}
-
-
-
-	public ChapsModelImpl clone() {
-		Tile[][] cloneMaze = cloneMaze();
-		List<Actor> cloneActors = cloneActors();
-		List<Interactable> cloneInteractable = cloneInteractable();
-
-		return new ChapsModelImpl(cloneMaze, cloneActors, cloneInteractable, inv.clone(), timeRemaining, chipsRemaining);
-
-	}
-
-	/**
-	 * returns a clone of the maze
-	 * @return
-	 */
-	private Tile[][] cloneMaze() {
-		Tile[][] newMaze = new Tile[maze.length][maze[0].length];
-		for(int x=0;x<maze.length;x++) {
-			for(int y=0;y<maze[x].length;y++) {
-				newMaze[x][y]= maze[x][y].clone();
-			}
-		}
-		return maze;
-
-	}
-
+	public ChapsModelImpl() {}
+	
 	/**
 	 * Returns a clone of the actors
 	 * @return
 	 */
-	private List<Actor> cloneActors(){
+	private List<Actor> cloneActors()
+	{
 		List<Actor> clone = new ArrayList<>();
 
 		for(Actor a:actors) {
@@ -98,7 +58,8 @@ public class ChapsModelImpl implements ChapsModel{
 	 * returns a list of cloned interactables
 	 * @return
 	 */
-	private List<Interactable> cloneInteractable(){
+	private List<Interactable> cloneInteractables()
+	{
 		List<Interactable> clone = new ArrayList<>();
 		for(Interactable i:interactables) {
 			clone.add(i.clone());
@@ -106,98 +67,61 @@ public class ChapsModelImpl implements ChapsModel{
 		return clone;
 	}
 
-
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) {
 		List<ChapsEvent> events = new ArrayList<ChapsEvent>();
+		
 		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
+			
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
 			timeRemaining--;
 			//return game over time time <= to 0
-			if(timeRemaining<=0)
+			if(timeRemaining <= 0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
+			
+			
 		}
-
-
-		if(action.equals(ChapsAction.UP)||action.equals(ChapsAction.DOWN)||action.equals(ChapsAction.LEFT)||action.equals(ChapsAction.RIGHT)) {
-			//find player actor throwing error if none found
-
-			Player player = findPlayer();
-
-
-			Position newPos = player.getPosition().translate(action);
-
-			if(maze[newPos.x][newPos.y].isSafe(player)) {
-				//call on entry
-				maze[newPos.x][newPos.y].onEnter(player, null);
-
-				//update players position
-				player.setPosition(newPos);
-
-				//if needed convert to a free tile
-				events.addAll(convertToFreeTile(events, newPos));
-				//add chap events
-				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
+		
+		root:
+		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
+			Position potentialNewPos = player.getPosition().translate(action);
+			
+			Tile tile = tiles.get(potentialNewPos.x, potentialNewPos.y);
+			
+			if(tile instanceof TileExit)
+			{
+				events.add(ChapsEvent.PLAYER_WINS);
+				break root;
+			}
+			
+			if(tile.isFloor()) {
+				
+				if(!tile.isSafe(player, this)) {
+					events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+					break root;
+				}
+				
+				player.setPosition(potentialNewPos);
+				
+				
 			}
 		}
-
-
-
+		
 		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
+		
 		return enumEvents;
-	}
-
-
-	/**
-	 * Method which takes a position and converts that tile into a free tile
-	 * will return null if that tile isn't designed to be converted into a free tile
-	 * doesn't return the new tile as it is updated in maze[][]
-	 * @param events
-	 * @param newPos
-	 * @return any updates are needed
-	 */
-	private List<ChapsEvent> convertToFreeTile(List<ChapsEvent> events, Position newPos){
-		FreeTile newTile = maze[newPos.x][newPos.y].convertToFreeTile();
-		Tile mazeTile = maze[newPos.x][newPos.y];
-		if(newTile!=null) {
-			//if key or treasure item must be picked up and added to inventory requiring inv update
-			if(mazeTile instanceof Key) {
-				events.add(ChapsEvent.INV_UPDATE_REQUIRED);
-				//add item to players inventory
-				Key tile = (Key) mazeTile;
-				inv.addItem(tile.getItem());
-			}
-
-			if(mazeTile instanceof Treasure) {
-				events.add(ChapsEvent.INV_UPDATE_REQUIRED);
-				//add item to players inventory
-				Treasure tile = (Treasure) mazeTile;
-				inv.addItem(tile.getItem());
-			}
-
-
-			//if player is on an info field display contents of it else don't display any
-			if(mazeTile instanceof InfoField)
-				events.add(ChapsEvent.SHOW_TUTORIAL_MESSAGE);
-			else
-				events.add(ChapsEvent.HIDE_TUTORIAL_MESSAGE);
-
-			//after doing processing with old tile convert to new freeTile
-			maze[newPos.x][newPos.y] = newTile;
-		}
-
-		return events;
 	}
 
 	/**
 	 * Goes through the list of actors returning the playable character
 	 * @return
 	 */
-	private Player findPlayer(){
+	private ActorPlayer findPlayer()
+	{
 		for(Actor a : actors) {
-			if (a instanceof Player) {
-				return (Player)a;
+			if(a instanceof ActorPlayer) {
+				return (ActorPlayer) a;
 			}
 		}
 
@@ -205,41 +129,114 @@ public class ChapsModelImpl implements ChapsModel{
 	}
 
 	@Override
-	public GameState getState() {
-		// TODO Auto-generated method stub
-		return null;
+	public GameState getState() 
+	{
+		Inventory cInventory = inv.clone();
+		List<Actor> actors = cloneActors();
+		List<Interactable> interactables = cloneInteractables();
+		Tile[][] maze = this.tiles.export(Tile[].class, Tile.class);
+		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining);
 	}
 
 	@Override
-	public void setState(GameState state) {
-		this.maze = state.getMaze();
+	public void setState(GameState state) 
+	{
+		Tile[][] raw = state.getMaze();
+		
+		this.tiles = new List2D<>(new TileFree());
+		for(int i = 0; i < raw.length; i++)
+			for(int j = 0; j < raw[i].length; j++)
+				if(raw[i][j] != null)
+					this.tiles.set(raw[i][j], raw[i][j].getPosition().x, raw[i][j].getPosition().y);
+		
 		this.actors = state.getActors();
 		this.interactables = state.getInteractables();
 		this.inv = state.getInventory();
 		this.timeRemaining = state.getTimeRemaining();
 		this.chipsRemaining = state.getChipsRemaining();
+		
+		this.player = findPlayer();
+		
+		Contracts.notNull(player, "A valid GameState should contain a player");
 	}
 
 	@Override
-	public Visible[][] getVisibleArea() {
-		//temporary until method has been further developed
-		return maze;
+	public Visible[][] getVisibleArea() 
+	{
+		Visible[][] arr = new Visible[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
+		
+		int xc = player.getPosition().x;
+		int yc = player.getPosition().y;
+		
+		int minx = xc - GameConstants.VISIBILE_SIZE / 2;
+		int miny = yc - GameConstants.VISIBILE_SIZE / 2;
+		int maxx = xc + GameConstants.VISIBILE_SIZE / 2;
+		int maxy = yc + GameConstants.VISIBILE_SIZE / 2;
+		
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				buffer[i][j].clear();
+		
+		for(Actor actor : actors)
+		{
+			int x = actor.getPosition().x;
+			int y = actor.getPosition().y;
+			if(minx <= x && x <= maxx)
+				if(miny <= y && y <= maxy)
+					buffer[x - minx][y - miny].add(actor);
+		}
+		
+		for(Interactable interactable : interactables)
+		{
+			int x = interactable.getPosition().x;
+			int y = interactable.getPosition().y;
+			if(minx <= x && x <= maxx)
+				if(miny <= y && y <= maxy)
+					buffer[x - minx][y - miny].add(interactable);
+		}
+		
+		for(int x = minx; x <= maxx; x++)
+			for(int y = miny; y <= maxy; y++)
+				buffer[x - minx][y - miny].add(tiles.get(x, y));
+		
+		for(int i = 0; i < GameConstants.VISIBILE_SIZE; i++)
+			for(int j = 0; j < GameConstants.VISIBILE_SIZE; j++)
+				arr[i][GameConstants.VISIBILE_SIZE - j - 1] = new RenderVisible(IconFactory.INSTANCE.composite(buffer[i][j]));
+		//             ^ Invert the y-axis
+		
+		return arr;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public Collection<Visible> getInventoryIcons() 
+	{
+		return (Collection<Visible>) ((Collection) inv.getAll());
 	}
 
 	@Override
-	public Collection<Visible> getInventoryIcons() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getTimeRemaining() {
+	public int getTimeRemaining() 
+	{
 		return timeRemaining;
 	}
 
 	@Override
-	public int getChipsRemaining() {
+	public int getChipsRemaining() 
+	{
 		return chipsRemaining;
+	}
+
+	@Override
+	public void addChips(int chips) 
+	{
+		//TODO: Signal for a chips updated signal
+		this.chipsRemaining += chips;
+	}
+
+	@Override
+	public void removeInteractable(Interactable interact) 
+	{
+		interactables.remove(interact);
 	}
 
 }

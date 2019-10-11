@@ -41,12 +41,6 @@ public class Position implements Persistable, Cloneable {
 		return Json.createObjectBuilder().add("x", x).add("y", y).build();
 	}
 
-	@Override
-	public String getName()
-	{
-		return "position";
-	}
-
 	/**
 	 * Translates a position one space from its current position.
 	 *

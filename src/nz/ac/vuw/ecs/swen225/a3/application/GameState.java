@@ -104,13 +104,11 @@ public class GameState implements Persistable {
 	}
 	
 	public JsonObject persist() {		
-		JsonArrayBuilder xwise = Json.createArrayBuilder();
-		for(int x = 0; x < maze.length; x++) {
-			JsonArrayBuilder ywise = Json.createArrayBuilder();
+		JsonArrayBuilder tiles = Json.createArrayBuilder();
+		for(int x = 0; x < maze.length; x++) 
 			for(int y = 0; y < maze[0].length; y++)
-				ywise.add(maze[x][y].persist());
-			xwise.add(ywise.build());
-		}
+				if(maze[x][y] != null)
+					tiles.add(maze[x][y].persist());
 		
 		JsonArrayBuilder interactables = Json.createArrayBuilder();
 		for(Interactable interactable : this.interactables)
@@ -126,17 +124,12 @@ public class GameState implements Persistable {
 						 .add("chipsRemaining", chipsRemaining)
 						 .add("width", maze.length)
 						 .add("height", maze[0].length)
-						 .add("tiles", xwise)
-						 .add(inv.getName(), inv.persist())
-						 .add("interactables", interactables)
-						 .add("actors", actors);
+						 .add("tiles", tiles.build())
+						 .add("inventory", inv.persist())
+						 .add("interactables", interactables.build())
+						 .add("actors", actors.build());
 		
 		return builder.build();
-	}
-
-	public String getName() 
-	{
-		return "state";
 	}
 
 }

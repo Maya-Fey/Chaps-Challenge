@@ -5,13 +5,17 @@ import java.util.List;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.ChapsFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
+import nz.ac.vuw.ecs.swen225.a3.commons.List2D;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
+import nz.ac.vuw.ecs.swen225.a3.maze.InventoryFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
 
 /**
  * A factory for GameState
@@ -20,7 +24,7 @@ import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
  */
 public class GameStateFactory implements ChapsFactory<GameState> 
 {	
-	private final ChapsFactory<Inventory> invFactory = null;
+	private final ChapsFactory<Inventory> invFactory = new InventoryFactory();
 	private final ChapsFactory<Tile> tileFactory = RootFactory.getInstance().tileFactory;
 	private final ChapsFactory<Interactable> interactableFactory = RootFactory.getInstance().interactableFactory;
 	private final ChapsFactory<Actor> actorFactory = RootFactory.getInstance().actorFactory;
@@ -42,13 +46,13 @@ public class GameStateFactory implements ChapsFactory<GameState>
 		
 		Inventory inv = invFactory.resurrect(obj.getJsonObject("inventory"));
 		
-		Tile[][] tiles = new Tile[obj.getInt("width")][obj.getInt("height")];
-		JsonArray xwise = obj.getJsonArray("tiles");
-		for(int x = 0; x < tiles.length; x++) {
-			JsonArray ywise = xwise.getJsonArray(x);
-			for(int y = 0; y < tiles[0].length; y++)
-				tiles[x][y] = tileFactory.resurrect(ywise.getJsonObject(y));
-		}
+		List2D<Tile> tiles = new List2D<>(new TileFree());
+		JsonArray jTiles = obj.getJsonArray("tiles");
+		jTiles.forEach((JsonValue v) -> {
+			JsonObject tObj = (JsonObject) v;
+			Tile tile = tileFactory.resurrect(tObj);
+			tiles.set(tile, tile.getPosition().x, tile.getPosition().y);
+		});
 		
 		List<Interactable> interactables = new ArrayList<Interactable>();
 		JsonArray iArray = obj.getJsonArray("interactables");
@@ -56,11 +60,11 @@ public class GameStateFactory implements ChapsFactory<GameState>
 			interactables.add(interactableFactory.resurrect(iArray.getJsonObject(i)));
 		
 		List<Actor> actors = new ArrayList<Actor>();
-		JsonArray aArray = obj.getJsonArray("interactables");
+		JsonArray aArray = obj.getJsonArray("actors");
 		for(int i = 0; i < aArray.size(); i++)
 			actors.add(actorFactory.resurrect(aArray.getJsonObject(i)));
 		
-		return new GameState(tiles, interactables, actors, inv, timeRem, chipRem);
+		return new GameState(tiles.export(Tile[].class, Tile.class), interactables, actors, inv, timeRem, chipRem);
 	}
 
 	@Override

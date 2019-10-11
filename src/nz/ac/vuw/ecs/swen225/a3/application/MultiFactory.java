@@ -16,7 +16,7 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Persistable;
  *
  * @param <Type> The base type this factory can resurrect
  */
-class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
+public class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 {
 	private final Map<String, ChapsFactory<? extends Type>> factories = new HashMap<>();
 	
@@ -30,10 +30,10 @@ class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 	 */
 	public Type resurrect(JsonObject obj) 
 	{
-		ChapsFactory<? extends Type> factory = factories.get(obj.getString("typename"));
+		ChapsFactory<? extends Type> factory = factories.get(obj.getString("name"));
 		
 		if(factory == null)
-			throw new FactoryNotFoundException("Factory of type " + obj.getString("typename") + " not found");
+			throw new FactoryNotFoundException("Factory of type " + obj.getString("name") + " not found");
 		
 		return factory.resurrect(obj);
 	}
@@ -75,6 +75,14 @@ class MultiFactory<Type extends Persistable> implements ChapsFactory<Type>
 	public Type newInstance() 
 	{
 		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Removes all factories from this MultiFactory
+	 */
+	void clearAll()
+	{
+		factories.clear();
 	}
 	
 }

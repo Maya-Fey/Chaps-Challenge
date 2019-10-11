@@ -17,16 +17,6 @@ public interface Persistable {
 	JsonObject persist();
 	
 	/**
-	 * @deprecated Use reflection instead.
-	 * 
-	 * @return A name for this type of object. This name is not used to denote this 
-	 * <em>specific instance</em> of this object, or this object's bottom-level type,
-	 * but rather the class of object that this object belongs to. Used to identify 
-	 * what kind of root factory to use for resurrection.
-	 */
-	String getName();
-	
-	/**
 	 * @return A basic JsonObjectBuilder that includes this object's type information.
 	 */
 	default JsonObjectBuilder getBuilder()
