@@ -31,6 +31,8 @@ public class GameState implements Persistable {
 	
 	private int timeRemaining, chipsRemaining;
 	
+	private int level;
+	
 	/**
 	 * @param maze
 	 * @param interactables
@@ -38,8 +40,9 @@ public class GameState implements Persistable {
 	 * @param inv
 	 * @param timeRemaining
 	 * @param chipsRemaining
+	 * @param level
 	 */
-	public GameState(Tile[][] maze, List<Interactable> interactables, List<Actor> actors, Inventory inv, int timeRemaining, int chipsRemaining)
+	public GameState(Tile[][] maze, List<Interactable> interactables, List<Actor> actors, Inventory inv, int timeRemaining, int chipsRemaining, int level)
 	{
 		Contracts.notNull(maze, "GameState must have no null fields");
 		Contracts.notNull(maze[0], "GameState must have no null fields");
@@ -53,6 +56,7 @@ public class GameState implements Persistable {
 		this.inv = inv;
 		this.timeRemaining = timeRemaining;
 		this.chipsRemaining = chipsRemaining;
+		this.level = level;
 	}
 	
 	/**
@@ -103,6 +107,14 @@ public class GameState implements Persistable {
 		return this.actors;
 	}
 	
+	/**
+	 * @return The level that was specified by the creator of this object
+	 */
+	public int getLevel()
+	{
+		return level;
+	}
+	
 	public JsonObject persist() {		
 		JsonArrayBuilder tiles = Json.createArrayBuilder();
 		for(int x = 0; x < maze.length; x++) 
@@ -122,8 +134,7 @@ public class GameState implements Persistable {
 		
 		builder = builder.add("timeRemaining", timeRemaining)
 						 .add("chipsRemaining", chipsRemaining)
-						 .add("width", maze.length)
-						 .add("height", maze[0].length)
+						 .add("level", level)
 						 .add("tiles", tiles.build())
 						 .add("inventory", inv.persist())
 						 .add("interactables", interactables.build())

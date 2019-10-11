@@ -38,6 +38,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 
 	private int timeRemaining, chipsRemaining;
 	
+	private int level;
+	
 	private String message;
 	
 	/**
@@ -215,7 +217,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		List<Actor> actors = cloneActors();
 		List<Interactable> interactables = cloneInteractables();
 		Tile[][] maze = this.tiles.export(Tile[].class, Tile.class);
-		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining);
+		return new GameState(maze, interactables, actors, cInventory, timeRemaining, chipsRemaining, level);
 	}
 
 	@Override
@@ -234,6 +236,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		this.inv = state.getInventory();
 		this.timeRemaining = state.getTimeRemaining();
 		this.chipsRemaining = state.getChipsRemaining();
+		
+		this.level = state.getLevel();
 		
 		this.player = findPlayer();
 		

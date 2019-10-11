@@ -43,6 +43,7 @@ public class GameStateFactory implements ChapsFactory<GameState>
 	{
 		int timeRem = obj.getInt("timeRemaining");
 		int chipRem = obj.getInt("chipsRemaining");
+		int level = obj.getInt("level");
 		
 		Inventory inv = invFactory.resurrect(obj.getJsonObject("inventory"));
 		
@@ -64,7 +65,7 @@ public class GameStateFactory implements ChapsFactory<GameState>
 		for(int i = 0; i < aArray.size(); i++)
 			actors.add(actorFactory.resurrect(aArray.getJsonObject(i)));
 		
-		return new GameState(tiles.export(Tile[].class, Tile.class), interactables, actors, inv, timeRem, chipRem);
+		return new GameState(tiles.export(Tile[].class, Tile.class), interactables, actors, inv, timeRem, chipRem, level);
 	}
 
 	@Override

@@ -62,4 +62,10 @@ public class RecnplayProxy implements ChapsModel {
 		return actual.getChipsRemaining();
 	}
 
+	@Override
+	public String getTutorialMessage() 
+	{
+		return actual.getTutorialMessage();
+	}
+
 }
