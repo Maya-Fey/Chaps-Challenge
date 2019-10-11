@@ -130,7 +130,22 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 			
 			if(timeRemaining <= 0)
 				events.add(ChapsEvent.GAME_LOST_TIME_OUT);			
+			
+			for(Actor actor : actors)
+				if(actor.tick(this))
+					events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 		}
+		
+		for(int i = 0; i < actors.size(); i++)
+			for(int j = i + 1; j < actors.size(); j++)
+			{
+				Actor a1 = actors.get(i);
+				Actor a2 = actors.get(j);
+				if(a1.getPosition().x == a2.getPosition().x && a1.getPosition().y == a2.getPosition().y) {
+					a1.onCollide(a2, this);
+					a2.onCollide(a1, this);
+				}
+			}
 		
 		root:
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
