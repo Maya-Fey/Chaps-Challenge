@@ -31,7 +31,7 @@ class TestingIconFactory {
 	@Test
 	void test_icon_load() {
 		try {
-			ImageIcon i = (ImageIcon) IconFactory.INSTANCE.loadIcon("dirt.png");
+			IconFactory.INSTANCE.loadIcon("dirt.png");
 		} catch (Error e) {
 			assert (false);
 		}

@@ -24,12 +24,11 @@ class TestingCommons {
 	 */
 	@Test
 	void Test_not_null() {
-		Contracts contracts = new Contracts();
 		Object o = null;
 
 		Assertions.assertThrows(ContractViolationException.class, () -> {
 			Contracts.notNull(o, "null object passed");
-		  });
+		});
 	}
 
 	/**

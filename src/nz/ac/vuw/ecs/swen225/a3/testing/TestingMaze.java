@@ -1,6 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.testing;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,9 +11,7 @@ import javax.swing.ImageIcon;
 import org.junit.jupiter.api.Test;
 
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
-import nz.ac.vuw.ecs.swen225.a3.application.GameStateFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
-import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
@@ -23,15 +21,11 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelImpl;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.Inventory;
-import nz.ac.vuw.ecs.swen225.a3.maze.Item;
-import nz.ac.vuw.ecs.swen225.a3.maze.MazeObject;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
-import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position.Direction;
+import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
-import nz.ac.vuw.ecs.swen225.a3.maze.TileExitFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
-import nz.ac.vuw.ecs.swen225.a3.maze.TileFreeFactory;
 
 /**
  * JUnit test cases for maze package, basic functionalities of game
@@ -204,7 +198,7 @@ class TestingMaze {
 		List<Actor> actors = new ArrayList<Actor>();
 		actors.add(new ActorPlayer());
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Getters
 		assertTrue(inv == gs.getInventory());
 		assertTrue(10 == gs.getTimeRemaining());
@@ -235,7 +229,7 @@ class TestingMaze {
 		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Set the state
 		cmi.setState(gs);
 
@@ -261,13 +255,13 @@ class TestingMaze {
 		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Set the state
 		cmi.setState(gs);
 		GameState copy = cmi.getState();
 		assertTrue(copy != gs); // Should be deep clone
 		// Get visable
-		Visible[][] v = cmi.getVisibleArea();
+		cmi.getVisibleArea();
 		// Chips Numbers
 		int num = cmi.getChipsRemaining();
 		cmi.remChips(1);
@@ -284,7 +278,7 @@ class TestingMaze {
 		assertTrue(time == time2 + 1);
 		// Test game over event works
 		ChapsModelImpl cmi2 = (ChapsModelImpl) new ChapsModelFactory().produce();
-		GameState gs2 = new GameState(maze, interactables, actors, inv, 1, 10);
+		GameState gs2 = new GameState(maze, interactables, actors, inv, 1, 10, 0);
 		cmi2.setState(gs2);
 		String target = "[TIME_UPDATE_REQUIRED, GAME_LOST_TIME_OUT]";
 		assertTrue(cmi2.onAction(ChapsAction.TICK).toString().equals(target));

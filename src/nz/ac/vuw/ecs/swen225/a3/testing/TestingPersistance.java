@@ -52,7 +52,7 @@ class TestingPersistance {
 		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Set the state
 		cmi.setState(gs);
 		// Record JSon
@@ -83,7 +83,7 @@ class TestingPersistance {
 		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Set the state
 		cmi.setState(gs);
 		String jsn = gs.persist().toString();
@@ -112,7 +112,7 @@ class TestingPersistance {
 		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10, 0);
 		// Set the state
 		cmi.setState(gs);
 		try {
