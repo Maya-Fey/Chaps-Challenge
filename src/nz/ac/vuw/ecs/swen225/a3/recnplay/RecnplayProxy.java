@@ -48,6 +48,14 @@ public class RecnplayProxy implements ChapsModel {
 			game = null;
 		}
 	}
+	
+	/**
+	 * @return Whether we're recording or not
+	 */
+	public boolean isRecording()
+	{
+		return this.game != null;
+	}
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) 

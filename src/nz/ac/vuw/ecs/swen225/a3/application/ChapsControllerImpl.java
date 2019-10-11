@@ -280,13 +280,18 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		model.setState(state);
 		resumeGame();
 	}
+	
+	private void stopRecording()
+	{
+		
+	}
 
 	/**
 	 * Starts the recorded game
 	 * Adds recorded game to menu bar.
 	 */
 	private void startRecordedGame() {
-		inPlayBackMode=true;
+		inPlayBackMode = true;
 		menuBar.add(recordedPlayback);
 		resumeGame();
 		//dosomething
@@ -297,7 +302,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	 * Removes recored game from menu bar.
 	 */
 	private void stopRecordedGame() {
-		inPlayBackMode=false;
+		inPlayBackMode = false;
 		menuBar.remove(recordedPlayback);
 		//dosomething
 	}
@@ -501,14 +506,21 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 				saveGame();
 		});
 		
-		JMenuItem resume = new JMenuItem("Resume");
-		resume.addActionListener((e) -> {
-				resumeGame();
+		JMenuItem load = new JMenuItem("Load game");
+		load.addActionListener((e) -> {
+				saveGame();
 		});
 		
-		JMenuItem pause = new JMenuItem("Pause");
-		pause.addActionListener((e) -> {
-				pauseGame();
+		JMenuItem startRec = new JMenuItem("Start Recording");
+		startRec.addActionListener((e) -> {
+			if(!proxy.isRecording() && this.currentGameBeingPlayed)
+				proxy.startRecording();
+		});
+		
+		JMenuItem stopRec = new JMenuItem("Stop Recording");
+		stopRec.addActionListener((e) -> {
+			if(proxy.isRecording())
+				stopRecording();
 		});
 		
 		JMenuItem exit = new JMenuItem("Exit");
@@ -556,8 +568,9 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		});
 
 		gameOptions.add(save);
-		gameOptions.add(resume);
-		gameOptions.add(pause);
+		gameOptions.add(load);
+		gameOptions.add(startRec);
+		gameOptions.add(stopRec);
 		gameOptions.add(exit);
 
 		help.add(controls);
