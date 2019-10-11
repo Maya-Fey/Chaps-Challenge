@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.EnumSet;
@@ -14,6 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -21,16 +23,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.GameConstants;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModelFactory;
+import nz.ac.vuw.ecs.swen225.a3.persistence.JsonFileInterface;
 import nz.ac.vuw.ecs.swen225.a3.persistence.LevelInterface;
 import nz.ac.vuw.ecs.swen225.a3.persistence.SaveFileInterface;
 import nz.ac.vuw.ecs.swen225.a3.plugin.Level;
 import nz.ac.vuw.ecs.swen225.a3.recnplay.RecnplayProxy;
+import nz.ac.vuw.ecs.swen225.a3.recnplay.RecordedGame;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsView;
 import nz.ac.vuw.ecs.swen225.a3.render.ChapsViewFactory;
 
@@ -227,6 +232,9 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	
 	private void loadLevel()
 	{
+		if(proxy.isRecording())
+			this.stopRecording();
+		
 		Level theLevel = LevelInterface.getInstance().getLevel(currentlevel);
 		model.setState(theLevel.load());
 		view.updateCurrentLevel(this.currentlevel);
@@ -283,7 +291,34 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 	
 	private void stopRecording()
 	{
-		
+		JFileChooser chooser = new JFileChooser(new File("."));
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Chaps Recoding Files", "json");
+	    chooser.setFileFilter(filter);
+	    chooser.setApproveButtonText("Save");
+	    chooser.setDialogTitle("Save Recording");
+	    chooser.showOpenDialog(this);
+	    
+	    File selected = chooser.getSelectedFile();
+	    if(selected != null)
+	    {
+	    	if(selected.exists() && selected.isDirectory()) 
+	    		JOptionPane.showMessageDialog(this, "That's a Directory", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	if(selected.exists() && selected.isFile() && !(JOptionPane.showConfirmDialog(this, "This file already exists. Are you sure you want to overwrite it?") == JOptionPane.OK_OPTION))
+	    		return;
+	    	
+	    	if(selected.exists() && !selected.delete())
+	    		JOptionPane.showMessageDialog(this, "File couldn't be overwritten", "Error", JOptionPane.ERROR_MESSAGE);
+	    	
+	    	try {
+				selected.createNewFile();
+				
+				JsonFileInterface.saveToFile(proxy.stopRecording().persist(), selected);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "There was an error in saving: " + e.getClass().getSimpleName(), "Error", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} 
+	    }
 	}
 
 	/**
