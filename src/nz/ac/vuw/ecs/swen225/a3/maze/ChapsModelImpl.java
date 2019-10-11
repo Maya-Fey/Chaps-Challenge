@@ -78,18 +78,16 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		
 		//update time if tick action requiring time update
 		if(action.equals(ChapsAction.TICK)) {
-			
 			events.add(ChapsEvent.TIME_UPDATE_REQUIRED);
 			timeRemaining--;
 			//return game over time time <= to 0
 			if(timeRemaining <= 0)
-				events.add(ChapsEvent.GAME_LOST_TIME_OUT);
-			
-			
+				events.add(ChapsEvent.GAME_LOST_TIME_OUT);			
 		}
 		
 		root:
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
+			
 			Position potentialNewPos = player.getPosition().translate(action);
 			
 			Tile tile = tiles.get(potentialNewPos.x, potentialNewPos.y);
@@ -113,7 +111,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 			}
 		}
 		
-		EnumSet<ChapsEvent> enumEvents = EnumSet.copyOf(events);
+		EnumSet<ChapsEvent> enumEvents;
+		if(events.size() != 0)
+			enumEvents = EnumSet.copyOf(events);
+		else 
+			enumEvents = EnumSet.noneOf(ChapsEvent.class);
 		
 		return enumEvents;
 	}
