@@ -115,6 +115,14 @@ public class GameState implements Persistable {
 		return level;
 	}
 	
+	/**
+	 * @param level
+	 */
+	public void setLevel(int level)
+	{
+		this.level = level;
+	}
+	
 	public JsonObject persist() {		
 		JsonArrayBuilder tiles = Json.createArrayBuilder();
 		for(int x = 0; x < maze.length; x++) 

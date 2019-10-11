@@ -64,6 +64,9 @@ public class LevelInterface {
 		
 		Contracts.arbitrary(matches.size() > 0, "No levels found");
 		
+		for(int i = 0; i < matches.size(); i++)
+			levels.add(null);
+		
 		for(File file : matches)
 		{			
 			try(ZipFile zFile = new ZipFile(file.getAbsolutePath())) {
@@ -109,7 +112,7 @@ public class LevelInterface {
 				if(state != null) {
 					//TODO: Do something with this
 					int levelnum = Integer.parseInt(file.getName().substring(5, file.getName().length() - 4));
-					levels.add(new Level(state, loaders));
+					levels.set(levelnum, (new Level(state, loaders, levelnum)));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

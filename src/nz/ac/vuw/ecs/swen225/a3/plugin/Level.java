@@ -25,14 +25,18 @@ public class Level {
 	
 	private final Set<ExternalCodeLoader> loaders;
 	
+	private final int number;
+	
 	/**
-	 * @param state
-	 * @param loaders
+	 * @param state The level's initial state
+	 * @param loaders The external code for this level
+	 * @param number This level's number
 	 */
-	public Level(JsonObject state, Set<ExternalCodeLoader> loaders)
+	public Level(JsonObject state, Set<ExternalCodeLoader> loaders, int number)
 	{
 		this.state = state;
 		this.loaders = loaders;
+		this.number = number;
 		
 		try {
 			this.load();
@@ -51,7 +55,9 @@ public class Level {
 	{
 		RootFactory.reinitialize();       //Remove all previously loaded code to prevent conflicts
 		this.onLoad();                    //Load all external code
-		return stateFactory.resurrect(this.state);
+		GameState state = stateFactory.resurrect(this.state);
+		state.setLevel(number);
+		return state;
 	}
 	
 	/**
