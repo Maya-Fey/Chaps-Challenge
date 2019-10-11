@@ -1,6 +1,7 @@
 package nz.ac.vuw.ecs.swen225.a3.render;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,7 +20,6 @@ import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
  * Chap's Challenge.
  *
  * @author Jakob 300444995
- *
  */
 @SuppressWarnings("serial")
 public class ChapsViewImpl extends JSplitPane implements ChapsView {
@@ -41,6 +41,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	private final JLabel text_3 = new JLabel("CHIPS:");
 	
 	private final JLabel[][] grid;
+	private final JLabel[][] invGrid = new JLabel[4][2];
 	
 	private final JPanel left, right;
 	
@@ -56,6 +57,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		this.right = (JPanel) this.rightComponent;
 		left.setLayout(new GridBagLayout());
 		right.setLayout(new GridBagLayout());
+		invPanel.setLayout(new GridBagLayout());
 
 		//Create a grid of labels to act as holders for the icons in the board
 		grid = new JLabel[GameConstants.VISIBILE_SIZE][GameConstants.VISIBILE_SIZE];
@@ -105,6 +107,24 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 		stylizeNumLabel(levelLabel);
 		stylizeNumLabel(timeLabel);
 		stylizeNumLabel(chipsLabel);
+		
+		//Creates the inventory display as a grid and sets
+		//the icon based on the index in the list of Visible objects.
+		for(int x = 0; x < 4; x++) {
+			for(int y = 0; y < 2; y++) {
+				gbc.gridx = x;
+				gbc.gridy = y;
+				
+				JLabel label = invGrid[x][y] = new JLabel();
+				label.setOpaque(true);
+				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+				label.setPreferredSize(new Dimension(64, 64));
+				label.setMinimumSize(new Dimension(64, 64));
+				label.setMaximumSize(new Dimension(64, 64));
+				
+				invPanel.add(label, gbc);
+			}
+		}
 	}
 	
 	/**
@@ -154,30 +174,15 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	}
 
 	@Override
-	public void updateInventory(Collection<Visible> v) {
-
-		invPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+	public void updateInventory(Collection<Visible> visibles) 
+	{
+		for(int x = 0; x < 4; x++) 
+			for(int y = 0; y < 2; y++)
+				invGrid[x][y].setIcon(null);
 		
-		//Creates the inventory display as a grid and sets
-		//the icon based on the index in the list of Visible objects.
-		for(int x = 0; x < 4; x++) {
-			for(int y = 0; y < 2; y++) {
-				for(Visible i : v) {
-				gbc.gridx = x;
-				gbc.gridy = y;
-				gbc.weightx = 1;
-				gbc.weighty = 1;
-				JLabel label = new JLabel();
-				label.setOpaque(true);
-
-				label.setIcon(i.getIcon());
-				label.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
-
-				invPanel.add(label, gbc);
-				}
-			}
-		}
+		int i = 0;
+		for(Visible v : visibles)
+			invGrid[i / 4][i % 4].setIcon(v.getIcon());
 	}
 	
 	@Override
