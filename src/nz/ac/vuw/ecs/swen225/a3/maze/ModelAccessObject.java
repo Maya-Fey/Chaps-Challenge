@@ -49,8 +49,25 @@ public interface ModelAccessObject {
 	void setTile(Tile tile, int x, int y);
 	
 	/**
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 * @return The tile at those coords
+	 */
+	Tile getTile(int x, int y);
+	
+	/**
 	 * Kills the player
 	 */
 	void killPlayer();
+	
+	/**
+	 * Can an object move to this position?
+	 * <br><br>
+	 * <i>Note, this is not used in onAction as the decision tree needs more complexity to function</i>
+	 * 
+	 * @param pos The position we're testing
+	 * @return Whether it's possible
+	 */
+	boolean canMoveTo(Position pos);
 
 }

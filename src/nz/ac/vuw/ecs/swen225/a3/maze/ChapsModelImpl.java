@@ -106,15 +106,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		return interactables;
 	}
 	
-	/**
-	 * Can an object move to this position?
-	 * <br><br>
-	 * <i>Note, this is not used in onAction as the decision tree needs more complexity to function</i>
-	 * 
-	 * @param pos The position we're testing
-	 * @return Whether it's possible
-	 */
-	private boolean canMoveTo(Position pos)
+	@Override
+	public boolean canMoveTo(Position pos)
 	{
 		Tile tile = tiles.get(pos.x, pos.y);
 		List<Interactable> interactables = getInteractablesAt(pos);
@@ -356,6 +349,7 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	public void setTile(Tile tile, int x, int y) 
 	{
 		events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
+		tile.setPosition(new Position(x, y));
 		tiles.set(tile, x, y);
 	}
 
@@ -363,6 +357,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	public void killPlayer() 
 	{
 		events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+	}
+
+	@Override
+	public Tile getTile(int x, int y) {
+		return tiles.get(x, y);
 	}
 
 }
