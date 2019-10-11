@@ -11,8 +11,9 @@ public interface Actor extends MazeObject, Visible, Cloneable {
 	 * Move this actor forward by one tick. During the tick this actor
 	 * may move.
 	 * @param obj Model Access
+	 * @return Whether or not we've moved
 	 */
-	void tick(ModelAccessObject obj);
+	boolean tick(ModelAccessObject obj);
 
 	/**
 	 * @return clone of object

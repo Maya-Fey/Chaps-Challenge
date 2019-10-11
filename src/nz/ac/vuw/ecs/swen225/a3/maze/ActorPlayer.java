@@ -61,7 +61,10 @@ public class ActorPlayer implements Actor {
 	}
 
 	@Override
-	public void tick(ModelAccessObject obj) {}
+	public boolean tick(ModelAccessObject obj) 
+	{
+		return false;
+	}
 
 	@Override
 	public boolean isPlayer() 
