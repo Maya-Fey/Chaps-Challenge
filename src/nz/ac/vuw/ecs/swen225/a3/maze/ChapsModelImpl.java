@@ -166,7 +166,9 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 					{
 						if(this.canMoveTo(potentialNewPos.translate(action)))
 						{
-							interactable.setPosition(potentialNewPos.translate(action));
+							Position thePos = potentialNewPos.translate(action);
+							interactable.setPosition(thePos);
+							tiles.get(thePos.x, thePos.y).onEnter(interactable, this);
 						} else {
 							break root;
 						}
