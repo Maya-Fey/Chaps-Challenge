@@ -17,6 +17,8 @@ import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExitFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileFree;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileFreeFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileMessage;
+import nz.ac.vuw.ecs.swen225.a3.maze.TileMessageFactory;
 
 /**
  * @author Claire
@@ -44,6 +46,7 @@ public class RootFactory {
 		
 		instance.tileFactory.addFactory(TileFree.class.getSimpleName(), new TileFreeFactory());
 		instance.tileFactory.addFactory(TileExit.class.getSimpleName(), new TileExitFactory());
+		instance.tileFactory.addFactory(TileMessage.class.getSimpleName(), new TileMessageFactory());
 		
 		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());
 		instance.interactableFactory.addFactory(InteractableItem.class.getSimpleName(), new InteractableItemFactory());

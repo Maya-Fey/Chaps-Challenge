@@ -189,6 +189,7 @@ public class ChapsViewImpl extends JSplitPane implements ChapsView {
 	
 	@Override
 	public void setDisplayTutorialMessage(String message) {
+		System.out.println(message);
 		//Set the size to the inventory panel
 		tutorialPanel.setPreferredSize(invPanel.getSize());
 		tutorialMessage.setText(message);
