@@ -18,6 +18,8 @@ import nz.ac.vuw.ecs.swen225.a3.maze.ChapsModel;
 public class RecnplayProxy implements ChapsModel {
 	
 	private ChapsModel actual;
+	
+	private RecordedGame game;
 
 	/**
 	 * @param actual The model you want this to be a proxy to.
@@ -26,11 +28,32 @@ public class RecnplayProxy implements ChapsModel {
 	{
 		this.actual = actual;
 	}
+	
+	/**
+	 * Starts recording
+	 */
+	public void startRecording()
+	{
+		this.game = new RecordedGame(actual.getState());
+	}
+	
+	/**
+	 * @return The recorded game
+	 */
+	public RecordedGame stopRecording()
+	{
+		try {
+			return game;
+		} finally {
+			game = null;
+		}
+	}
 
 	@Override
 	public EnumSet<ChapsEvent> onAction(ChapsAction action) 
 	{
-		//TODO: Record actions!
+		if(game != null)
+			game.addAction(action);
 		return actual.onAction(action);
 	}
 
