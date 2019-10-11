@@ -194,7 +194,7 @@ class TestingMaze {
 	}
 
 	/**
-	 * Tests the main methods in gamestate 
+	 * Tests the main methods in gamestate
 	 */
 	@Test
 	void test_gamestate() {
@@ -219,67 +219,76 @@ class TestingMaze {
 	}
 
 	/**
-	 * Tests some of the main methods in champs model impl ---onAction could have more tests 
+	 * Tests the onAction method of ChapsModelImpl
+	 * 
 	 */
 	@Test
-	void test_ChapsModelImpl_construct_onAction_setState() {
-		ChapsModelImpl cmi = (ChapsModelImpl) new ChapsModelFactory().produce();
-		Tile[][] maze = new Tile[2][2];
-		List<Interactable> interactables = new ArrayList<Interactable>();
-		interactables.add(new InteractableChip());
-		List<Actor> actors = new ArrayList<Actor>();
-		Actor a = new ActorPlayer();
-		a.setPosition(new Position(0,0));
-		actors.add(a);
-		Inventory inv = new Inventory();
-		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
-		//Set the state
-		cmi.setState(gs);
-		//Check tick works 
-		int time = cmi.getTimeRemaining();
-		cmi.onAction(ChapsAction.TICK);
-		int time2 = cmi.getTimeRemaining();
-		assertTrue(time == time2+1);
-		//Test game over event works 
-		ChapsModelImpl cmi2 = (ChapsModelImpl) new ChapsModelFactory().produce();
-		GameState gs2 = new GameState(maze, interactables, actors, inv, 1, 10);
-		cmi2.setState(gs2);
-		String target ="[TIME_UPDATE_REQUIRED, GAME_LOST_TIME_OUT]";
-		assertTrue(cmi2.onAction(ChapsAction.TICK).toString().equals(target));
-		//Test move 
-		//cmi.onAction(ChapsAction.DOWN);
-		
-		
-	}
-	
-	/**
-	 * Tests some of the main methods in champs model impl --- FINISH VISABLE
-	 */
-	@Test
-	void test_ChapsModelImpl_getState_getVisable_other() {
+	void test_ChapsModelImpl_onActions() {
 		ChapsModelImpl cmi = (ChapsModelImpl) new ChapsModelFactory().produce();
 		Tile[][] maze = new Tile[2][2];
 		List<Interactable> interactables = new ArrayList<Interactable>();
 		InteractableChip iii = new InteractableChip();
-		iii.setPosition(new Position(0,0));
+		iii.setPosition(new Position(0, 0));
 		interactables.add(iii);
 		List<Actor> actors = new ArrayList<Actor>();
 		Actor a = new ActorPlayer();
-		a.setPosition(new Position(0,0));
+		a.setPosition(new Position(0, 0));
 		actors.add(a);
 		Inventory inv = new Inventory();
 		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
-		//Set the state
+		// Set the state
+		cmi.setState(gs);
+
+		// Test move
+		cmi.onAction(ChapsAction.DOWN);
+
+	}
+
+	/**
+	 * Tests the main methods of ChampsModelImpl except for onAction which has its own test case
+	 */
+	@Test
+	void test_ChapsModelImpl_othermethods() {
+		// Setup
+		ChapsModelImpl cmi = (ChapsModelImpl) new ChapsModelFactory().produce();
+		Tile[][] maze = new Tile[2][2];
+		List<Interactable> interactables = new ArrayList<Interactable>();
+		InteractableChip iii = new InteractableChip();
+		iii.setPosition(new Position(0, 0));
+		interactables.add(iii);
+		List<Actor> actors = new ArrayList<Actor>();
+		Actor a = new ActorPlayer();
+		a.setPosition(new Position(0, 0));
+		actors.add(a);
+		Inventory inv = new Inventory();
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		// Set the state
 		cmi.setState(gs);
 		GameState copy = cmi.getState();
-		assertTrue(copy != gs); //Should be deep clone 
-		//Get visable
-		//Visible[][] v = cmi.getVisibleArea(); Finish after get updated code 
+		assertTrue(copy != gs); // Should be deep clone
+		// Get visable
+		Visible[][] v = cmi.getVisibleArea();
+		// Chips Numbers
 		int num = cmi.getChipsRemaining();
-		cmi.addChips(1);
-		assertTrue(num == cmi.getChipsRemaining()-1);
-		
-		
+		cmi.remChips(1);
+		assertTrue(num == cmi.getChipsRemaining() + 1);
+		cmi.remChips(9);
+		assertTrue(cmi.hasAllChips());
+		cmi.remChips(-2);
+		assertTrue(cmi.getInventory() == inv);
+		cmi.removeInteractable(iii);
+		// Check tick works
+		int time = cmi.getTimeRemaining();
+		cmi.onAction(ChapsAction.TICK);
+		int time2 = cmi.getTimeRemaining();
+		assertTrue(time == time2 + 1);
+		// Test game over event works
+		ChapsModelImpl cmi2 = (ChapsModelImpl) new ChapsModelFactory().produce();
+		GameState gs2 = new GameState(maze, interactables, actors, inv, 1, 10);
+		cmi2.setState(gs2);
+		String target = "[TIME_UPDATE_REQUIRED, GAME_LOST_TIME_OUT]";
+		assertTrue(cmi2.onAction(ChapsAction.TICK).toString().equals(target));
+
 	}
 
 }
