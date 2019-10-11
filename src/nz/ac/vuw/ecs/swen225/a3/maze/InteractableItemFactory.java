@@ -16,7 +16,7 @@ public class InteractableItemFactory implements ChapsFactory<InteractableItem> {
 	{
 		Position pos = Position.resurrect(obj);
 		Item item = null;
-		if(obj.getValue("item").getValueType() != ValueType.NULL)
+		if(!obj.getString("item").equals("-1"))
 			item = RootFactory.getInstance().itemFactory.newInstance(obj.getString("item"));
 		InteractableItem res = new InteractableItem(item);
 		res.setPosition(pos);

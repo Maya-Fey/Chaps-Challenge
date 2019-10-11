@@ -1,7 +1,9 @@
 package nz.ac.vuw.ecs.swen225.a3.maze;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.swing.Icon;
 
 /**
@@ -50,7 +52,7 @@ public class InteractableItem implements Interactable {
 	public JsonObject persist()
 	{
 		JsonObjectBuilder builder = this.getBuilder();
-		builder.add("item", item == null ? null : item.getClass().getSimpleName());
+		builder.add("item", item == null ? "-1" : item.getClass().getSimpleName());
 		return builder.build();
 	}
 
