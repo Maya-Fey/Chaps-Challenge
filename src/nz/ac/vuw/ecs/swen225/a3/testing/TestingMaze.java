@@ -12,10 +12,6 @@ import org.junit.jupiter.api.Test;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsEvent;
-import nz.ac.vuw.ecs.swen225.a3.maze.Exit;
-import nz.ac.vuw.ecs.swen225.a3.maze.ExitLock;
-import nz.ac.vuw.ecs.swen225.a3.maze.FreeTile;
-import nz.ac.vuw.ecs.swen225.a3.maze.InfoField;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position;
 import nz.ac.vuw.ecs.swen225.a3.maze.Position.Direction;
 
@@ -33,6 +29,7 @@ class TestingMaze {
 	@Test
 	void test_exit() {
 		// Constructing
+		/*
 		Exit e = null;
 		ImageIcon i = null;
 		try {
@@ -55,6 +52,7 @@ class TestingMaze {
 		// Other
 		assertTrue(e.isFloor() == false);
 		assertTrue(e.getIcon() == i);
+		*/
 	}
 
 	/**
@@ -87,39 +85,6 @@ class TestingMaze {
 			assertTrue((pn.x == p.x + mov.get(count)) && (pn.y == p.y + mov.get(count + 1)));
 			count += 2;
 		}
-
-		// Other
-		assertTrue(p.getName().equals("position"));
-	}
-	
-	/**
-	 * Tests the exitLock class
-	 */
-	@Test
-	void test_exitLock() {
-		// Constructing
-		ExitLock e = null;
-		ImageIcon i = null;
-		try {
-			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("exitLock.png");
-			Position p = new Position(0, 0);
-			e = new ExitLock(p, "", i);
-		} catch (Error ee) {
-			assert (false);
-		}
-		assert (true);
-		// Clone
-		ExitLock e2 = e.clone();
-		assertTrue(e2 != e);
-		assertTrue(e2.getName().equals(e.getName()));
-		assertTrue(e2.getPosition().x == (e.getPosition().x) && e2.getPosition().y == (e.getPosition().y));
-		// Set position
-		Position pp = new Position(0, 1);
-		e.setPosition(pp);
-		assertTrue(e.getPosition().y == 1);
-		// Other
-		assertTrue(e.isFloor() == true);
-		assertTrue(e.getIcon() == i);
 	}
 	
 	//DISPLAY_UPDATE_REQUIRED,INV_UPDATE_REQUIRED,TIME_UPDATE_REQUIRED,CHIPS_UPDATE_REQUIRED,SHOW_TUTORIAL_MESSAGE,HIDE_TUTORIAL_MESSAGE,GAME_LOST_PLAYER_DIED,GAME_LOST_TIME_OUT
@@ -143,63 +108,4 @@ class TestingMaze {
 		
 	}
 	
-	/**
-	 * Tests the FreeTile class
-	 */
-	@Test
-	void test_FreeTile() {
-		// Constructing
-		FreeTile e = null;
-		ImageIcon i = null;
-		try {
-			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("freeTile.png");
-			Position p = new Position(0, 0);
-			e = new FreeTile(p);
-		} catch (Error ee) {
-			assert (false);
-		}
-		assert (true);
-		// Clone
-		FreeTile e2 = e.clone();
-		assertTrue(e2 != e);
-		assertTrue(e2.getName().equals(e.getName()));
-		assertTrue(e2.getPosition().x == (e.getPosition().x) && e2.getPosition().y == (e.getPosition().y));
-		// Set position
-		Position pp = new Position(0, 1);
-		e.setPosition(pp);
-		assertTrue(e.getPosition().y == 1);
-		// Other
-		assertTrue(e.isFloor() == true);
-		assertTrue(e.getIcon() == i);
-	}
-	
-	/**
-	 * Tests the FreeTile class
-	 */
-	@Test
-	void test_InfoField() {
-		// Constructing
-		InfoField e = null;
-		ImageIcon i = null;
-		try {
-			i = (ImageIcon) IconFactory.INSTANCE.loadIcon("infoField.png");
-			Position p = new Position(0, 0);
-			e = new InfoField(p,"",i,"");
-		} catch (Error ee) {
-			assert (false);
-		}
-		assert (true);
-		// Clone
-		InfoField e2 = e.clone();
-		assertTrue(e2 != e);
-		assertTrue(e2.getName().equals(e.getName()));
-		assertTrue(e2.getPosition().x == (e.getPosition().x) && e2.getPosition().y == (e.getPosition().y));
-		// Set position
-		Position pp = new Position(0, 1);
-		e.setPosition(pp);
-		assertTrue(e.getPosition().y == 1);
-		// Other
-		assertTrue(e.isFloor() == true);
-		assertTrue(e.getIcon() == i);
-	}
 }
