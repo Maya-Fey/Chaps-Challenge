@@ -99,6 +99,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 			
 			if(tile instanceof TileExit)
 			{
+				player.setPosition(potentialNewPos);
+				events.add(ChapsEvent.DISPLAY_UPDATE_REQUIRED);
 				events.add(ChapsEvent.PLAYER_WINS);
 				break root;
 			}
