@@ -61,5 +61,10 @@ public interface ChapsModel  {
 	 * @return The amount of chips remaining
 	 */
 	int getChipsRemaining();
+	
+	/**
+	 * @return The tutorial message, if there is one
+	 */
+	String getTutorialMessage();
 
 }

@@ -151,8 +151,7 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 					//TODO: Win message
 					break;
 				case SHOW_TUTORIAL_MESSAGE:
-					//FIXME: Actually make this work
-					view.setDisplayTutorialMessage(null);
+					view.setDisplayTutorialMessage(model.getTutorialMessage());
 					break;
 				case TIME_UPDATE_REQUIRED:
 					view.updateRemainingTime(model.getTimeRemaining());

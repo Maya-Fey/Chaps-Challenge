@@ -38,6 +38,8 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 
 	private int timeRemaining, chipsRemaining;
 	
+	private String message;
+	
 	/**
 	 * Constructor for empty ChapsModel
 	 */
@@ -137,6 +139,11 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		
 		root:
 		if(action.equals(ChapsAction.UP) || action.equals(ChapsAction.DOWN) || action.equals(ChapsAction.LEFT) || action.equals(ChapsAction.RIGHT)) {
+			
+			if(message != null) {
+				message = null;
+				events.add(ChapsEvent.HIDE_TUTORIAL_MESSAGE);
+			}
 			
 			Position potentialNewPos = player.getPosition().translate(action);
 			
@@ -297,6 +304,12 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 	public int getChipsRemaining() 
 	{
 		return chipsRemaining;
+	}
+	
+	@Override
+	public String getTutorialMessage()
+	{
+		return message;
 	}
 
 	@Override
