@@ -1,6 +1,6 @@
 package nz.ac.vuw.ecs.swen225.a3.application;
 
-import java.awt.event.KeyListener;
+import java.awt.KeyEventDispatcher;
 import java.awt.event.WindowListener;
 
 /**
@@ -12,7 +12,7 @@ import java.awt.event.WindowListener;
  * 
  * @author Claire 300436297
  */
-public interface ChapsController extends KeyListener, WindowListener {
+public interface ChapsController extends KeyEventDispatcher, WindowListener {
 	
 	/**
 	 * Displays the main window of the game

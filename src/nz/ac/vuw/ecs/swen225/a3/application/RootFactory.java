@@ -2,12 +2,14 @@ package nz.ac.vuw.ecs.swen225.a3.application;
 
 import nz.ac.vuw.ecs.swen225.a3.commons.Contracts;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
+import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayerFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Interactable;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChip;
 import nz.ac.vuw.ecs.swen225.a3.maze.InteractableChipFactory;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableItem;
+import nz.ac.vuw.ecs.swen225.a3.maze.InteractableItemFactory;
 import nz.ac.vuw.ecs.swen225.a3.maze.Item;
-import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.Tile;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExit;
 import nz.ac.vuw.ecs.swen225.a3.maze.TileExitFactory;
@@ -42,6 +44,7 @@ public class RootFactory {
 		instance.tileFactory.addFactory(TileExit.class.getSimpleName(), new TileExitFactory());
 		
 		instance.interactableFactory.addFactory(InteractableChip.class.getSimpleName(), new InteractableChipFactory());
+		instance.interactableFactory.addFactory(InteractableItem.class.getSimpleName(), new InteractableItemFactory());
 		
 		instance.actorFactory.addFactory(ActorPlayer.class.getSimpleName(), new ActorPlayerFactory());
 	}

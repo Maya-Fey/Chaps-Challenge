@@ -43,7 +43,7 @@ public class SaveFileInterface {
 	 */
 	public static GameState load() 
 	{
-		if(SAVE_LOCATION.exists() && SAVE_LOCATION.isFile())
+		if(!(SAVE_LOCATION.exists() && SAVE_LOCATION.isFile()))
 			return null;
 		
 		try {
