@@ -359,4 +359,10 @@ public class ChapsModelImpl implements ChapsModel, ModelAccessObject {
 		tiles.set(tile, x, y);
 	}
 
+	@Override
+	public void killPlayer() 
+	{
+		events.add(ChapsEvent.GAME_LOST_PLAYER_DIED);
+	}
+
 }

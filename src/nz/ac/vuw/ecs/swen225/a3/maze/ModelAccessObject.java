@@ -47,5 +47,10 @@ public interface ModelAccessObject {
 	 * @param y Y-Coordinate
 	 */
 	void setTile(Tile tile, int x, int y);
+	
+	/**
+	 * Kills the player
+	 */
+	void killPlayer();
 
 }
