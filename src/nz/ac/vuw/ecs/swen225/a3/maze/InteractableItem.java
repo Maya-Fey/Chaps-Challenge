@@ -89,7 +89,9 @@ public class InteractableItem implements Interactable {
 	@Override
 	public InteractableItem clone()
 	{
-		return null;
+		InteractableItem item = new InteractableItem(this.item);
+		item.setPosition(this.getPosition());
+		return item;
 	}
 
 }
