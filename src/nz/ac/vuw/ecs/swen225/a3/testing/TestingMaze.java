@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import nz.ac.vuw.ecs.swen225.a3.application.GameState;
 import nz.ac.vuw.ecs.swen225.a3.application.GameStateFactory;
 import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
+import nz.ac.vuw.ecs.swen225.a3.commons.Visible;
 import nz.ac.vuw.ecs.swen225.a3.maze.Actor;
 import nz.ac.vuw.ecs.swen225.a3.maze.ActorPlayer;
 import nz.ac.vuw.ecs.swen225.a3.maze.ChapsAction;
@@ -141,25 +142,6 @@ class TestingMaze {
 	}
 
 	/**
-	 * Tests Inventory Class --- FINISH THIS TEST LATER ONCE CONCRETE ITEM CLASS
-	 * ADDED
-	 */
-	@Test
-	void test_inventory() {
-		// Both constructors
-		// Item item = new Item();
-		Inventory i = new Inventory();
-		// Inventory ii = new Inventory((ArrayList<Item>)(i.getAll()));
-		// Cloning
-		Inventory i2 = i.clone();
-		assertTrue(i != i2);
-		// Get all
-		assertTrue(i.getAll().size() == 0);
-		fail();
-
-	}
-
-	/**
 	 * Tests TileExit class
 	 */
 	@Test
@@ -212,7 +194,7 @@ class TestingMaze {
 	}
 
 	/**
-	 * 
+	 * Tests the main methods in gamestate 
 	 */
 	@Test
 	void test_gamestate() {
@@ -237,21 +219,67 @@ class TestingMaze {
 	}
 
 	/**
-	 * Tests the factorys for TileExit and TileFree --- HOW TO TEST THIS?
+	 * Tests some of the main methods in champs model impl ---onAction could have more tests 
 	 */
 	@Test
-	void test_ChapsModelImpl() {
+	void test_ChapsModelImpl_construct_onAction_setState() {
 		ChapsModelImpl cmi = (ChapsModelImpl) new ChapsModelFactory().produce();
-		// Tile[][] maze, List<Interactable> interactables, List<Actor> actors,
-		// Inventory inv, int timeRemaining, int chipsRemaining)
 		Tile[][] maze = new Tile[2][2];
 		List<Interactable> interactables = new ArrayList<Interactable>();
 		interactables.add(new InteractableChip());
 		List<Actor> actors = new ArrayList<Actor>();
-		actors.add(new ActorPlayer());
+		Actor a = new ActorPlayer();
+		a.setPosition(new Position(0,0));
+		actors.add(a);
 		Inventory inv = new Inventory();
 		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
-
+		//Set the state
+		cmi.setState(gs);
+		//Check tick works 
+		int time = cmi.getTimeRemaining();
+		cmi.onAction(ChapsAction.TICK);
+		int time2 = cmi.getTimeRemaining();
+		assertTrue(time == time2+1);
+		//Test game over event works 
+		ChapsModelImpl cmi2 = (ChapsModelImpl) new ChapsModelFactory().produce();
+		GameState gs2 = new GameState(maze, interactables, actors, inv, 1, 10);
+		cmi2.setState(gs2);
+		String target ="[TIME_UPDATE_REQUIRED, GAME_LOST_TIME_OUT]";
+		assertTrue(cmi2.onAction(ChapsAction.TICK).toString().equals(target));
+		//Test move 
+		//cmi.onAction(ChapsAction.DOWN);
+		
+		
+	}
+	
+	/**
+	 * Tests some of the main methods in champs model impl --- FINISH VISABLE
+	 */
+	@Test
+	void test_ChapsModelImpl_getState_getVisable_other() {
+		ChapsModelImpl cmi = (ChapsModelImpl) new ChapsModelFactory().produce();
+		Tile[][] maze = new Tile[2][2];
+		List<Interactable> interactables = new ArrayList<Interactable>();
+		InteractableChip iii = new InteractableChip();
+		iii.setPosition(new Position(0,0));
+		interactables.add(iii);
+		List<Actor> actors = new ArrayList<Actor>();
+		Actor a = new ActorPlayer();
+		a.setPosition(new Position(0,0));
+		actors.add(a);
+		Inventory inv = new Inventory();
+		GameState gs = new GameState(maze, interactables, actors, inv, 10, 10);
+		//Set the state
+		cmi.setState(gs);
+		GameState copy = cmi.getState();
+		assertTrue(copy != gs); //Should be deep clone 
+		//Get visable
+		//Visible[][] v = cmi.getVisibleArea(); Finish after get updated code 
+		int num = cmi.getChipsRemaining();
+		cmi.addChips(1);
+		assertTrue(num == cmi.getChipsRemaining()-1);
+		
+		
 	}
 
 }
