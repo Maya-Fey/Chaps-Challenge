@@ -353,16 +353,12 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		gamePanel = view.getRootPanel();
 		
 		this.setTitle("Chaps's Challenge");
-		this.setSize(windowHeight, windowLength);
-		// Adds a window confirmation for closing game
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent we) {
-				exitPrompt();
-			}
-		});
+		this.setSize((int) ((8 + GameConstants.ICON_SIZE) * GameConstants.VISIBILE_SIZE * 1.4), (8 + GameConstants.ICON_SIZE) * GameConstants.VISIBILE_SIZE);
+		
+		setupMainMenu();
 		setupMenuBars();
-		this.setMinimumSize(new Dimension(windowHeight, windowLength));
+		
+		//this.setMinimumSize(new Dimension(windowHeight, windowLength));
 		this.setVisible(true);
 	}
 
@@ -772,38 +768,29 @@ public class ChapsControllerImpl extends JFrame implements ChapsController {
 		}
 	}
 	
+	
+	
 	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void windowClosing(WindowEvent arg0) 
+	{
+		exitPrompt();
 	}
+	
 	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void windowDeactivated(WindowEvent arg0) {}
+	
 	@Override
-	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void windowDeiconified(WindowEvent arg0) {}
+	
 	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void windowIconified(WindowEvent arg0) {}
+	
 	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void windowOpened(WindowEvent arg0) {}
+	
 	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void windowActivated(WindowEvent arg0) {}
+	
 	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-	}
+	public void windowClosed(WindowEvent arg0) {}
 }
