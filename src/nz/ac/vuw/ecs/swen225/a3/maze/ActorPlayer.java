@@ -11,6 +11,8 @@ import nz.ac.vuw.ecs.swen225.a3.commons.IconFactory;
  */
 public class ActorPlayer implements Actor {
 	
+	private String iconStr = "front.png";
+	
 	private Position position;
 	
 	/**
@@ -37,14 +39,25 @@ public class ActorPlayer implements Actor {
 	@Override
 	public void setPosition(Position position) 
 	{
+		if(position != null && this.position != null) {
+			int dx = position.x - this.position.x;
+			int dy = position.y - this.position.y;
+			if(dx == 0 && dy == 1)
+				iconStr = "back.png";
+			else if(dx == 0 && dy == -1)
+				iconStr = "front.png";
+			else if(dx == -1 && dy == 0)
+				iconStr = "left.png";
+			else if(dx == 1 && dy == 0)
+				iconStr = "right.png";
+		}
 		this.position = position;
-		
 	}
 
 	@Override
 	public Icon getIcon() 
 	{
-		return IconFactory.INSTANCE.loadIcon("chap.png");
+		return IconFactory.INSTANCE.loadIcon(iconStr);
 	}
 
 	@Override
